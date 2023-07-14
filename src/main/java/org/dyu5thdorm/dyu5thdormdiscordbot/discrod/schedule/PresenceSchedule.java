@@ -2,7 +2,6 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.schedule;
 
 import net.dv8tion.jda.api.entities.Activity;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.DiscordAPI;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,10 +13,13 @@ import java.util.List;
 @PropertySource("classpath:presence.properties")
 public class PresenceSchedule implements DiscordSchedule {
     @Value("${sorryyoth}")
-    private List<String> songs;
-    private int index;
-    @Autowired
-    private DiscordAPI discordAPI;
+    List<String> songs;
+    int index;
+    final DiscordAPI discordAPI;
+
+    public PresenceSchedule(DiscordAPI discordAPI) {
+        this.discordAPI = discordAPI;
+    }
 
     @Scheduled(fixedRate = 60000)
     public void run() {

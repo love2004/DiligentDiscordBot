@@ -12,8 +12,6 @@ import java.util.Set;
 public class StudentService {
     @Autowired
     StudentRepository studentRepository;
-    @Autowired
-    Student student;
 
     public boolean exists(String studentId) {
         return studentRepository.existsById(studentId);
@@ -21,12 +19,10 @@ public class StudentService {
 
     public void saveStudentPhoneNumber(String studentId, String phoneNumber) {
         Optional<Student> getStudent = studentRepository.findById(studentId);
-        if (getStudent.isEmpty()) {
-            return;
-        }
-        student = getStudent.get();
-        student.setPhoneNumber(phoneNumber);
-        studentRepository.save(student);
+        getStudent.ifPresent(student -> {
+            student.setPhoneNumber(phoneNumber);
+            studentRepository.save(student);
+        });
     }
 
     public Optional<Student> findByStudentId(String studentId) {

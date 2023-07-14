@@ -12,13 +12,10 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
-import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -32,12 +29,15 @@ public class SearchByRoom extends ListenerAdapter {
     String bedIdTextInputId;
     @Value("${regexp.room_id}")
     String roomRegex;
-    @Autowired
-    LivingRecordService livingRecordService;
-    @Autowired
-    DiscordLinkService discordLinkService;
-    @Autowired
-    EmbedGenerator embedGenerator;
+    final LivingRecordService livingRecordService;
+    final DiscordLinkService discordLinkService;
+    final EmbedGenerator embedGenerator;
+
+    public SearchByRoom(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, EmbedGenerator embedGenerator) {
+        this.livingRecordService = livingRecordService;
+        this.discordLinkService = discordLinkService;
+        this.embedGenerator = embedGenerator;
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -46,7 +46,7 @@ public class SearchByRoom extends ListenerAdapter {
         event.replyModal(
                 Modal.create(modalId, "以床號查詢住宿生")
                         .addActionRow(
-                                TextInput.create(bedIdTextInputId, "房號", TextInputStyle.SHORT)
+                                TextInput.create(bedIdTextInputId, "住宿生房號", TextInputStyle.SHORT)
                                         .setPlaceholder("5126")
                                         .setMinLength(4)
                                         .setMaxLength(4)
@@ -72,6 +72,11 @@ public class SearchByRoom extends ListenerAdapter {
 
         if (livingRecords.isEmpty()) {
             event.reply("查無結果").setEphemeral(true).queue();
+            return;
+        }
+
+        if (livingRecords.size() > 10) {
+            event.reply("搜尋結果超過十筆，請縮小查詢範圍或尋找開發人員從後台查詢。").setEphemeral(true).queue();
             return;
         }
 

@@ -1,8 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
-import jakarta.annotation.Nullable;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.DiscordLinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +12,19 @@ import java.util.Optional;
 public class DiscordLinkService {
     @Autowired
     DiscordLinkRepository discordLinkRepository;
-    @Autowired
-    DiscordLink discordLink;
-    @Autowired
-    Student student;
+
 
     public boolean isLinked(String discordId) {
         return discordLinkRepository.existsById(discordId);
     }
 
     public boolean isLinkByStudentId(String studentId) {
-        student.setStudentId(studentId);
-        return discordLinkRepository.existsByStudent(student);
+        return discordLinkRepository.findByStudentStudentId(studentId).isPresent();
     }
 
     public void link(String discordId, String studentId) {
-        discordLink.setDiscordId(discordId);
-        student.setStudentId(studentId);
+        DiscordLink discordLink = new DiscordLink(discordId);
+        Student student = new Student(studentId);
         discordLink.setStudent(student);
         discordLinkRepository.save(discordLink);
     }

@@ -25,4 +25,8 @@ public class DiscordLink {
     @CreationTimestamp
     @Column(name = "linked_time")
     private LocalDateTime linkedTime;
+
+    public DiscordLink(String discordId) {
+        this.discordId = discordId;
+    }
 }

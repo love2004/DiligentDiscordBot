@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -19,9 +18,12 @@ import java.util.Optional;
 @PropertySource("classpath:discord.properties")
 public class OnAuthedUserLeaveEvent extends ListenerAdapter {
     @Value("${channel.leave}")
-    private String leaveChannelId;
-    @Autowired
-    private DiscordLinkService discordLinkService;
+    String leaveChannelId;
+    final DiscordLinkService discordLinkService;
+
+    public OnAuthedUserLeaveEvent(DiscordLinkService discordLinkService) {
+        this.discordLinkService = discordLinkService;
+    }
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {

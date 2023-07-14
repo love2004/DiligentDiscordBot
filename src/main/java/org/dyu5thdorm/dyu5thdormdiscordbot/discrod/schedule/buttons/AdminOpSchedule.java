@@ -1,23 +1,19 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.schedule;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.schedule.buttons;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.DiscordAPI;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.schedule.DiscordSchedule;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation.deleteAllMessage;
-import static org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation.getMessage;
-
 @PropertySource("classpath:discord.properties")
 @Component
-public class AdminButtonSchedule implements DiscordSchedule {
-    @Autowired
-    DiscordAPI discordAPI;
+public class AdminOpSchedule implements DiscordSchedule {
     @Value("${channel.admin_button}")
     String adminButtonChannelId;
     @Value("${component.button.student-info-by-discord}")
@@ -28,6 +24,13 @@ public class AdminButtonSchedule implements DiscordSchedule {
     String studentIdButtonId;
     @Value("${component.button.student-info-by-name}")
     String nameButtonId;
+    final DiscordAPI discordAPI;
+    final ChannelOperation channelOperation;
+
+    public AdminOpSchedule(DiscordAPI discordAPI, ChannelOperation channelOperation) {
+        this.discordAPI = discordAPI;
+        this.channelOperation = channelOperation;
+    }
 
     @Scheduled(fixedRate = 60000)
     public void run() {
@@ -35,28 +38,11 @@ public class AdminButtonSchedule implements DiscordSchedule {
 
         String messageId = textChannel.getLatestMessageId();
 
-        Message message = getMessage(textChannel, messageId);
+        Message message = channelOperation.getMessage(textChannel, messageId);
 
         if (message == null || message.getButtons().size() == 0) {
-            deleteAllMessage(textChannel, 100);
-            createNewOne(textChannel);
+            channelOperation.deleteAllMessage(textChannel, 100);
+            channelOperation.sendOperationMessage(textChannel, ChannelOperation.Operation.ADMIN_STUDENT_INFO);
         }
-    }
-
-    void createNewOne(TextChannel textChannel) {
-        textChannel.sendMessage(":mag: 查詢住宿生")
-                .addActionRow(
-                        Button.primary(discordIdButtonId, "以帳號查詢")
-                )
-                .addActionRow(
-                        Button.success(bedIdButtonId, "以房號查詢")
-                )
-                .addActionRow(
-                        Button.success(studentIdButtonId, "以學號查詢")
-                )
-                .addActionRow(
-                        Button.success(nameButtonId, "以姓名查詢")
-                )
-                .queue();
     }
 }

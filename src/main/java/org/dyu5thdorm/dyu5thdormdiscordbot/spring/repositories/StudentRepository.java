@@ -8,4 +8,5 @@ import java.util.Set;
 public interface StudentRepository extends JpaRepository<Student, String> {
     Set<Student> findAllByStudentId(String studentId);
     Set<Student> findAllByStudentIdContains(String studentId);
+
 }

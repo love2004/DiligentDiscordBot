@@ -29,5 +29,9 @@ public class Student {
 
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    public Student(String studentId) {
+        this.studentId = studentId;
+    }
 }
 

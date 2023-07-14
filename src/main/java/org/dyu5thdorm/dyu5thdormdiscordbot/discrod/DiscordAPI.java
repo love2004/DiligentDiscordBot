@@ -9,11 +9,13 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.OnReadEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByDiscord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByName;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByRoom;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByStudentId;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthButtonInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthModalInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthedUserLeaveEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.RepairRequestEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -42,6 +44,10 @@ public class DiscordAPI {
     SearchByRoom searchByRoom;
     @Autowired
     SearchByStudentId searchByStudentId;
+    @Autowired
+    SearchByName searchByName;
+    @Autowired
+    RepairRequestEvent repairRequestEvent;
 
     @PostConstruct
     void init() {
@@ -59,7 +65,9 @@ public class DiscordAPI {
                         onAuthedUserLeaveEvent,
                         searchByDiscord,
                         searchByRoom,
-                        searchByStudentId
+                        searchByStudentId,
+                        searchByName,
+                        repairRequestEvent
                 )
                 .build();
         try {

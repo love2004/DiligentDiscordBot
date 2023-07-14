@@ -11,12 +11,10 @@ import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.EmbedGenerator;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
 import java.util.List;
 
 
@@ -27,10 +25,13 @@ public class SearchByDiscord extends ListenerAdapter {
     String discordIdButtonId;
     @Value("${component.menu.student-info-by-discord}")
     String menuId;
-    @Autowired
-    LivingRecordService livingRecordService;
-    @Autowired
-    EmbedGenerator embedGenerator;
+    final LivingRecordService livingRecordService;
+    final EmbedGenerator embedGenerator;
+
+    public SearchByDiscord(LivingRecordService livingRecordService, EmbedGenerator embedGenerator) {
+        this.livingRecordService = livingRecordService;
+        this.embedGenerator = embedGenerator;
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

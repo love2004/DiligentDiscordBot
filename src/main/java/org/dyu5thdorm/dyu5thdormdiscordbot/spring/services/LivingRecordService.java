@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
+import jakarta.annotation.PostConstruct;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.*;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.LivingRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,49 +21,36 @@ public class LivingRecordService {
     @Value("${semester}")
     private Integer semester;
     @Autowired
-    private LivingRecordId livingRecordId;
-    @Autowired
-    private Bed bed;
-    @Autowired
     SchoolTimestamp schoolTimestamp;
     @Autowired
     Student student;
     @Autowired
     DiscordLinkService discordLinkService;
 
-    private void setPrimaryKey(String bedId) {
-        bed.setBedId(bedId);
-        setSchoolTimestamp();
-        livingRecordId.setBed(bed);
-        livingRecordId.setSchoolTimestamp(schoolTimestamp);
-    }
-
+    @PostConstruct
     private void setSchoolTimestamp() {
         schoolTimestamp.setSchoolYear(schoolYear);
         schoolTimestamp.setSemester(semester);
     }
 
     public Optional<LivingRecord> findByStudentId(String studentId) {
-        return livingRecordRepository.findByStudentStudentId(studentId);
+        return livingRecordRepository.findByStudentStudentIdAndSchoolTimestampEquals(studentId, schoolTimestamp);
     }
 
-    public boolean existsByStudentId(String studentId) {
-        return findByStudentId(studentId).isPresent();
-    }
-
-    public Optional<LivingRecord> findByBedId(String bedId) {
-        setPrimaryKey(bedId);
-        return livingRecordRepository.findById(livingRecordId);
+    public Set<LivingRecord> findAllByStudentIdContains(String studentId) {
+        return livingRecordRepository.findAllByStudentStudentIdContainsAndSchoolTimestampEquals(studentId, schoolTimestamp);
     }
 
     public Set<LivingRecord> findAllByBedIdContains(String bedId) {
-        setSchoolTimestamp();
         return livingRecordRepository.findAllByBedBedIdContainsAndSchoolTimestampEquals(bedId, schoolTimestamp);
     }
 
     public Set<LivingRecord> findAllByBedId(String bedId) {
-        setSchoolTimestamp();
         return livingRecordRepository.findAllByBedBedIdAndSchoolTimestampEquals(bedId, schoolTimestamp);
+    }
+
+    public Set<LivingRecord> findAllByNameContains(String name) {
+        return livingRecordRepository.findAllByStudentNameContainsAndSchoolTimestampEquals(name, schoolTimestamp);
     }
 
     public LivingRecord findLivingRecordByDiscordId(String discordId) {

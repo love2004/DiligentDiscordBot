@@ -76,7 +76,7 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
 
         Optional<LivingRecord> livingRecordFound = livingRecordService.findByStudentId(studentId);
         if (livingRecordFound.isEmpty()) {
-            event.reply("無法將您的資料對應到相對床位，您可能非本學期住宿生或已離宿，若有任何問題請聯繫宿舍幹部。").queue();
+            event.reply("無法將您的資料對應到相對床位，您可能非本學期住宿生或已離宿，若有任何問題請聯繫宿舍幹部。").setEphemeral(true).queue();
             return;
         }
 
@@ -102,9 +102,9 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
                 .addField("學號", livingRecord.getStudent().getStudentId(), true)
                 .addField("姓名", livingRecord.getStudent().getName(), true)
                 .setColor(Color.GREEN);
-        event.getUser().openPrivateChannel().queue(privateChannel -> {
-            privateChannel.sendMessageEmbeds(embedBuilder.build()).queue();
-        });
+        event.getHook().sendMessageEmbeds(
+                embedBuilder.build()
+        ).setEphemeral(true).queue();
     }
 
     void giveFloorRoleToUser(Guild guild, User user, String bedId) {
@@ -115,7 +115,6 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
             // TODO: HANDLE
             return;
         }
-
         guild.addRoleToMember(user, role).queue();
     }
 }
