@@ -46,7 +46,7 @@ public class EmbedGenerator {
         embedBuilder
                 .setColor(Color.GREEN)
                 .setFooter("查詢成功")
-                .setThumbnail(
+                .setImage(
                         String.format(formatStudentImageApi, livingRecord.getStudent().getStudentId().toUpperCase())
                 );
         embedBuilder.clearFields();

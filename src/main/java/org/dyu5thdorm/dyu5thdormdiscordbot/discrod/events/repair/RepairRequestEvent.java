@@ -30,6 +30,8 @@ public class RepairRequestEvent extends ListenerAdapter {
     String repairButtonId;
     @Value("${component.menu.repair}")
     String repairMenuId;
+    @Value("${component.menu.option-value-normal-selection}")
+    String normalSelectionMenuId;
     @Value("${component.menu.option-value-normal}")
     String menuNormalOptionValue;
     @Value("${component.menu.option-value-wash-and-dry}")
@@ -45,6 +47,7 @@ public class RepairRequestEvent extends ListenerAdapter {
     String secondTextInputId;
     @Value("${component.modal.repair-time-t}")
     String thirdTextInputId;
+
     final
     RepairMessageBuilder repairMessageBuilder;
 
@@ -86,12 +89,13 @@ public class RepairRequestEvent extends ListenerAdapter {
                 second == null ? "" : second.getAsString(),
                 third == null ? "" : third.getAsString()
         );
+
         try {
             RepairTokenSet.RepairType type = repairModals.getTypeByModalId(event.getModalId());
             switch (type) {
                 case NORMAL -> lineNotify.sendMessage(
                         repairMessageBuilder.normal(model), type
-                        );
+                );
                 case WASH_AND_DRY_MACHINE -> lineNotify.sendMessage(
                         repairMessageBuilder.washAndDryMachine(model), type
                 );
@@ -110,10 +114,15 @@ public class RepairRequestEvent extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
+        if (event.getButton().getId().equalsIgnoreCase("todo")) {
+            event.reply("功能尚在製作，敬請期待。").setEphemeral(true).queue();
+            return;
+        }
+
         if (!event.getButton().getId().equals(repairButtonId)) return;
 
        var menu = StringSelectMenu.create(repairMenuId)
-               .addOption("水電土木", menuNormalOptionValue, "一般維修，包含冷氣、紗窗、門...", Emoji.fromUnicode("U+1F6E0"))
+               .addOption("總務", menuNormalOptionValue, "水電工程、土木工程、門窗鎖具、空調設備以及其他", Emoji.fromUnicode("U+1F6E0"))
                .addOption("洗、烘衣機", menuWashAndDyuOptionValue, "各樓層洗、烘衣機", Emoji.fromUnicode("U+1F504"))
                .addOption("販賣機", menuVendingOptionValue, "各樓層販賣機", Emoji.fromUnicode("U+1F964"))
                .addOption("飲水機", menuWaterOptionValue, "各樓層飲水機", Emoji.fromUnicode("U+1F4A7"))
@@ -128,9 +137,11 @@ public class RepairRequestEvent extends ListenerAdapter {
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-        String selectMenuId = event.getMessage().getId();
+        String selectMenuMessageId = event.getMessage().getId();
+        if (!event.getSelectMenu().getId().equalsIgnoreCase(repairMenuId)) return;
+
         StringSelectMenu menu = event.getSelectMenu();
-        event.getHook().editMessageComponentsById(selectMenuId).setComponents(
+        event.getHook().editMessageComponentsById(selectMenuMessageId).setComponents(
                 ActionRow.of(
                         menu.withDisabled(true)
                 )
@@ -159,6 +170,6 @@ public class RepairRequestEvent extends ListenerAdapter {
         }
 
         // TODO: HANDLE
-        event.reply("未知錯誤").queue();
+        event.reply("未知錯誤").setEphemeral(true).queue();
     }
 }

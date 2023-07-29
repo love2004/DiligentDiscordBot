@@ -14,24 +14,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthModal {
     Modal modal;
-    String modalId;
-    String studentIdTextInputId;
-    String phoneNumberTextInputId;
-
     @Value("${component.modal.auth}")
-    public void setModalId(String modalId) {
-        this.modalId = modalId;
-    }
-
+    String modalId;
     @Value("${component.modal.auth-student-id-t}")
-    public void setStudentIdTextInputId(String studentIdTextInputId) {
-        this.studentIdTextInputId = studentIdTextInputId;
-    }
-
+    String studentIdTextInputId;
     @Value("${component.modal.auth-phone-number-t}")
-    public void setPhoneNumberTextInputId(String phoneNumberTextInputId) {
-        this.phoneNumberTextInputId = phoneNumberTextInputId;
-    }
+    String phoneNumberTextInputId;
 
     @PostConstruct
     public void init() {

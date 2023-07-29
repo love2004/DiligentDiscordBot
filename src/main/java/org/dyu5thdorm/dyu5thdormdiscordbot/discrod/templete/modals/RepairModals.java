@@ -110,7 +110,7 @@ public class RepairModals {
     }
 
     void buildNormalModal() {
-        normalModal = Modal.create(normalModalId, "水電土木報修")
+        normalModal = Modal.create(normalModalId, "總務報修")
                 .addActionRow(
                         TextInput.create(normalTextInputItemsId, "報修物品(公共區域請註明範圍)", TextInputStyle.PARAGRAPH)
                                 .setRequired(true)

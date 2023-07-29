@@ -1,7 +1,8 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.schedule;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.operation.schedule;
 
 import net.dv8tion.jda.api.entities.Activity;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.DiscordAPI;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.operation.Operation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Component
 @PropertySource("classpath:presence.properties")
-public class PresenceSchedule implements DiscordSchedule {
+public class PresenceSchedule implements Operation {
     @Value("${sorryyoth}")
     List<String> songs;
     int index;

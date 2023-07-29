@@ -4,9 +4,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.DiscordRole;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.modals.AuthEmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
@@ -16,14 +18,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
 import java.util.Optional;
 
 @Component
 @PropertySource("classpath:discord.properties")
 public class OnAuthModalInteractionEvent extends ListenerAdapter {
-    @Value("${regexp.phone_number}")
-    String phoneNumberSyntax;
     @Autowired
     LivingRecordService livingRecordService;
     @Autowired
@@ -32,12 +31,18 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
     DiscordRole discordRole;
     @Autowired
     StudentService studentService;
+    @Autowired
+    AuthEmbedBuilder authEmbedBuilder;
+    @Value("${regexp.phone_number}")
+    String phoneNumberSyntax;
     @Value("${component.modal.auth}")
     String modalId;
     @Value("${component.modal.auth-student-id-t}")
     String modalStudentId;
     @Value("${component.modal.auth-phone-number-t}")
     String modalPhoneNumber;
+    @Value("${channel.auth-logger}")
+    String loggerChannelId;
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
@@ -95,16 +100,16 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
 
         LivingRecord livingRecord = livingRecordFound.get();
 
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("住宿資料")
-                .setDescription("以下為您的住宿資料，若有誤或非本人請立刻與宿舍幹部反應。")
-                .addField("房號", livingRecord.getBed().getBedId(), true)
-                .addField("學號", livingRecord.getStudent().getStudentId(), true)
-                .addField("姓名", livingRecord.getStudent().getName(), true)
-                .setColor(Color.GREEN);
+        EmbedBuilder embedBuilder = authEmbedBuilder.successAuth(livingRecord);
         event.getHook().sendMessageEmbeds(
                 embedBuilder.build()
         ).setEphemeral(true).queue();
+        TextChannel logger = event.getJDA().getTextChannelById(loggerChannelId);
+        if (logger != null) {
+            logger.sendMessageEmbeds(
+                    authEmbedBuilder.successAuthLogger(embedBuilder, userId).build()
+            ).queue();
+        }
     }
 
     void giveFloorRoleToUser(Guild guild, User user, String bedId) {

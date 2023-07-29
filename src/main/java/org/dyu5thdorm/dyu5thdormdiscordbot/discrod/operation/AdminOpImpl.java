@@ -1,19 +1,16 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.schedule.buttons;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.operation;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.DiscordAPI;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.schedule.DiscordSchedule;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @PropertySource("classpath:discord.properties")
 @Component
-public class AdminOpSchedule implements DiscordSchedule {
+public class AdminOpImpl implements Operation {
     @Value("${channel.admin_button}")
     String adminButtonChannelId;
     @Value("${component.button.student-info-by-discord}")
@@ -27,13 +24,13 @@ public class AdminOpSchedule implements DiscordSchedule {
     final DiscordAPI discordAPI;
     final ChannelOperation channelOperation;
 
-    public AdminOpSchedule(DiscordAPI discordAPI, ChannelOperation channelOperation) {
+    public AdminOpImpl(DiscordAPI discordAPI, ChannelOperation channelOperation) {
         this.discordAPI = discordAPI;
         this.channelOperation = channelOperation;
     }
 
-    @Scheduled(fixedRate = 60000)
     public void run() {
+        
         TextChannel textChannel = discordAPI.getJda().getTextChannelById(adminButtonChannelId);
 
         String messageId = textChannel.getLatestMessageId();

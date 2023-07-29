@@ -7,7 +7,10 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.OnReadEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.DevelopmentOperationEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.GenerateRequest;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.GenerateRules;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.ShutdownButton;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByDiscord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByName;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByRoom;
@@ -31,7 +34,13 @@ public class DiscordAPI {
     JDA jda;
     Guild guild;
     @Autowired
-    OnReadEvent onReadEvent;
+    DevelopmentOperationEvent developmentOperationEvent;
+    @Autowired
+    GenerateRules generateRules;
+    @Autowired
+    GenerateRequest generateRequestButton;
+    @Autowired
+    ShutdownButton shutdownButton;
     @Autowired
     OnAuthButtonInteractionEvent onAuthButtonInteraction;
     @Autowired
@@ -59,7 +68,10 @@ public class DiscordAPI {
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .addEventListeners(
-                    onReadEvent,
+                        developmentOperationEvent,
+                        generateRules,
+                        generateRequestButton,
+                        shutdownButton,
                         onAuthModalInteraction,
                         onAuthButtonInteraction,
                         onAuthedUserLeaveEvent,
