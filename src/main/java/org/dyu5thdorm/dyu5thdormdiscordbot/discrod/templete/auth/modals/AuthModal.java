@@ -22,7 +22,7 @@ public class AuthModal {
     String phoneNumberTextInputId;
 
     @PostConstruct
-    public void init() {
+    void init() {
         modal = Modal.create(modalId, "認證")
                 .addActionRow(
                         TextInput.create(studentIdTextInputId, "學號(student id)", TextInputStyle.SHORT)

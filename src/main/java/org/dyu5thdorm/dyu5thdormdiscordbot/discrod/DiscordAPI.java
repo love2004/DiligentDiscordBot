@@ -18,7 +18,9 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.S
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthButtonInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthModalInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthedUserLeaveEvent;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.RepairRequestEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairBtnItnEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairMenuEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairModalEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -56,7 +58,11 @@ public class DiscordAPI {
     @Autowired
     SearchByName searchByName;
     @Autowired
-    RepairRequestEvent repairRequestEvent;
+    OnRepairBtnItnEvent onRepairBtnItnEvent;
+    @Autowired
+    OnRepairMenuEvent onRepairMenuEvent;
+    @Autowired
+    OnRepairModalEvent onRepairModalEvent;
 
     @PostConstruct
     void init() {
@@ -79,7 +85,9 @@ public class DiscordAPI {
                         searchByRoom,
                         searchByStudentId,
                         searchByName,
-                        repairRequestEvent
+                        onRepairBtnItnEvent,
+                        onRepairMenuEvent,
+                        onRepairModalEvent
                 )
                 .build();
         try {

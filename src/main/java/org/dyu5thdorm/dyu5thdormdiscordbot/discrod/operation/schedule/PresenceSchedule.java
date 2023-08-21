@@ -22,7 +22,7 @@ public class PresenceSchedule implements Operation {
         this.discordAPI = discordAPI;
     }
 
-    @Scheduled(fixedRate = 60000)
+    //@Scheduled(fixedRate = 60000)
     public void run() {
         discordAPI.getJda().getPresence().setActivity(
                 Activity.listening(

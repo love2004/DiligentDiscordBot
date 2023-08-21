@@ -90,7 +90,7 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
         discordLinkService.link(event.getUser().getId(), studentId);
         studentService.saveStudentPhoneNumber(studentId, phoneNumber);
 
-        event.reply("恭喜！您已通過驗證。您的床位資料已發送私訊給您，若有任何問題請聯繫宿舍幹部。").setEphemeral(true).queue();
+        event.reply("恭喜！您已通過驗證。若有任何問題請聯繫宿舍幹部。").setEphemeral(true).queue();
 
         if (event.getGuild() == null) {
             return;

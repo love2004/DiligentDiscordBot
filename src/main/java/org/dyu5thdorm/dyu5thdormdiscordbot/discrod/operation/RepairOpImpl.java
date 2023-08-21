@@ -22,7 +22,7 @@ public class RepairOpImpl implements Operation {
         this.channelOperation = channelOperation;
     }
 
-    @Scheduled(fixedRateString = "${schedule.auto}")
+    //@Scheduled(fixedRateString = "${schedule.auto}")
     @Override
     public void run() {
         TextChannel textChannel = discordAPI.getJda().getTextChannelById(repairChannelId);
