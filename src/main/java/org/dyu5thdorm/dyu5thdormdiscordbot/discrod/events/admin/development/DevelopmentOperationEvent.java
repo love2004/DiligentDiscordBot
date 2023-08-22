@@ -14,6 +14,8 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
     String operationChannelId;
     @Value("${component.button.shutdown}")
     String shutdownButtonId;
+    @Value("${component.button.maintenance}")
+    String maintainButtonId;
     @Value("${component.button.generate-rules}")
     String generateRulesButtonId;
     @Value("${component.button.generate-request-leave}")
@@ -44,6 +46,8 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
                 "機器人類別"
         ).addActionRow(
                 Button.danger(shutdownButtonId, "關機")
+        ).addActionRow(
+                Button.danger(maintainButtonId, "維修模式(僅限開發人員使用)")
         ).queue();
 
         textChannel.sendMessage(

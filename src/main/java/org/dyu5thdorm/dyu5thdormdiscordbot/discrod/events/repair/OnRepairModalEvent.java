@@ -35,13 +35,13 @@ public class OnRepairModalEvent extends ListenerAdapter {
     String vendingModalId;
     @Value("${component.modal.repair-drinking}")
     String drinkingModalId;
-    @Value("${component.modal.repair-first}")
+    @Value("${component.modal.repair-first-t}")
     String firstTextInputId;
-    @Value("${component.modal.repair-second}")
+    @Value("${component.modal.repair-second-t}")
     String secondTextInputId;
-    @Value("${component.modal.repair-third}")
+    @Value("${component.modal.repair-third-t}")
     String thirdTextInputId;
-    @Value("${component.modal.repair-fourth}")
+    @Value("${component.modal.repair-fourth-t}")
     String fourthTextInputId;
     Map<String, RepairHandler> ids;
     @Autowired

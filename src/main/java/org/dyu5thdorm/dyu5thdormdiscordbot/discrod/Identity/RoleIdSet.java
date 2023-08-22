@@ -1,7 +1,10 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity;
 
 import jakarta.annotation.PostConstruct;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -10,9 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@PropertySource("classpath:discord.properties")
-@Data
-public class DiscordRole {
+@Getter
+@Setter(AccessLevel.NONE)
+public class RoleIdSet {
     @Value("${role.manager}")
     private String manager;
     @Value("${role.cadre_leader}")

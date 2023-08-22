@@ -40,7 +40,7 @@ public class RepairSelectionMenu {
                 .addOption("空調", airCondId, "冷氣", Emoji.fromUnicode("U+2744"))
                 .addOption("洗、烘衣機", washAndDryId, "各樓層洗衣機、烘衣機", Emoji.fromUnicode("U+1F9FA"))
                 .addOption("販賣機", vendingId, "各樓層販賣機", Emoji.fromUnicode("U+1F4B0"))
-                .addOption("飲水機", drinkingId, "各樓層販賣機", Emoji.fromUnicode("U+1F6B0"))
+                .addOption("飲水機", drinkingId, "各樓層飲水機", Emoji.fromUnicode("U+1F6B0"))
                 .addOption("其他", otherId, "其他類別", Emoji.fromUnicode("U+1F6E0"))
                 .build();
     }

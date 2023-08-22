@@ -17,6 +17,11 @@ public class ShutdownButton extends ListenerAdapter {
     List<String> developers;
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
+        if (event.getButton().getId().equalsIgnoreCase("todo")) {
+            event.reply("功能開發中，敬請期待！").setEphemeral(true).queue();
+            return;
+        }
+
         if (!event.getButton().getId().equals(shutdownButtonId)) return;
 
         String userId = event.getUser().getId();

@@ -1,16 +1,12 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod;
 
 import jakarta.annotation.PostConstruct;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.DevelopmentOperationEvent;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.GenerateRequest;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.GenerateRules;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.ShutdownButton;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.*;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByDiscord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByName;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByRoom;
@@ -29,6 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 @PropertySource("classpath:discord.properties")
 @Data
+@Setter(AccessLevel.NONE)
 @NoArgsConstructor
 public class DiscordAPI {
     @Value("${token}")
@@ -63,6 +60,8 @@ public class DiscordAPI {
     OnRepairMenuEvent onRepairMenuEvent;
     @Autowired
     OnRepairModalEvent onRepairModalEvent;
+    @Autowired
+    GenerateRepair generateRepair;
 
     @PostConstruct
     void init() {
@@ -77,6 +76,7 @@ public class DiscordAPI {
                         developmentOperationEvent,
                         generateRules,
                         generateRequestButton,
+                        generateRepair,
                         shutdownButton,
                         onAuthModalInteraction,
                         onAuthButtonInteraction,
