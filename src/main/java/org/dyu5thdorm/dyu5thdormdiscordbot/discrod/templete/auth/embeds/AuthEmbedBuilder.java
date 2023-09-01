@@ -1,4 +1,4 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.modals;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.embeds;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;

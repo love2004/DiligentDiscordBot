@@ -5,31 +5,25 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.springframework.beans.factory.annotation.Value;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DevelopmentOperationEvent extends ListenerAdapter {
-    @Value("${channel.admin.operation}")
-    String operationChannelId;
-    @Value("${component.button.shutdown}")
-    String shutdownButtonId;
-    @Value("${component.button.maintenance}")
-    String maintainButtonId;
-    @Value("${component.button.generate-rules}")
-    String generateRulesButtonId;
-    @Value("${component.button.generate-request-leave}")
-    String generateReqLevButtonId;
-    @Value("${component.button.generate-request-auth}")
-    String generateAuthButtonId;
-    @Value("${component.button.generate-request-repair}")
-    String generateRepairButtonId;
-    @Value("${component.button.generate-request-admin}")
-    String generateAdminButtonId;
+    final
+    ChannelIdSet channelIdSet;
+    final
+    ButtonIdSet buttonIdSet;
+
+    public DevelopmentOperationEvent(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
+        this.buttonIdSet = buttonIdSet;
+        this.channelIdSet = channelIdSet;
+    }
 
     @Override
     public void onGuildReady(GuildReadyEvent event) {
-        TextChannel textChannel = event.getGuild().getTextChannelById(operationChannelId);
+        TextChannel textChannel = event.getGuild().getTextChannelById(channelIdSet.getAdminOperation());
         if (textChannel == null) return;
 
         Message latestMessage = textChannel.retrieveMessageById(textChannel.getLatestMessageId())
@@ -45,19 +39,18 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
         textChannel.sendMessage(
                 "機器人類別"
         ).addActionRow(
-                Button.danger(shutdownButtonId, "關機")
-        ).addActionRow(
-                Button.danger(maintainButtonId, "維修模式(僅限開發人員使用)")
+                Button.danger(buttonIdSet.getShutdown(), "關機"),
+                Button.secondary(buttonIdSet.getMaintenance(), "維修模式(僅限開發人員使用)")
         ).queue();
 
         textChannel.sendMessage(
                 "宿舍類別"
         ).addActionRow(
-                Button.success(generateAuthButtonId, "重新生成驗證內容"),
-                Button.primary(generateRulesButtonId, "重新生成公約內容"),
-                Button.success(generateRepairButtonId, "重新生成報修按鈕"),
-                Button.primary(generateReqLevButtonId, "重新生成請假按鈕"),
-                Button.success(generateAdminButtonId, "重新生成管理員按鈕")
+                Button.success(buttonIdSet.getGenerateReqAuth(), "重新生成驗證內容"),
+                Button.primary(buttonIdSet.getGenerateRules(), "重新生成公約內容"),
+                Button.success(buttonIdSet.getGenerateReqRepair(), "重新生成報修按鈕"),
+                Button.primary(buttonIdSet.getGenerateReqLev(), "重新生成請假按鈕"),
+                Button.success(buttonIdSet.getGenerateReqCadre(), "重新生成幹部專區按鈕")
         ).queue();
     }
 }

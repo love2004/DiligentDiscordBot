@@ -7,46 +7,46 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.EmbedGenerator;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 @Component
-@PropertySource("classpath:discord.properties")
 public class SearchByRoom extends ListenerAdapter {
-    @Value("${component.button.student-info-by-bedId}")
-    String buttonId;
-    @Value("${component.modal.student-info-by-bedId}")
-    String modalId;
-    @Value("${component.modal.student-info-by-bedId-t}")
-    String bedIdTextInputId;
+    final
+    ButtonIdSet buttonIdSet;
+    final
+    ModalIdSet modalIdSet;
     @Value("${regexp.room_id}")
     String roomRegex;
     final LivingRecordService livingRecordService;
     final DiscordLinkService discordLinkService;
     final EmbedGenerator embedGenerator;
 
-    public SearchByRoom(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, EmbedGenerator embedGenerator) {
+    public SearchByRoom(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, EmbedGenerator embedGenerator, ButtonIdSet buttonIdSet, ModalIdSet modalIdSet) {
         this.livingRecordService = livingRecordService;
         this.discordLinkService = discordLinkService;
         this.embedGenerator = embedGenerator;
+        this.buttonIdSet = buttonIdSet;
+        this.modalIdSet = modalIdSet;
     }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (!event.getButton().getId().equals(buttonId)) return;
+        if (!event.getButton().getId().equals(buttonIdSet.getSearchByBedId())) return;
 
         event.replyModal(
-                Modal.create(modalId, "以床號查詢住宿生")
+                Modal.create(modalIdSet.getSearchByBI(), "以床號查詢住宿生")
                         .addActionRow(
-                                TextInput.create(bedIdTextInputId, "住宿生房號", TextInputStyle.SHORT)
+                                TextInput.create(modalIdSet.getFirstTextInput(), "住宿生房號", TextInputStyle.SHORT)
                                         .setPlaceholder("5126")
                                         .setMinLength(4)
                                         .setMaxLength(4)
@@ -59,9 +59,9 @@ public class SearchByRoom extends ListenerAdapter {
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
-        if (!event.getModalId().equals(modalId)) return;
+        if (!event.getModalId().equals(modalIdSet.getSearchByBI())) return;
 
-        String searchBedId = event.getValue(bedIdTextInputId).getAsString();
+        String searchBedId = event.getValue(modalIdSet.getFirstTextInput()).getAsString();
 
         if (!searchBedId.matches(roomRegex)) {
             event.reply("輸入的房號格式錯誤").setEphemeral(true).queue();

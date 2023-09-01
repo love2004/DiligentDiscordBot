@@ -1,0 +1,46 @@
+package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "took_coin")
+@Data
+@NoArgsConstructor
+public class TookCoin {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "record_id")
+    private Long id;
+
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "floor", referencedColumnName = "floor"),
+            @JoinColumn(name = "area_id", referencedColumnName = "area_id")
+    })
+    private FloorArea floor;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id", referencedColumnName = "student_id")
+    private Student student;
+
+    @Column(name = "machine")
+    private String machine;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "coin_amount")
+    private Integer coinAmount;
+
+    @CreationTimestamp
+    @Column(name = "record_time")
+    private LocalDateTime recordTime;
+
+    @Column(name = "time")
+    private LocalDateTime time;
+}

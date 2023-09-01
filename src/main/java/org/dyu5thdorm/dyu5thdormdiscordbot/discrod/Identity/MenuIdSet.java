@@ -11,23 +11,32 @@ import org.springframework.stereotype.Component;
 @Setter(AccessLevel.NONE)
 public class MenuIdSet {
     @Value("${component.menu.student-info-by-discord}")
-    String infoByDiscordAcc;
+    String infoByDiscordAccOption;
     @Value("${component.menu.repair}")
     String repair;
-    @Value("${component.menu.repair-civil}")
-    String civil;
-    @Value("${component.menu.repair-hydro}")
-    String hydro;
-    @Value("${component.menu.repair-door}")
-    String door;
-    @Value("${component.menu.repair-air_cond}")
-    String airCond;
-    @Value("${component.menu.repair-other}")
-    String other;
-    @Value("${component.menu.repair-wash_and_dry}")
-    String washAndDry;
-    @Value("${component.menu.repair-vending}")
-    String vending;
-    @Value("${component.menu.repair-drinking}")
-    String drinking;
+    @Value("${component.menu.took-coin}")
+    String tookCoin;
+    @Value("${component.menu.took-coin-search}")
+    String tookCoinSearch;
+    @Value("${component.menu.option-civil}")
+    String civilOption;
+    @Value("${component.menu.option-hydro}")
+    String hydroOption;
+    @Value("${component.menu.option-door}")
+    String doorOption;
+    @Value("${component.menu.option-air_cond}")
+    String airCondOption;
+    @Value("${component.menu.option-other}")
+    String otherOption;
+    @Value("${component.menu.option-wash_and_dry}")
+    String washAndDryOption;
+    @Value("${component.menu.option-vending}")
+    String vendingOption;
+    @Value("${component.menu.option-wash_machine}")
+    String washingMachineOption;
+    @Value("${component.menu.option-dryer}")
+    String dryerOption;
+    @Value("${component.menu.option-drinking}")
+    String drinkingOption;
+
 }

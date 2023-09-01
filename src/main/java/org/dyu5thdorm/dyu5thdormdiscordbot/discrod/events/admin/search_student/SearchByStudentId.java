@@ -6,44 +6,43 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.EmbedGenerator;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 @Component
-@PropertySource("classpath:discord.properties")
 public class SearchByStudentId extends ListenerAdapter {
-    @Value("${component.button.student-info-by-studentId}")
-    String studentIdButtonId;
-    @Value("${component.modal.student-info-by-studentId}")
-    String modelId;
-    @Value("${component.modal.student-info-by-studentId-t}")
-    String textInputId;
+    final
+    ButtonIdSet buttonIdSet;
+    final
+    ModalIdSet modalIdSet;
     final LivingRecordService livingRecordService;
     final DiscordLinkService discordLinkService;
     final EmbedGenerator embedGenerator;
 
-    public SearchByStudentId(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, EmbedGenerator embedGenerator) {
+    public SearchByStudentId(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, EmbedGenerator embedGenerator, ButtonIdSet buttonIdSet, ModalIdSet modalIdSet) {
         this.livingRecordService = livingRecordService;
         this.discordLinkService = discordLinkService;
         this.embedGenerator = embedGenerator;
+        this.buttonIdSet = buttonIdSet;
+        this.modalIdSet = modalIdSet;
     }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (!event.getButton().getId().equals(studentIdButtonId)) return;
+        if (!event.getButton().getId().equals(buttonIdSet.getSearchByStudentId())) return;
 
         event.replyModal(
-                Modal.create(modelId, "以學號查詢住宿生")
+                Modal.create(modalIdSet.getSearchBySI(), "以學號查詢住宿生")
                         .addActionRow(
-                                TextInput.create(textInputId, "住宿生學號", TextInputStyle.SHORT)
+                                TextInput.create(modalIdSet.getFirstTextInput(), "住宿生學號", TextInputStyle.SHORT)
                                         .setMinLength(6)
                                         .setMaxLength(8)
                                         .setRequired(true)
@@ -56,9 +55,9 @@ public class SearchByStudentId extends ListenerAdapter {
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
-        if (!event.getModalId().equals(modelId)) return;
+        if (!event.getModalId().equals(modalIdSet.getSearchBySI())) return;
 
-        String searchStudentId = event.getValue(textInputId).getAsString();
+        String searchStudentId = event.getValue(modalIdSet.getFirstTextInput()).getAsString();
 
         Set<LivingRecord> livingRecords = livingRecordService.findAllByStudentIdContains(searchStudentId);
 

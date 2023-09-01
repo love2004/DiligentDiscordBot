@@ -1,15 +1,12 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.repiar.impl;
 
-import jakarta.annotation.PostConstruct;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.repair.modals.RepairModal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.line.LineNotify;
 import org.dyu5thdorm.dyu5thdormdiscordbot.line.RepairTokenSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.Repair;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.RepairModel;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.RepairModelFactory;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.crawler.RepairCrawler;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,17 +14,24 @@ import java.util.List;
 
 @Component
 public class NormalRepairHandler implements RepairHandler {
-    @Autowired
+    final
     LineNotify lineNotify;
-    @Autowired
+    final
     RepairModelFactory factory;
-    @Autowired
+    final
     Repair repair;
-    @Autowired
+    final
     RepairCrawler repairCrawler;
 
+    public NormalRepairHandler(LineNotify lineNotify, RepairModelFactory factory, Repair repair, RepairCrawler repairCrawler) {
+        this.lineNotify = lineNotify;
+        this.factory = factory;
+        this.repair = repair;
+        this.repairCrawler = repairCrawler;
+    }
+
     @Override
-    public boolean handle(Repair.Type type, LivingRecord reporter, List<String> args) {
+    public boolean handle(Repair.Type type, Student reporter, List<String> args) {
         String location = args.get(0);
         String item = args.get(1);
         String description = args.get(2);

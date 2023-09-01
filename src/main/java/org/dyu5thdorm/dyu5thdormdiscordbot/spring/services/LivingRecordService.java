@@ -1,18 +1,19 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
 import jakarta.annotation.PostConstruct;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.*;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.SchoolTimestamp;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.LivingRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
 
 @Service
-@PropertySource("classpath:discord.properties")
 public class LivingRecordService {
     @Autowired
     private LivingRecordRepository livingRecordRepository;
@@ -54,9 +55,8 @@ public class LivingRecordService {
     }
 
     public LivingRecord findLivingRecordByDiscordId(String discordId) {
-        Optional<DiscordLink> discordLinkOptional = discordLinkService.findByDiscordId(discordId);
-        if (discordLinkOptional.isEmpty()) return null;
-        DiscordLink discordLink = discordLinkOptional.get();
+        DiscordLink discordLink = discordLinkService.findByDiscordId(discordId);
+        if (discordLink == null) return null;
         Optional<LivingRecord> livingRecordOptional = findByStudentId(discordLink.getStudent().getStudentId());
         return livingRecordOptional.orElse(null);
     }

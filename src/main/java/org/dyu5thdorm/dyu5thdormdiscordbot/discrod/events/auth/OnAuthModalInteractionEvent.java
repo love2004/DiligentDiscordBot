@@ -7,21 +7,21 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.RoleIdSet;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.modals.AuthEmbedBuilder;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.embeds.AuthEmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
-@PropertySource("classpath:discord.properties")
 public class OnAuthModalInteractionEvent extends ListenerAdapter {
     @Autowired
     LivingRecordService livingRecordService;
@@ -35,24 +35,20 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
     AuthEmbedBuilder authEmbedBuilder;
     @Value("${regexp.phone_number}")
     String phoneNumberSyntax;
-    @Value("${component.modal.auth}")
-    String modalId;
-    @Value("${component.modal.auth-student-id-t}")
-    String modalStudentId;
-    @Value("${component.modal.auth-phone-number-t}")
-    String modalPhoneNumber;
-    @Value("${channel.auth-logger}")
-    String loggerChannelId;
+    @Autowired
+    ModalIdSet modalIdSet;
+    @Autowired
+    ChannelIdSet channelIdSet;
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
-        if (!event.getModalId().equals(modalId)) return;
+        if (!event.getModalId().equals(modalIdSet.getAuth())) return;
 
         String userId = event.getUser().getId();
 
         // Will not be null value.
-        String studentId = event.getValue(modalStudentId).getAsString().toUpperCase();
-        String phoneNumber = event.getValue(modalPhoneNumber).getAsString();
+        String studentId = event.getValue(modalIdSet.getFirstTextInput()).getAsString().toUpperCase();
+        String phoneNumber = event.getValue(modalIdSet.getSecondTextInput()).getAsString();
 
         if (phoneNumber.isEmpty() || studentId.isEmpty()) {
             event.reply("請輸入學號及電話號碼").setEphemeral(true).queue();
@@ -81,7 +77,7 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
 
         Optional<LivingRecord> livingRecordFound = livingRecordService.findByStudentId(studentId);
         if (livingRecordFound.isEmpty()) {
-            event.reply("無法將您的資料對應到相對床位，您可能非本學期住宿生或已離宿，若有任何問題請聯繫宿舍幹部。").setEphemeral(true).queue();
+            event.reply("無法將您的資料對應到本學期之床位，您可能非本學期住宿生或已離宿，若有任何問題請聯繫宿舍幹部。").setEphemeral(true).queue();
             return;
         }
 
@@ -104,7 +100,7 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
         event.getHook().sendMessageEmbeds(
                 embedBuilder.build()
         ).setEphemeral(true).queue();
-        TextChannel logger = event.getJDA().getTextChannelById(loggerChannelId);
+        TextChannel logger = event.getJDA().getTextChannelById(channelIdSet.getAuthLogger());
         if (logger != null) {
             logger.sendMessageEmbeds(
                     authEmbedBuilder.successAuthLogger(embedBuilder, userId).build()

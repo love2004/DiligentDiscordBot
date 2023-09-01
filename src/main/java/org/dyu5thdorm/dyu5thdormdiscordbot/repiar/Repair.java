@@ -1,10 +1,10 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.repiar;
 
 import jakarta.annotation.PostConstruct;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.repair.modals.RepairModal;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,66 +12,35 @@ import java.util.Map;
 
 @Component
 public class Repair {
-    @Value("${component.menu.repair}")
-    String menuId;
-    @Value("${component.menu.repair-civil}")
-    String civilId; // 土木
-    @Value("${component.menu.repair-hydro}")
-    String hydroId; // 水電
-    @Value("${component.menu.repair-door}")
-    String doorId; // 門窗鎖具
-    @Value("${component.menu.repair-air_cond}")
-    String airCondId; // 空調
-    @Value("${component.menu.repair-other}")
-    String otherId; // 其他
-    @Value("${component.menu.repair-wash_and_dry}")
-    String washAndDryId; // 洗烘衣機
-    @Value("${component.menu.repair-vending}")
-    String vendingId; // 販賣機
-    @Value("${component.menu.repair-drinking}")
-    String drinkingId; // 飲水機
-
-    @Value("${component.modal.repair-civil}")
-    String civilModalId;
-    @Value("${component.modal.repair-hydro}")
-    String hydroModalId;
-    @Value("${component.modal.repair-door}")
-    String doorModalId;
-    @Value("${component.modal.repair-air_cond}")
-    String airCondModalId;
-    @Value("${component.modal.repair-other}")
-    String otherModalId;
-    @Value("${component.modal.repair-wash_and_dry}")
-    String washAndDryModalId;
-    @Value("${component.modal.repair-vending}")
-    String vendingModalId;
-    @Value("${component.modal.repair-drinking}")
-    String drinkingModalId;
+    @Autowired
+    MenuIdSet menuIdSet;
+    @Autowired
+    ModalIdSet modalIdSet;
 
     Map<String, Type> modalMapping, menuMapping;
 
     @PostConstruct
     void init() {
         modalMapping = Map.of(
-                civilModalId, Type.CIVIL,
-                hydroModalId, Type.HYDRO,
-                doorModalId, Type.DOOR,
-                airCondModalId, Type.AIR_COND,
-                otherModalId, Type.OTHER,
-                washAndDryModalId, Type.WASH_AND_DRY,
-                vendingModalId, Type.VENDING,
-                drinkingModalId, Type.DRINKING
+                modalIdSet.getRepairCivil(), Type.CIVIL,
+                modalIdSet.getRepairHydro(), Type.HYDRO,
+                modalIdSet.getRepairDoor(), Type.DOOR,
+                modalIdSet.getRepairAirCond(), Type.AIR_COND,
+                modalIdSet.getRepairOther(), Type.OTHER,
+                modalIdSet.getRepairWashAndDry(), Type.WASH_AND_DRY,
+                modalIdSet.getRepairVending(), Type.VENDING,
+                modalIdSet.getRepairDrinking(), Type.DRINKING
         );
 
         menuMapping = Map.of(
-                civilId, Type.CIVIL,
-                hydroId, Type.HYDRO,
-                doorId, Type.DOOR,
-                airCondId, Type.AIR_COND,
-                otherId, Type.OTHER,
-                washAndDryId, Type.WASH_AND_DRY,
-                vendingId, Type.VENDING,
-                drinkingId, Type.DRINKING
+                menuIdSet.getCivilOption(), Type.CIVIL,
+                menuIdSet.getHydroOption(), Type.HYDRO,
+                menuIdSet.getDoorOption(), Type.DOOR,
+                menuIdSet.getAirCondOption(), Type.AIR_COND,
+                menuIdSet.getOtherOption(), Type.OTHER,
+                menuIdSet.getWashAndDryOption(), Type.WASH_AND_DRY,
+                menuIdSet.getVendingOption(), Type.VENDING,
+                menuIdSet.getDrinkingOption(), Type.DRINKING
         );
     }
 
@@ -89,7 +58,7 @@ public class Repair {
 
     public String getLineMessage(RepairModel repairModel) {
         StringBuilder builder = new StringBuilder();
-        Student reporter = repairModel.getReporter().getStudent();
+        Student reporter = repairModel.getReporter();
         builder.append("\n學號：").append(reporter.getStudentId());
         builder.append("\n姓名：").append(reporter.getName());
         builder.append("\n電話：").append(reporter.getPhoneNumber());
@@ -101,9 +70,8 @@ public class Repair {
         return builder.toString();
     }
 
-    public String getLineMessage(LivingRecord record, String location, String description) {
+    public String getLineMessage(Student reporter, String location, String description) {
         StringBuilder builder = new StringBuilder();
-        Student reporter = record.getStudent();
         builder.append("\n學號：").append(reporter.getStudentId());
         builder.append("\n姓名：").append(reporter.getName());
         builder.append("\n電話：").append(reporter.getPhoneNumber());

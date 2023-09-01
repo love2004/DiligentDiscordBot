@@ -2,7 +2,6 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -10,8 +9,12 @@ import java.util.Set;
 
 @Service
 public class StudentService {
-    @Autowired
+    final
     StudentRepository studentRepository;
+
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     public boolean exists(String studentId) {
         return studentRepository.existsById(studentId);

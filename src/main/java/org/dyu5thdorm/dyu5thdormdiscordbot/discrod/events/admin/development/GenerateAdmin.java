@@ -1,0 +1,46 @@
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
+
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class GenerateAdmin extends ListenerAdapter {
+    @Autowired
+    ButtonIdSet buttonIdSet;
+    @Autowired
+    ChannelIdSet channelIdSet;
+
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        String eventButtonId = event.getButton().getId();
+        if (!buttonIdSet.getGenerateReqCadre().equalsIgnoreCase(eventButtonId)) return;
+
+        TextChannel textChannel = event.getJDA().getTextChannelById(
+                channelIdSet.getCadreButton()
+        );
+
+        if (textChannel == null) return;
+
+        textChannel.getHistoryFromBeginning(100).complete().getRetrievedHistory().forEach(
+                message -> message.delete().queue()
+        );
+
+        textChannel.sendMessage(":mag: 查詢住宿生(模糊查詢)").addComponents(
+                ActionRow.of(
+                        Button.primary(buttonIdSet.getSearchByDiscordId(), "以帳號查詢"),
+                        Button.success(buttonIdSet.getSearchByBedId(), "以房號查詢"),
+                        Button.success(buttonIdSet.getSearchByStudentId(), "以學號查詢"),
+                        Button.success(buttonIdSet.getSearchByStudentName(), "以姓名查詢")
+                )
+        ).queue();
+
+        event.reply("DONE").setEphemeral(true).queue();
+    }
+}

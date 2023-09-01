@@ -3,8 +3,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.repiar;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
-import org.springframework.stereotype.Component;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -14,7 +13,7 @@ import java.net.URLEncoder;
 @EqualsAndHashCode
 public class RepairModel {
     Repair.Type type;
-    LivingRecord reporter;
+    Student reporter;
     Building building;
     String location;
     String item;
@@ -45,7 +44,7 @@ public class RepairModel {
                 getUnitCode(this.unit),
                 this.amount,
                 description + (this.repairTime != null ? ", \n可配合維修時間：" + repairTime : ""),
-                reporter.getStudent().getPhoneNumber(),
+                reporter.getPhoneNumber(),
                 getReportUnitCode(this.reportUnit)
         );
         return URLEncoder.encode(format, "BIG5");

@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter(AccessLevel.NONE)
 public class ChannelIdSet {
-    @Value("{channel.auth}")
+    @Value("${channel.auth}")
     String auth;
     @Value("${channel.auth-logger}")
     String authLogger;
     @Value("${channel.leave}")
     String leave;
-    @Value("${channel.admin_button}")
-    String adminButton;
+    @Value("${channel.cadre-button}")
+    String cadreButton;
     @Value("${channel.repair}")
     String repair;
     @Value("${channel.admin.operation}")
@@ -26,4 +26,6 @@ public class ChannelIdSet {
     String rules;
     @Value("${channel.request-leave}")
     String reqLev;
+    @Value("${channel.took-coin-cadre}")
+    String tookCoinCadre;
 }

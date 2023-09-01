@@ -4,11 +4,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+
 @Component
-@PropertySource("classpath:discord.properties")
 @Getter
 @Setter(AccessLevel.NONE)
 public class ButtonIdSet {
@@ -28,12 +27,16 @@ public class ButtonIdSet {
     String shutdown;
     @Value("${component.button.maintenance}")
     String maintenance;
+    @Value("${component.button.generate-rules}")
+    String generateRules;
     @Value("${component.button.generate-request-leave}")
     String generateReqLev;
     @Value("${component.button.generate-request-auth}")
     String generateReqAuth;
     @Value("${component.button.generate-request-repair}")
     String generateReqRepair;
-    @Value("${component.button.generate-request-admin}")
-    String generateReqAdmin;
+    @Value("${component.button.generate-request-cadre}")
+    String generateReqCadre;
+    @Value("${component.button.took-coin}")
+    String tookCoin;
 }

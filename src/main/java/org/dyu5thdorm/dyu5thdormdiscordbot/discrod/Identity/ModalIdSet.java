@@ -13,44 +13,40 @@ import org.springframework.stereotype.Component;
 public class ModalIdSet {
     @Value("${component.modal.auth}")
     String auth;
-    @Value("${component.modal.auth-student-id-t}")
-    String authSITextInput; // SI = Student Id
-    @Value("${component.modal.auth-phone-number-t}")
-    String authPNTextInput; // PN = Phone Number
     @Value("${component.modal.student-info-by-bedId}")
     String searchByBI; // BI = Bed Id
-    @Value("${component.modal.student-info-by-bedId-t}")
-    String searchByBITextInput;
     @Value("${component.modal.student-info-by-studentId}")
     String searchBySI;
-    @Value("${component.modal.student-info-by-studentId-t}")
-    String searchBySITextInput;
     @Value("${component.modal.student-info-by-name}")
     String searchByN; // N = name
-    @Value("${component.modal.student-info-by-name-t}")
-    String searchByNTextInput; // N = name
     @Value("${component.modal.repair-civil}")
-    String civil;
+    String repairCivil;
     @Value("${component.modal.repair-hydro}")
-    String hydro;
+    String repairHydro;
     @Value("${component.modal.repair-door}")
-    String door;
+    String repairDoor;
     @Value("${component.modal.repair-air_cond}")
-    String airCond;
+    String repairAirCond;
     @Value("${component.modal.repair-other}")
-    String other;
+    String repairOther;
     @Value("${component.modal.repair-wash_and_dry}")
-    String washAndDry;
+    String repairWashAndDry;
     @Value("${component.modal.repair-vending}")
-    String vending;
+    String repairVending;
     @Value("${component.modal.repair-drinking}")
-    String drinking;
-    @Value("${component.modal.repair-first-t}")
-    String repairFirstTextInput;
-    @Value("${component.modal.repair-second-t}")
-    String repairSecondTextInput;
-    @Value("${component.modal.repair-third-t}")
-    String repairThirdTextInput;
-    @Value("${component.modal.repair-fourth-t}")
-    String repairFourthTextInput;
+    String repairDrinking;
+    @Value("${component.modal.took-coin-vending}")
+    String tookCoinVending;
+    @Value("${component.modal.took-coin-wash-machine}")
+    String tookCoinWashMachine;
+    @Value("${component.modal.took-coin-dryer}")
+    String tookCoinDryer;
+    @Value("${component.modal.text-input-first}")
+    String firstTextInput;
+    @Value("${component.modal.text-input-second}")
+    String secondTextInput;
+    @Value("${component.modal.text-input-third}")
+    String thirdTextInput;
+    @Value("${component.modal.text-input-fourth}")
+    String fourthTextInput;
 }

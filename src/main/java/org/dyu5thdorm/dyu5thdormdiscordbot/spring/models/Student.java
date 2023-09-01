@@ -5,12 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "student")
 @Data
 @NoArgsConstructor
 @Component
-public class Student {
+public class Student implements Serializable {
     @Id
     @Column(name = "student_id")
     private String studentId;

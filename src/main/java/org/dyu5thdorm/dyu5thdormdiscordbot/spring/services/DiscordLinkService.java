@@ -3,16 +3,18 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.DiscordLinkRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public class DiscordLinkService {
-    @Autowired
+    final
     DiscordLinkRepository discordLinkRepository;
 
+    public DiscordLinkService(DiscordLinkRepository discordLinkRepository) {
+        this.discordLinkRepository = discordLinkRepository;
+    }
 
     public boolean isLinked(String discordId) {
         return discordLinkRepository.existsById(discordId);
@@ -29,8 +31,8 @@ public class DiscordLinkService {
         discordLinkRepository.save(discordLink);
     }
 
-    public Optional<DiscordLink> findByDiscordId(String discordId) {
-        return discordLinkRepository.findById(discordId);
+    public DiscordLink findByDiscordId(String discordId) {
+        return discordLinkRepository.findById(discordId).orElse(null);
     }
 
     public void deleteByDiscordId(String discordId) {

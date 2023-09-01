@@ -3,31 +3,30 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.Dyu5thDormDiscordBotApplication;
-import org.springframework.beans.factory.annotation.Value;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class ShutdownButton extends ListenerAdapter {
-    @Value("${component.button.shutdown}")
-    String shutdownButtonId;
-    @Value("${user.developers}")
-    List<String> developers;
+    final
+    ButtonIdSet buttonIdSet;
+    @Autowired
+    Maintenance maintenance;
+
+
+    public ShutdownButton(ButtonIdSet buttonIdSet) {
+        this.buttonIdSet = buttonIdSet;
+    }
+
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getButton().getId().equalsIgnoreCase("todo")) {
-            event.reply("功能開發中，敬請期待！").setEphemeral(true).queue();
-            return;
-        }
+        if (!event.getButton().getId().equals(buttonIdSet.getShutdown())) return;
 
-        if (!event.getButton().getId().equals(shutdownButtonId)) return;
-
-        String userId = event.getUser().getId();
-
-        if (!developers.contains(userId)) {
-            event.reply("此頻道的功能只有特定人員才可使用，您無權這樣做。").setEphemeral(true).queue();
+        if (!maintenance.isDeveloper(event.getMember())) {
+            event.reply("您無權限操作！").setEphemeral(true).queue();
             return;
         }
 

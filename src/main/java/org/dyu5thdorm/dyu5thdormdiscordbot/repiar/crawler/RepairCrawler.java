@@ -7,7 +7,6 @@ import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jakarta.annotation.PostConstruct;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.RepairModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -24,10 +23,15 @@ public class RepairCrawler {
     String loginApiURL;
     @Value("${api.logout}")
     String logoutApiURL;
-    @Autowired
+    final
     SelfWebClient webClient;
-    @Autowired
+    final
     LoginParameter loginParameter;
+
+    public RepairCrawler(SelfWebClient webClient, LoginParameter loginParameter) {
+        this.webClient = webClient;
+        this.loginParameter = loginParameter;
+    }
 
     @PostConstruct
     void init() throws IOException {
@@ -35,7 +39,9 @@ public class RepairCrawler {
     }
 
     public boolean repair(RepairModel parameter) throws IOException {
-        if (!logged()) return false;
+        if (!logged()) {
+            login(loginParameter);
+        }
         WebRequest request = new WebRequest(new URL(repairApiURL), HttpMethod.POST);
         request.setRequestBody(
                 parameter.getRequestBody()

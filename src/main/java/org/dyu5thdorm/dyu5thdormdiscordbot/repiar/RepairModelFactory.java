@@ -1,14 +1,14 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.repiar;
 
 import lombok.Data;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.springframework.stereotype.Component;
 
 @Component
 @Data
 public class RepairModelFactory {
     public RepairModel factory(Repair.Type type,
-                               LivingRecord reporter,
+                               Student reporter,
                                String location,
                                String item,
                                String description,

@@ -1,11 +1,15 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod;
 
 import jakarta.annotation.PostConstruct;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.OnReadyEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.*;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByDiscord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByName;
@@ -14,16 +18,17 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.S
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthButtonInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthModalInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthedUserLeaveEvent;
+
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairBtnItnEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairMenuEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairModalEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.TookCoinBtnEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.TookMoneySearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource("classpath:discord.properties")
 @Data
 @Setter(AccessLevel.NONE)
 @NoArgsConstructor
@@ -32,6 +37,8 @@ public class DiscordAPI {
     String token;
     JDA jda;
     Guild guild;
+    @Autowired
+    OnReadyEvent onReadyEvent;
     @Autowired
     DevelopmentOperationEvent developmentOperationEvent;
     @Autowired
@@ -62,6 +69,16 @@ public class DiscordAPI {
     OnRepairModalEvent onRepairModalEvent;
     @Autowired
     GenerateRepair generateRepair;
+    @Autowired
+    MaintenanceModeButton maintenanceModeButton;
+    @Autowired
+    GenerateAdmin generateAdmin;
+    @Autowired
+    TookCoinBtnEvent tookCoinBtnEvent;
+    @Autowired
+    GenerateAuth generateAuth;
+    @Autowired
+    TookMoneySearch tookMoneySearch;
 
     @PostConstruct
     void init() {
@@ -73,6 +90,7 @@ public class DiscordAPI {
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .addEventListeners(
+                        onReadyEvent,
                         developmentOperationEvent,
                         generateRules,
                         generateRequestButton,
@@ -87,7 +105,12 @@ public class DiscordAPI {
                         searchByName,
                         onRepairBtnItnEvent,
                         onRepairMenuEvent,
-                        onRepairModalEvent
+                        onRepairModalEvent,
+                        maintenanceModeButton,
+                        generateAdmin,
+                        tookCoinBtnEvent,
+                        generateAuth,
+                        tookMoneySearch
                 )
                 .build();
         try {

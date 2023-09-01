@@ -5,25 +5,30 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GenerateRules extends ListenerAdapter {
-    @Value("${component.button.generate-rules}")
-    String generateButtonId;
-    @Value("${channel.rules}")
-    String rulesChannelId;
-    @Value("${image.rules}")
-    String rulesImageLink;
+    final
+    ButtonIdSet buttonIdSet;
+    final
+    ChannelIdSet channelIdSet;
     @Value("${link.rules}")
     String rulesLink;
 
+    public GenerateRules(ChannelIdSet channelIdSet, ButtonIdSet buttonIdSet) {
+        this.channelIdSet = channelIdSet;
+        this.buttonIdSet = buttonIdSet;
+    }
+
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (!event.getButton().getId().equals(generateButtonId)) return;
+        if (!event.getButton().getId().equals(buttonIdSet.getGenerateRules())) return;
 
-        TextChannel rulesChannel = event.getJDA().getTextChannelById(rulesChannelId);
+        TextChannel rulesChannel = event.getJDA().getTextChannelById(channelIdSet.getRules());
 
         if (rulesChannel == null) {
             event.reply("無法生成，頻道不存在").setEphemeral(true).queue();

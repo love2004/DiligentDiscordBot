@@ -6,42 +6,46 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.EmbedGenerator;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 @Component
-@PropertySource("classpath:discord.properties")
 public class SearchByName extends ListenerAdapter {
-    @Value("${component.button.student-info-by-name}")
-    String nameButtonId;
-    @Value("${component.modal.student-info-by-name}")
-    String nameModalId;
-    @Value("${component.modal.student-info-by-name-t}")
-    String nameTextInputId;
-    @Autowired
+    final
+    ButtonIdSet buttonIdSet;
+    final
+    ModalIdSet modalIdSet;
+    final
     LivingRecordService livingRecordService;
-    @Autowired
+    final
     DiscordLinkService discordLinkService;
-    @Autowired
+    final
     EmbedGenerator embedGenerator;
+
+    public SearchByName(ButtonIdSet buttonIdSet, ModalIdSet modalIdSet, LivingRecordService livingRecordService, DiscordLinkService discordLinkService, EmbedGenerator embedGenerator) {
+        this.buttonIdSet = buttonIdSet;
+        this.modalIdSet = modalIdSet;
+        this.livingRecordService = livingRecordService;
+        this.discordLinkService = discordLinkService;
+        this.embedGenerator = embedGenerator;
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (!event.getButton().getId().equals(nameButtonId)) return;
+        if (!event.getButton().getId().equals(buttonIdSet.getSearchByStudentName())) return;
 
         event.replyModal(
-                Modal.create(nameModalId, "以姓名查詢住宿生")
+                Modal.create(modalIdSet.getSearchByN(), "以姓名查詢住宿生")
                         .addActionRow(
-                                TextInput.create(nameTextInputId, "住宿生姓名", TextInputStyle.SHORT)
+                                TextInput.create(modalIdSet.getFirstTextInput(), "住宿生姓名", TextInputStyle.SHORT)
                                         .setRequired(true)
                                         .setPlaceholder("陳威仁")
                                         .build()
@@ -52,9 +56,9 @@ public class SearchByName extends ListenerAdapter {
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
-        if (!event.getModalId().equals(nameModalId)) return;
+        if (!event.getModalId().equals(modalIdSet.getSearchByN())) return;
 
-        String searchName = event.getValue(nameTextInputId).getAsString();
+        String searchName = event.getValue(modalIdSet.getFirstTextInput()).getAsString();
 
         Set<LivingRecord> livingRecords = livingRecordService.findAllByNameContains(searchName);
 

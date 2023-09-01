@@ -4,13 +4,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
 
 @Component
-@PropertySource("classpath:discord.properties")
 public class EmbedGenerator {
     @Value("${image.student-api}")
     String formatStudentImageApi;
@@ -22,7 +20,7 @@ public class EmbedGenerator {
                         String.format("<@%s> 綁定住宿生身份如下：", userId)
                 ).setColor(Color.GREEN)
                 .setFooter("查詢成功")
-                .setThumbnail(
+                .setImage(
                         String.format(formatStudentImageApi, livingRecord.getStudent().getStudentId().toUpperCase())
                 );
         embedBuilder.clearFields();
