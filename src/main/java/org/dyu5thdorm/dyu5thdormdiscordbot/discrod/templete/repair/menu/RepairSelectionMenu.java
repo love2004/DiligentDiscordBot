@@ -22,6 +22,7 @@ public class RepairSelectionMenu {
     void init() {
         menu = StringSelectMenu
                 .create(menuIdSet.getRepair())
+                .setPlaceholder("請選擇要報修的類別")
                 .addOption("土木 Civil", menuIdSet.getCivilOption(), "牆壁、床、地板等", Emoji.fromUnicode("U+1F3D7"))
                 .addOption("水電 Plumbing and Electrical", menuIdSet.getHydroOption(), "燈類、插座、衛浴設備等", Emoji.fromUnicode("U+1F50C"))
                 .addOption("門窗 Doors, Windows, and Locks", menuIdSet.getDoorOption(), "門、窗、鎖具等", Emoji.fromUnicode("U+1F6AA"))

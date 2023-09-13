@@ -1,19 +1,27 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot;
 
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.TookCoinRepository;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveTempRecordService;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.NoCallRollDateService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
+
 @SpringBootTest
 class Dyu5thDormDiscordBotApplicationTests {
     @Autowired
-    TookCoinRepository repository;
+    LeaveTempRecordService leaveTempRecordService;
+    @Autowired
+    NoCallRollDateService service;
+    @Autowired
+    LivingRecordService livingRecordService;
 
     @Test
     void contextLoads() {
-        repository.findAll().forEach(
-                (e) -> System.out.println(e)
+        leaveTempRecordService.findAllByFloorAndDate(1, LocalDate.now()).forEach(
+                leaveTempRecord -> System.out.println(leaveTempRecord)
         );
     }
 

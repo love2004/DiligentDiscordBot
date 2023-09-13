@@ -25,12 +25,18 @@ public class ButtonIdSet {
     String searchByStudentName;
     @Value("${component.button.shutdown}")
     String shutdown;
+    @Value("${component.button.request-for-leave}")
+    String reqForLeave;
+    @Value("${component.button.request-for-leave-cadre}")
+    String reqForLeaveCadre;
     @Value("${component.button.maintenance}")
     String maintenance;
     @Value("${component.button.generate-rules}")
     String generateRules;
     @Value("${component.button.generate-request-leave}")
     String generateReqLev;
+    @Value("${component.button.generate-request-leave-cadre}")
+    String generateReqLevCadre;
     @Value("${component.button.generate-request-auth}")
     String generateReqAuth;
     @Value("${component.button.generate-request-repair}")
@@ -39,4 +45,6 @@ public class ButtonIdSet {
     String generateReqCadre;
     @Value("${component.button.took-coin}")
     String tookCoin;
+    @Value("${component.button.floor-role-correction}")
+    String floorRoleCorrection;
 }

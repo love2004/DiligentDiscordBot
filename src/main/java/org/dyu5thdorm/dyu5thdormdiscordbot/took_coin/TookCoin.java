@@ -65,6 +65,7 @@ public class TookCoin {
         tookCoinModel.setTime(
                 getLocalDateTime(args.get(3))
         );
+        tookCoinModel.setReturnState(Boolean.FALSE);
         if (tookCoinModel.getTime().isAfter(LocalDateTime.now())) {
             return FailReason.DATE_AFTER_NOW;
         }

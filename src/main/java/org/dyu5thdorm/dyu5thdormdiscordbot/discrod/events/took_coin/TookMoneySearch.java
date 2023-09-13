@@ -24,20 +24,25 @@ public class TookMoneySearch extends ListenerAdapter {
         if (!menuIdSet.getTookCoin().equalsIgnoreCase(eventMenuId)) return;
         if (!event.getSelectedOptions().get(0).getValue().equalsIgnoreCase(menuIdSet.getTookCoinSearch())) return;
 
-        var r = tookCoin.getRecordByDiscordId(event.getUser().getId());
+        var queryRecord = tookCoin.getRecordByDiscordId(event.getUser().getId());
 
-        if (r == null || r.isEmpty()) {
+        if (queryRecord == null || queryRecord.isEmpty()) {
             event.reply("查無紀錄").setEphemeral(true).queue();
             return;
         }
 
+        boolean allReturned = true;
+        for (org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin record : queryRecord) {
+            if (record.getReturnState()) continue;
 
-        for (org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin coin : r) {
-            event.getHook().sendMessageEmbeds(tookCoinEmbed.getBySearchResult(coin).build()).setEphemeral(true).queue();
+            event.getHook().sendMessageEmbeds(
+                    tookCoinEmbed.getBySearchResult(record).build()
+            ).setEphemeral(true).queue();
+            if (allReturned) {
+                allReturned = false;
+            }
         }
 
-        event.reply("查詢成功").setEphemeral(true).queue();
+        event.reply(allReturned ? "查無紀錄" : "查詢成功").setEphemeral(true).queue();
     }
-
-
 }

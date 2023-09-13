@@ -43,4 +43,7 @@ public class TookCoin {
 
     @Column(name = "time")
     private LocalDateTime time;
+
+    @Column(name = "return_status")
+    private Boolean returnState;
 }

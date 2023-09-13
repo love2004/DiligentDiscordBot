@@ -1,0 +1,10 @@
+package org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories;
+
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.NoCallRollDate;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDate;
+
+public interface NoCallRollDateRepository extends JpaRepository<NoCallRollDate, Integer> {
+    public boolean existsByDate(LocalDate date);
+}

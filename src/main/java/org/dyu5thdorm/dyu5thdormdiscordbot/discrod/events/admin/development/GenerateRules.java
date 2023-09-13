@@ -39,7 +39,13 @@ public class GenerateRules extends ListenerAdapter {
                 message -> message.delete().queue()
         );
 
-        rulesChannel.sendMessage("# 112學年大葉大學業勤學舍住宿公約及違規處理要點\n\n- 請所有住宿生詳細閱讀住宿公約，以確保了解自己的權益和義務。\n\n- 宿舍有權在必要時對住宿公約進行修改或更新。\n\t- 任何對公約的變更都將以Discord內全體廣播的方式通知所有住宿生。").addActionRow(
+        rulesChannel.sendMessage("""
+                # 112學年大葉大學業勤學舍住宿公約及違規處理要點
+
+                - 請所有住宿生詳細閱讀住宿公約，以確保了解自己的權益和義務。
+
+                - 宿舍有權在必要時對住宿公約進行修改或更新。
+                \t- 任何對公約的變更都將以Discord內全體廣播的方式通知所有住宿生。""").addActionRow(
                 Button.link(rulesLink, Emoji.fromUnicode("U+1F4D6"))
                         .withLabel("112學年大葉大學業勤學舍住宿公約及違規處理要點")
         ).queue();

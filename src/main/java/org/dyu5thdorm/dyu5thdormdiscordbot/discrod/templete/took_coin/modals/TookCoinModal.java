@@ -25,7 +25,7 @@ public class TookCoinModal {
                 .setPlaceholder("請輸入卡幣金額。例如：87")
                 .setRequiredRange(1, 2)
                 .build();
-        TextInput time = TextInput.create(modalIdSet.getFourthTextInput(), "發生時間", TextInputStyle.PARAGRAPH)
+        TextInput time = TextInput.create(modalIdSet.getFourthTextInput(), "發生時間 格式：[西元年+月+日 時+分]", TextInputStyle.PARAGRAPH)
                 .setPlaceholder("請輸入發生時間。\n格式(24小時制)：[西元年+月+日 時+分]\n例如：20230807 2030")
                 .setRequiredRange(13, 13)
                 .build();

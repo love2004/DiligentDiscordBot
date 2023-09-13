@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +17,10 @@ public class GenerateAdmin extends ListenerAdapter {
     ButtonIdSet buttonIdSet;
     @Autowired
     ChannelIdSet channelIdSet;
+    @Value("${school_year}")
+    String schoolYear;
+    @Value("${semester}")
+    String semester;
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -32,7 +37,11 @@ public class GenerateAdmin extends ListenerAdapter {
                 message -> message.delete().queue()
         );
 
-        textChannel.sendMessage(":mag: 查詢住宿生(模糊查詢)").addComponents(
+        textChannel.sendMessage(
+                String.format(
+                        ":mag: 查詢住宿生(模糊查詢)\n > 僅能查詢 %s-%s 學期的住宿生", schoolYear, semester
+                )
+        ).addComponents(
                 ActionRow.of(
                         Button.primary(buttonIdSet.getSearchByDiscordId(), "以帳號查詢"),
                         Button.success(buttonIdSet.getSearchByBedId(), "以房號查詢"),

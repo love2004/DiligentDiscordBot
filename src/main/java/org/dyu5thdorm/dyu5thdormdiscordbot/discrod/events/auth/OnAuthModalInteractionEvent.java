@@ -1,16 +1,13 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.RoleIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.embeds.AuthEmbedBuilder;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.RoleOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
@@ -28,8 +25,6 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
     @Autowired
     DiscordLinkService discordLinkService;
     @Autowired
-    RoleIdSet roleIdSet;
-    @Autowired
     StudentService studentService;
     @Autowired
     AuthEmbedBuilder authEmbedBuilder;
@@ -39,6 +34,8 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
     ModalIdSet modalIdSet;
     @Autowired
     ChannelIdSet channelIdSet;
+    @Autowired
+    RoleOperation roleOperation;
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
@@ -92,7 +89,7 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
             return;
         }
 
-        giveFloorRoleToUser(event.getGuild(), event.getUser(), bedId);
+        roleOperation.addRoleToMemberByFloor(event.getGuild(), event.getMember(), bedId);
 
         LivingRecord livingRecord = livingRecordFound.get();
 
@@ -108,14 +105,4 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
         }
     }
 
-    void giveFloorRoleToUser(Guild guild, User user, String bedId) {
-        int floor = (bedId.charAt(1) - '0');
-        String roleId = roleIdSet.getRoleIdByFloor(floor);
-        Role role = guild.getRoleById(roleId);
-        if (role == null) {
-            // TODO: HANDLE
-            return;
-        }
-        guild.addRoleToMember(user, role).queue();
-    }
 }

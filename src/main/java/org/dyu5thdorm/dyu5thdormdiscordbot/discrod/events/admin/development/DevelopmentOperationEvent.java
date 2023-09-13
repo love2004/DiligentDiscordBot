@@ -50,7 +50,20 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
                 Button.primary(buttonIdSet.getGenerateRules(), "重新生成公約內容"),
                 Button.success(buttonIdSet.getGenerateReqRepair(), "重新生成報修按鈕"),
                 Button.primary(buttonIdSet.getGenerateReqLev(), "重新生成請假按鈕"),
-                Button.success(buttonIdSet.getGenerateReqCadre(), "重新生成幹部專區按鈕")
+                Button.success(buttonIdSet.getGenerateReqCadre(), "重新生成特定用戶專區按鈕")
+        ).queue();
+
+        textChannel.sendMessage(
+                "宿舍類別 (2)"
+        ).addActionRow(
+                Button.primary(buttonIdSet.getFloorRoleCorrection(), "重新校正所有成員對應樓層身份組")
+        ).queue();
+
+        textChannel.sendMessage(
+                "請假"
+        ).addActionRow(
+                Button.primary(buttonIdSet.getGenerateReqLev(), "重新生成請假按鈕"),
+                Button.primary(buttonIdSet.getGenerateReqLevCadre(), "重新生成幹部審核按鈕")
         ).queue();
     }
 }

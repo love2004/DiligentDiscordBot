@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -17,6 +18,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.modals.Too
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoin;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -142,8 +144,30 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         event.reply("登記成功").setEphemeral(true).queue();
 
         TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getTookCoinCadre());
+        EmbedBuilder embedBuilder = getEmbedBuilder(event.getUser().getId(), args, discordLink);
+        if (textChannel == null) {
+            return;
+        }
+        textChannel.sendMessageEmbeds(
+                embedBuilder.build()
+        ).queue();
     }
 
+    @NotNull
+    private static EmbedBuilder getEmbedBuilder(String userId, List<String> args, DiscordLink discordLink) {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setTitle("有新的一筆吃錢登記");
+        embedBuilder.setDescription(
+                String.format("<@%s> 登記資訊如下", userId)
+        );
+        embedBuilder.addField("發生地點", args.get(0), true);
+        embedBuilder.addField("故障情況說明", args.get(1), true);
+        embedBuilder.addField("卡幣金額", args.get(2), true);
+        embedBuilder.addField("發生時間", args.get(3), true);
+        embedBuilder.addField("回報者學號", discordLink.getStudent().getStudentId(), true);
+        embedBuilder.addField("回報者姓名", discordLink.getStudent().getName(), true);
+        return embedBuilder;
+    }
 
 
     TookCoin.Type getTypeByMenuId(String id) {

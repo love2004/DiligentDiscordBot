@@ -2,11 +2,9 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -36,20 +34,20 @@ public class RoleIdSet {
     private String floorFive;
     @Value("${role.floor_six}")
     private String floorSix;
-    private Map<Integer, String> floors;
+    private Map<Integer, String> floorsRole;
 
     public String getRoleIdByFloor(int floor) {
-        return floors.get(floor);
+        return floorsRole.get(floor);
     }
 
     @PostConstruct
     void buildFloorsList() {
-        floors = new HashMap<>();
-        floors.put(1, floorOne);
-        floors.put(2, floorTwo);
-        floors.put(3, floorThree);
-        floors.put(4, floorFour);
-        floors.put(5, floorFive);
-        floors.put(6, floorSix);
+        floorsRole = new HashMap<>();
+        floorsRole.put(1, floorOne);
+        floorsRole.put(2, floorTwo);
+        floorsRole.put(3, floorThree);
+        floorsRole.put(4, floorFour);
+        floorsRole.put(5, floorFive);
+        floorsRole.put(6, floorSix);
     }
 }

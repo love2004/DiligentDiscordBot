@@ -26,6 +26,8 @@ public class ChannelIdSet {
     String rules;
     @Value("${channel.request-leave}")
     String reqLev;
+    @Value("${channel.request-leave-cadre}")
+    String reqLevCadre;
     @Value("${channel.took-coin-cadre}")
     String tookCoinCadre;
 }

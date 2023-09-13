@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.OnReadyEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development.*;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.SearchByDiscord;
@@ -18,10 +20,12 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student.S
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthButtonInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthModalInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth.OnAuthedUserLeaveEvent;
-
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairBtnItnEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairMenuEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair.OnRepairModalEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.req_lev.ReqLevBtnEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.req_lev.ReqLevModalEvent;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.req_lev.cadre.ReqLevCadreBtnEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.TookCoinBtnEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.TookMoneySearch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +83,16 @@ public class DiscordAPI {
     GenerateAuth generateAuth;
     @Autowired
     TookMoneySearch tookMoneySearch;
+    @Autowired
+    FloorRoleCorBtn floorRoleCorBtn;
+    @Autowired
+    ReqLevBtnEvent reqLevBtnEvent;
+    @Autowired
+    ReqLevModalEvent reqLevModalEvent;
+    @Autowired
+    GenerateReqLevCadre generateReqLevCadre;
+    @Autowired
+    ReqLevCadreBtnEvent reqLevCadreBtnEvent;
 
     @PostConstruct
     void init() {
@@ -89,6 +103,8 @@ public class DiscordAPI {
         jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .setChunkingFilter(ChunkingFilter.ALL)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .addEventListeners(
                         onReadyEvent,
                         developmentOperationEvent,
@@ -110,7 +126,12 @@ public class DiscordAPI {
                         generateAdmin,
                         tookCoinBtnEvent,
                         generateAuth,
-                        tookMoneySearch
+                        tookMoneySearch,
+                        floorRoleCorBtn,
+                        reqLevBtnEvent,
+                        reqLevModalEvent,
+                        generateReqLevCadre,
+                        reqLevCadreBtnEvent
                 )
                 .build();
         try {

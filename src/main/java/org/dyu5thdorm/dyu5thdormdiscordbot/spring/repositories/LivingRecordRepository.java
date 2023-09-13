@@ -16,4 +16,5 @@ public interface LivingRecordRepository extends JpaRepository<LivingRecord, Livi
     Set<LivingRecord> findAllByStudentStudentIdAndSchoolTimestampEquals(String student_studentId, SchoolTimestamp schoolTimestamp);
     Set<LivingRecord> findAllByStudentStudentIdContainsAndSchoolTimestampEquals(String student_studentId, SchoolTimestamp schoolTimestamp);
     Set<LivingRecord> findAllByStudentNameContainsAndSchoolTimestampEquals(String student_name, SchoolTimestamp schoolTimestamp);
+    Set<LivingRecord> findAllByBedBedIdStartingWith(String bed_bedId);
 }

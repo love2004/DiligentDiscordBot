@@ -36,7 +36,16 @@ public class GenerateRepair extends ListenerAdapter {
                 message -> message.delete().queue()
         );
 
-        textChannel.sendMessage("# 各類報修(水電土木、洗、烘衣機、販賣機、飲水機)\n\n- 報修會自動帶入您的個人資料，無需額外填寫。\n- 個人區域維修**請務必填上可配合維修時間**\n - 若未填上，值班幹部將配合維修人員領備用鑰匙進入維修。\n- 區域說明：\n - AB區：靠近**大門**\n - CD區：靠近**後門**")
+        textChannel.sendMessage("""
+                        # 各類報修(水電土木、洗、烘衣機、販賣機、飲水機)
+
+                        - 報修會自動帶入您的個人資料，無需額外填寫。
+                        - *報修後請勿再次重複填寫，如需更改請聯絡宿舍幹部*
+                        - 個人區域維修**請務必填上可配合維修時間**
+                         - 若未填上，值班幹部將配合維修人員領備用鑰匙進入維修。
+                        - 區域說明：
+                         - AB區：靠近**大門**
+                         - CD區：靠近**後門**""")
                 .addActionRow(
                         Button.success(buttonIdSet.getRepair(), "各類報修 Repair report")
                                 .withEmoji(Emoji.fromUnicode("U+1F9F0"))

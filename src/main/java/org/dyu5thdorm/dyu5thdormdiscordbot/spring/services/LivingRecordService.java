@@ -60,6 +60,12 @@ public class LivingRecordService {
         Optional<LivingRecord> livingRecordOptional = findByStudentId(discordLink.getStudent().getStudentId());
         return livingRecordOptional.orElse(null);
     }
+
+    public Set<LivingRecord> findAllByFloor(Integer floor) {
+        return livingRecordRepository.findAllByBedBedIdStartingWith(
+                "5" + floor.toString()
+        );
+    }
 }
 
 

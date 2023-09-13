@@ -81,7 +81,7 @@ public class TookCoinEmbed {
 
     public EmbedBuilder getBySearchResult(org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin coin) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("吃錢登記紀錄");
+        embedBuilder.setTitle("吃錢登記紀錄 (未退回)");
         embedBuilder.setDescription("登記紀錄無法自行修改，若要修改請找宿舍幹部。");
         embedBuilder.setColor(Color.GREEN);
         embedBuilder.addField("樓層區域", coin.getFloor().getFloor() + coin.getFloor().getAreaId(), true);

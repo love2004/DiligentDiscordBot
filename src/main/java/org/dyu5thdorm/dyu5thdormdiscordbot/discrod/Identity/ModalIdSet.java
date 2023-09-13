@@ -41,6 +41,8 @@ public class ModalIdSet {
     String tookCoinWashMachine;
     @Value("${component.modal.took-coin-dryer}")
     String tookCoinDryer;
+    @Value("${component.modal.request-for-leave}")
+    String reqForLeave;
     @Value("${component.modal.text-input-first}")
     String firstTextInput;
     @Value("${component.modal.text-input-second}")
