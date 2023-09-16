@@ -1,12 +1,17 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.awt.*;
 
 @Component
 public class TookMoneySearch extends ListenerAdapter {
@@ -16,7 +21,8 @@ public class TookMoneySearch extends ListenerAdapter {
     TookCoin tookCoin;
     @Autowired
     TookCoinEmbed tookCoinEmbed;
-
+    @Autowired
+    ButtonIdSet buttonIdSet;
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
@@ -24,25 +30,44 @@ public class TookMoneySearch extends ListenerAdapter {
         if (!menuIdSet.getTookCoin().equalsIgnoreCase(eventMenuId)) return;
         if (!event.getSelectedOptions().get(0).getValue().equalsIgnoreCase(menuIdSet.getTookCoinSearch())) return;
 
-        var queryRecord = tookCoin.getRecordByDiscordId(event.getUser().getId());
+        event.deferReply().setEphemeral(true).queue();
 
-        if (queryRecord == null || queryRecord.isEmpty()) {
-            event.reply("查無紀錄").setEphemeral(true).queue();
+        var queryRecords = tookCoin.getRecordUnGetByDiscordId(event.getUser().getId());
+
+        if (queryRecords == null || queryRecords.isEmpty()) {
+            event.getHook().sendMessage("查無紀錄").setEphemeral(true).queue();
             return;
         }
 
-        boolean allReturned = true;
-        for (org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin record : queryRecord) {
-            if (record.getReturnState()) continue;
-
+        for (org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin record : queryRecords) {
             event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getBySearchResult(record).build()
+            ).addActionRow(
+                    record.getIsReturn() ?
+                            Button.success(buttonIdSet.getTookCoinGetBack(), "簽收") :
+                            Button.success(buttonIdSet.getTookCoinGetBack(), "簽收").asDisabled()
             ).setEphemeral(true).queue();
-            if (allReturned) {
-                allReturned = false;
-            }
         }
 
-        event.reply(allReturned ? "查無紀錄" : "查詢成功").setEphemeral(true).queue();
+        if (queryRecords.size() > 1) {
+            boolean allReturn = queryRecords.stream().allMatch(e -> e.getIsReturn());
+
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            int backCoinSum = queryRecords.stream().mapToInt(value -> value.getCoinAmount()).sum();
+            embedBuilder.setTitle("合併簽收")
+                    .setDescription("因為發現您有多筆卡幣紀錄，因此您可以點此按鈕一併領取")
+                    .setColor(Color.CYAN)
+                    .addField("應退總額", Integer.toString(backCoinSum), true)
+                    .setFooter(
+                            queryRecords.stream().map(e -> e.getId()).toList().toString()
+                    );
+            event.getHook().sendMessageEmbeds(
+                    embedBuilder.build()
+            ).addActionRow(
+                    allReturn ?
+                    Button.success(buttonIdSet.getTookCoinGetBackMerge(), "合併簽收") :
+                            Button.success(buttonIdSet.getTookCoinGetBackMerge(), "合併簽收").asDisabled()
+            ).setEphemeral(true).queue();
+        }
     }
 }

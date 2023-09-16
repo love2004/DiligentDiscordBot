@@ -5,8 +5,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.DiscordLinkRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class DiscordLinkService {
     final
@@ -39,7 +37,7 @@ public class DiscordLinkService {
         discordLinkRepository.deleteById(discordId);
     }
 
-    public Optional<DiscordLink> findByStudentId(String studentId) {
-        return discordLinkRepository.findByStudentStudentId(studentId);
+    public DiscordLink findByStudentId(String studentId) {
+        return discordLinkRepository.findByStudentStudentId(studentId).orElseGet(null);
     }
 }

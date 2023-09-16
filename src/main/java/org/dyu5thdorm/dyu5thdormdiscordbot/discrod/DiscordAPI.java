@@ -28,6 +28,8 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.req_lev.ReqLevModalEve
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.req_lev.cadre.ReqLevCadreBtnEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.TookCoinBtnEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.TookMoneySearch;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.confirm.TookCoinGetAllBtn;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.confirm.TookCoinGetBackBtn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -93,6 +95,12 @@ public class DiscordAPI {
     GenerateReqLevCadre generateReqLevCadre;
     @Autowired
     ReqLevCadreBtnEvent reqLevCadreBtnEvent;
+    @Autowired
+    TookCoinGetBackBtn tookCoinGetBackBtn;
+    @Autowired
+    TookCoinGetAllBtn tookCoinGetAllBtn;
+    @Autowired
+    TookCoinReturnDate tookCoinReturnDate;
 
     @PostConstruct
     void init() {
@@ -131,7 +139,10 @@ public class DiscordAPI {
                         reqLevBtnEvent,
                         reqLevModalEvent,
                         generateReqLevCadre,
-                        reqLevCadreBtnEvent
+                        reqLevCadreBtnEvent,
+                        tookCoinGetBackBtn,
+                        tookCoinGetAllBtn,
+                        tookCoinReturnDate
                 )
                 .build();
         try {

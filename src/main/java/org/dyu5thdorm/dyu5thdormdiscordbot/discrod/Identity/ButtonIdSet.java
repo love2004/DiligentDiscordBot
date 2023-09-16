@@ -47,4 +47,15 @@ public class ButtonIdSet {
     String tookCoin;
     @Value("${component.button.floor-role-correction}")
     String floorRoleCorrection;
+    @Value("${component.button.took-coin-get-back}")
+    String tookCoinGetBack;
+    @Value("${component.button.took-coin-get-back-confirm}")
+    String tookCoinGetBackConfirm;
+    @Value("${component.button.took-coin-get-back-merge}")
+    String tookCoinGetBackMerge;
+    @Value("${component.button.took-coin-get-back-confirm-confirm}")
+    String tookCoinGetBackMergeConfirm;
+    @Value("${component.button.took-coin-return}")
+    String tookCoinReturn;
+
 }

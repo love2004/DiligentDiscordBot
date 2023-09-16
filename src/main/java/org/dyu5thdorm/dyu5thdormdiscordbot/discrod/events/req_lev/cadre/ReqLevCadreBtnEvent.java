@@ -26,7 +26,7 @@ public class ReqLevCadreBtnEvent extends ListenerAdapter {
     LivingRecordService livingRecordService;
     @Autowired
     LeaveTempRecordService leaveTempRecordService;
-    @Value("${date.format}")
+    @Value("${datetime.format}")
     String dateFormat;
     DateTimeFormatter dateTimeFormatter;
 
@@ -62,7 +62,7 @@ public class ReqLevCadreBtnEvent extends ListenerAdapter {
 
         for (LeaveTempRecord e : r) {
             Integer roomId = getRoomId(e.getBed().getBedId());
-            if (isCd && roomId > 20 || !isCd && roomId < 20) continue;
+            if (isCd && roomId >= 20 || !isCd && roomId < 20) continue;
 
             EmbedBuilder embedBuilder = getEmbedBuilder(floor, e, isCd);
 

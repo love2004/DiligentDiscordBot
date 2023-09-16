@@ -22,7 +22,7 @@ public class TookCoinMenu {
                 .addOption("販賣機", menuIdSet.getVendingOption(),"各樓層販賣機" , Emoji.fromUnicode("U+1F4B0"))
                 .addOption("洗衣機", menuIdSet.getWashingMachineOption(), "各樓層洗衣機", Emoji.fromUnicode("U+1F9FA"))
                 .addOption("烘衣機", menuIdSet.getDryerOption(), "各樓層烘衣機", Emoji.fromUnicode("U+2600"))
-                .addOption("吃錢登記紀錄查詢", menuIdSet.getTookCoinSearch(), "僅供查詢，不可修改，只會顯示未退回的紀錄", Emoji.fromUnicode("U+1F50D"))
+                .addOption("登記紀錄查詢、簽收", menuIdSet.getTookCoinSearch(), "僅供查詢未退回的紀錄、簽收領回退費功能", Emoji.fromUnicode("U+1F50D"))
                 .build();
     }
 }

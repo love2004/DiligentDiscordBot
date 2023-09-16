@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,6 +15,10 @@ public class GenerateRequest extends ListenerAdapter {
     ButtonIdSet buttonIdSet;
     final
     ChannelIdSet channelIdSet;
+    @Value("${available.time.hour}")
+    Integer availableTimeHour;
+    @Value("${available.time.minute}")
+    Integer availableTimeMinute;
 
     public GenerateRequest(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
         this.buttonIdSet = buttonIdSet;
@@ -23,6 +28,7 @@ public class GenerateRequest extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!event.getButton().getId().equalsIgnoreCase(buttonIdSet.getGenerateReqLev())) return;
+        event.deferReply().setEphemeral(true).queue();
 
         TextChannel reqLevChannel = event.getJDA().getTextChannelById(channelIdSet.getReqLev());
 
@@ -34,7 +40,8 @@ public class GenerateRequest extends ListenerAdapter {
                 message -> message.delete().queue()
         );
 
-        reqLevChannel.sendMessage("""
+        reqLevChannel.sendMessage(
+                String.format("""
                         # 晚間點名請假 (Evening Roll Call Leave)
                         - 點名時段說明 (Roll Call Period Explanation)：
                           - **除寒、暑假、國定假日、放假前一天外，上課日皆需點名。**
@@ -50,16 +57,17 @@ public class GenerateRequest extends ListenerAdapter {
                         連續兩天點名缺席未請假者，將會通知家長。
                         > Students who are absent from roll call for two consecutive days without requesting leave will have their parents notified.
                         
-                        __點名請假時間為 **23:00** 前，愈時系統不受理！__
+                        __當天點名請假時間為 **00:00 ~ %d:%d**，愈時系統不受理！__
                         > __The deadline for requesting leave for evening roll call **on the same day is 23:00**; requests made after this time will not be accepted by the system!__
                         
                         請點下方「晚間點名請假 Request」開始進行請假流程。
                         > "Please click '晚間點名請假 Request' below to begin the leave request process."
-                        """)
+                        """, availableTimeHour, availableTimeMinute)
+                )
                 .addActionRow(
                         Button.danger(buttonIdSet.getReqForLeave(), "晚間點名請假 Request")
         ).queue();
 
-        event.reply("Done").setEphemeral(true).queue();
+        event.getHook().sendMessage("Done").setEphemeral(true).queue();
     }
 }

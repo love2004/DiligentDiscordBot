@@ -15,7 +15,11 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.menu.TookCoinMenu;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.modals.TookCoinModal;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
+import org.dyu5thdorm.dyu5thdormdiscordbot.line.LineNotify;
+import org.dyu5thdorm.dyu5thdormdiscordbot.line.RepairTokenSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoin;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 
 @Component
@@ -54,6 +59,10 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     DiscordLinkService discordLinkService;
     @Autowired
     TookCoinEmbed tookCoinEmbed;
+    @Autowired
+    LineNotify lineNotify;
+    @Autowired
+    Maintenance maintenance;
 
 
     @Override
@@ -133,6 +142,9 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         TookCoin.Type type = getTypeByModalId(eventModalId);
 
         TookCoin.FailReason r = tookCoin.record(type, args, discordLink.getStudent());
+        if (!maintenance.isMaintenanceStatus()) {
+            sendLineNotify(type, args, discordLink.getStudent());
+        }
 
         if (r != TookCoin.FailReason.NONE) {
             event.replyEmbeds(
@@ -144,7 +156,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         event.reply("登記成功").setEphemeral(true).queue();
 
         TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getTookCoinCadre());
-        EmbedBuilder embedBuilder = getEmbedBuilder(event.getUser().getId(), args, discordLink);
+        EmbedBuilder embedBuilder = getEmbedBuilder(type, event.getUser().getId(), args, discordLink);
         if (textChannel == null) {
             return;
         }
@@ -154,21 +166,61 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     }
 
     @NotNull
-    private static EmbedBuilder getEmbedBuilder(String userId, List<String> args, DiscordLink discordLink) {
+    private EmbedBuilder getEmbedBuilder(TookCoin.Type type, String userId, List<String> args, DiscordLink discordLink) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("有新的一筆吃錢登記");
         embedBuilder.setDescription(
                 String.format("<@%s> 登記資訊如下", userId)
         );
-        embedBuilder.addField("發生地點", args.get(0), true);
+        embedBuilder.addField("樓層區域", args.get(0), true);
+        embedBuilder.addField("機器", tookCoinEmbed.getMachineName(type.name()), true);
         embedBuilder.addField("故障情況說明", args.get(1), true);
         embedBuilder.addField("卡幣金額", args.get(2), true);
-        embedBuilder.addField("發生時間", args.get(3), true);
+        embedBuilder.addField("發生時間", tookCoin.getLocalDateTime(args.get(3)).format(
+                tookCoinEmbed.getFormatter()
+        ), true);
         embedBuilder.addField("回報者學號", discordLink.getStudent().getStudentId(), true);
         embedBuilder.addField("回報者姓名", discordLink.getStudent().getName(), true);
         return embedBuilder;
     }
 
+    void sendLineNotify(TookCoin.Type type, List<String> args, Student student) {
+        RepairTokenSet.RepairType repairType = getTypeByTookCoinType(type);
+
+        if (repairType == null) {
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n有新的一筆吃錢登記如下：\n");
+        sb.append("\n樓層區域：").append(args.get(0));
+        sb.append("\n機器：").append(tookCoinEmbed.getMachineName(type.name()));
+        sb.append("\n故障情況說明：").append(args.get(1));
+        sb.append("\n卡幣金額：").append(args.get(2));
+        sb.append("\n發生時間：").append(tookCoin.getLocalDateTime(args.get(3)).format(
+                tookCoinEmbed.getFormatter()));
+        sb.append("\n回報者學號：").append(student.getStudentId());
+        sb.append("\n回報者姓名：").append(student.getName());
+
+        try {
+            lineNotify.sendMessage(sb.toString(), repairType);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    RepairTokenSet.RepairType getTypeByTookCoinType(TookCoin.Type tookCoinType) {
+        switch (tookCoinType) {
+            case WASH_MACHINE, DRYER -> {
+                return RepairTokenSet.RepairType.WASH_AND_DRY_MACHINE;
+            }
+            case VENDING -> {
+                return RepairTokenSet.RepairType.VENDING;
+            }
+        }
+
+        return null;
+    }
 
     TookCoin.Type getTypeByMenuId(String id) {
         if (menuIdSet.getVendingOption().equalsIgnoreCase(id)) {

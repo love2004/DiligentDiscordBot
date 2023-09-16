@@ -8,6 +8,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +66,8 @@ public class TookCoin {
         tookCoinModel.setTime(
                 getLocalDateTime(args.get(3))
         );
-        tookCoinModel.setReturnState(Boolean.FALSE);
+        tookCoinModel.setIsReturn(Boolean.FALSE);
+        tookCoinModel.setIsGetBack(Boolean.FALSE);
         if (tookCoinModel.getTime().isAfter(LocalDateTime.now())) {
             return FailReason.DATE_AFTER_NOW;
         }
@@ -81,25 +83,33 @@ public class TookCoin {
         return FailReason.NONE;
     }
 
-    LocalDateTime getLocalDateTime(String date) {
-        int year = Integer.parseInt(date.substring(0, 4));
-        int month = Integer.parseInt(date.substring(4, 6));
-        int day = Integer.parseInt(date.substring(6, 8));
-        int hour = Integer.parseInt(date.substring(9, 11));
-        int minute = Integer.parseInt(date.substring(11, 13));
+    public LocalDateTime getLocalDateTime(String date) {
+        int year = LocalDate.now().getYear();
+        int month = Integer.parseInt(date.substring(0, 2));
+        int day = Integer.parseInt(date.substring(2, 4));
+        int hour = Integer.parseInt(date.substring(5, 7));
+        int minute = Integer.parseInt(date.substring(7, 9));
         return LocalDateTime.of(
                 year, month, day, hour, minute
         );
     }
 
     public Set<org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin> getRecordByDiscordId(String discordId) {
-        DiscordLink discordLink = discordLinkService.findByDiscordId(discordId);
-        if (discordLink == null) {
-            return null;
-        }
+        DiscordLink discordLink = getDiscordLinkByDiscordId(discordId);
 
         Student student = discordLink.getStudent();
 
         return tookCoinService.findByStudentId(student.getStudentId());
+    }
+
+    public Set<org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin> getRecordUnGetByDiscordId(String discordId) {
+        DiscordLink discordLink = getDiscordLinkByDiscordId(discordId);
+        Student student = discordLink.getStudent();
+
+        return tookCoinService.findUnGetByStudentId(student.getStudentId());
+    }
+
+    DiscordLink getDiscordLinkByDiscordId(String discordId) {
+        return discordLinkService.findByDiscordId(discordId);
     }
 }

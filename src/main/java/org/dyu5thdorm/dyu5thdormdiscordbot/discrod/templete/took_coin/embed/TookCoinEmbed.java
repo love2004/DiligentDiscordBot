@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Getter
 @Component
@@ -20,7 +22,7 @@ public class TookCoinEmbed {
         FLOOR_AREA
     }
 
-    @Value("${date.format}")
+    @Value("${datetime.format}")
     String dateFormat;
     DateTimeFormatter formatter;
 
@@ -67,12 +69,8 @@ public class TookCoinEmbed {
         embedBuilder.setTitle("登記失敗");
 
         switch (reason) {
-            case DATE_AFTER_NOW -> {
-                embedBuilder.setDescription("發生時間不可在未來。請填寫正確的時間格式。");
-            }
-            case TIME_REPEAT -> {
-                embedBuilder.setDescription("此時間段已被您登記過，無法登記。");
-            }
+            case DATE_AFTER_NOW -> embedBuilder.setDescription("發生時間不可在未來。請填寫正確的時間格式。");
+            case TIME_REPEAT -> embedBuilder.setDescription("此時間段已被您登記過，無法登記。");
         }
 
         embedBuilder.setColor(Color.RED);
@@ -90,11 +88,11 @@ public class TookCoinEmbed {
         embedBuilder.addField("金額", coin.getCoinAmount().toString(), true);
         embedBuilder.addField("發生時間", coin.getTime().format(formatter), true);
         embedBuilder.addField("登記時間", coin.getRecordTime().format(formatter), true);
-        embedBuilder.setFooter("查詢結果");
+        embedBuilder.setFooter(coin.getId().toString());
         return embedBuilder;
     }
 
-    String getMachineName(String machine) {
+    public String getMachineName(String machine) {
         if (machine.equalsIgnoreCase("VENDING")) {
             return "販賣機";
         } else if (machine.equalsIgnoreCase("WASH_MACHINE")) {
@@ -103,5 +101,36 @@ public class TookCoinEmbed {
             return "烘衣機";
         }
         return "";
+    }
+
+    public EmbedBuilder getBackCadreMessage(List<org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin> tookCoinList, String discordId) {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        var record = tookCoinList.get(0);
+        embedBuilder.setColor(Color.GREEN);
+        embedBuilder.setTitle(tookCoinList.size() == 1 ? "吃錢簽收通知" : "吃錢合併簽收通知");
+        embedBuilder.addField("學號", record.getStudent().getStudentId(), true);
+        embedBuilder.addField("姓名", record.getStudent().getName(), true);
+        embedBuilder.addField("簽收時間", LocalDateTime.now().format(formatter), true);
+        embedBuilder.setDescription(
+                    String.format(
+                            tookCoinList.size() == 1 ? "<@%s> **已簽收，請退回 __%d__ 元**" : "<@%s> **已合併簽收，請退回總共 __%d__ 元**",
+                            discordId,
+                            tookCoinList.size() == 1 ?
+                                    record.getCoinAmount() :
+                                    tookCoinList.stream().mapToInt(e -> e.getCoinAmount()).sum()
+                            )
+            );
+        embedBuilder.setFooter(tookCoinList.size() == 1 ?
+                record.getId().toString() :
+                tookCoinList.stream().map(e -> e.getId()).toList().toString()
+        );
+
+        return embedBuilder;
+    }
+
+    public EmbedBuilder getBackCadreMessage(org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin tookCoin, String discordId) {
+        return getBackCadreMessage(
+                List.of(tookCoin), discordId
+        );
     }
 }

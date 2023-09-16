@@ -90,7 +90,7 @@ public class SearchByRoom extends ListenerAdapter {
 
             DiscordLink discordLink = discordLinkService.findByStudentId(
                     livingRecord.getStudent().getStudentId()
-            ).orElse(null);
+            );
 
 
             EmbedBuilder embedBuilder = embedGenerator.fromRoom(

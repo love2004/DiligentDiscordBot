@@ -27,6 +27,8 @@ public class GenerateAdmin extends ListenerAdapter {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getGenerateReqCadre().equalsIgnoreCase(eventButtonId)) return;
 
+        event.deferReply().setEphemeral(true).queue();
+
         TextChannel textChannel = event.getJDA().getTextChannelById(
                 channelIdSet.getCadreButton()
         );
@@ -50,6 +52,16 @@ public class GenerateAdmin extends ListenerAdapter {
                 )
         ).queue();
 
-        event.reply("DONE").setEphemeral(true).queue();
+        textChannel.sendMessage(
+                String.format(
+                        "特殊類別", schoolYear, semester
+                )
+        ).addComponents(
+                ActionRow.of(
+                        Button.danger(buttonIdSet.getTookCoinReturn(), "廠商卡幣已退費日期登記")
+                )
+        ).queue();
+
+        event.getHook().sendMessage("DONE").setEphemeral(true).queue();
     }
 }

@@ -74,7 +74,7 @@ public class SearchByStudentId extends ListenerAdapter {
         for (LivingRecord livingRecord : livingRecords) {
             DiscordLink discordLink = discordLinkService.findByStudentId(
                     livingRecord.getStudent().getStudentId()
-            ).orElse(null);
+            );
 
             event.getHook().sendMessageEmbeds(
                     embedGenerator.fromStudentId(livingRecord, discordLink).build()

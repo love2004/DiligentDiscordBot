@@ -30,4 +30,18 @@ public class ChannelIdSet {
     String reqLevCadre;
     @Value("${channel.took-coin-cadre}")
     String tookCoinCadre;
+    @Value("${channel.took-coin-get-back-cadre}")
+    String tookCoinGetBackCadre;
+    @Value("${channel.floor-one}")
+    String floorOne;
+    @Value("${channel.floor-two}")
+    String floorTwo;
+    @Value("${channel.floor-three}")
+    String floorThree;
+    @Value("${channel.floor-four}")
+    String floorFour;
+    @Value("${channel.floor-five}")
+    String floorFive;
+    @Value("${channel.floor-six}")
+    String floorSix;
 }

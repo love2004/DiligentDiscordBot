@@ -44,6 +44,12 @@ public class TookCoin {
     @Column(name = "time")
     private LocalDateTime time;
 
-    @Column(name = "return_status")
-    private Boolean returnState;
+    @Column(name = "is_return")
+    private Boolean isReturn;
+
+    @Column(name = "get_back")
+    private Boolean isGetBack;
+
+    @Column(name = "get_back_time")
+    private LocalDateTime getBackTime;
 }

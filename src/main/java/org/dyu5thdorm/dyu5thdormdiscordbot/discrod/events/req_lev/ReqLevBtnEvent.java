@@ -68,10 +68,11 @@ public class ReqLevBtnEvent extends ListenerAdapter {
         }
 
         if (isIllegalTime(LocalDateTime.now())) {
-            event.reply("""
-                    已超過點名請假時間。請您下次在時限內請假。
+            event.reply(
+                    String.format("""
+                    已超過點名請假時間。點名請假時間為每天的 00:00 ~ %d:%d。
                     > You have exceeded the late leave request time. Please make your leave request within the specified time frame next time.
-                    """
+                    """, availableTimeHour, availableTimeMinute)
             ).setEphemeral(true).queue();
             return;
         }
