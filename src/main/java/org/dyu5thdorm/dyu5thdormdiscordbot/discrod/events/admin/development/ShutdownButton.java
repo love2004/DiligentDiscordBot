@@ -24,13 +24,12 @@ public class ShutdownButton extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!event.getButton().getId().equals(buttonIdSet.getShutdown())) return;
-
+        event.deferReply().setEphemeral(true).queue();
         if (!maintenance.isDeveloper(event.getMember())) {
             event.reply("您無權限操作！").setEphemeral(true).queue();
             return;
         }
 
-        event.reply("關機中...").setEphemeral(true).queue();
         event.getJDA().shutdown();
         SpringApplication.exit(Dyu5thDormDiscordBotApplication.context, () -> 0);
     }

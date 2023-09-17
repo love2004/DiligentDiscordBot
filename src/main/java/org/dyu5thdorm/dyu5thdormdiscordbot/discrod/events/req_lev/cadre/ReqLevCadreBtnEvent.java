@@ -39,33 +39,27 @@ public class ReqLevCadreBtnEvent extends ListenerAdapter {
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getReqForLeaveCadre().equalsIgnoreCase(eventButtonId)) return;
-
+        event.deferReply().setEphemeral(true).queue();
         LivingRecord record = livingRecordService.findLivingRecordByDiscordId(event.getUser().getId());
-
         if (record == null) {
-            event.reply("你無法使用此功能").setEphemeral(true).queue();
+            event.getHook().sendMessage("你無法使用此功能").setEphemeral(true).queue();
             return;
         }
-
         Integer floor = record.getBed().getBedId().charAt(1) - '0';
         var r = leaveTempRecordService.findAllByFloorAndDate(
                 floor, LocalDate.now()
         );
-
         boolean isCd = getRoomId(record.getBed().getBedId()) < 21;
-        event.reply(
+        event.getHook().sendMessage(
                 getArea(floor, isCd) +
                         String.format(
                                 r.isEmpty() ? " 查無請假申請紀錄" : " 查詢成功(若無顯示則為無人請假)。查詢日期為：%s", LocalDate.now()
                         )
         ).setEphemeral(true).queue();
-
         for (LeaveTempRecord e : r) {
             Integer roomId = getRoomId(e.getBed().getBedId());
-            if (isCd && roomId >= 20 || !isCd && roomId < 20) continue;
-
+            if (isCd && roomId > 20 || !isCd && roomId <= 20) continue;
             EmbedBuilder embedBuilder = getEmbedBuilder(floor, e, isCd);
-
             event.getHook().sendMessageEmbeds(embedBuilder.build()).setEphemeral(true).queue();
         }
     }

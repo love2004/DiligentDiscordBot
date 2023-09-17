@@ -52,15 +52,12 @@ public class GenerateAdmin extends ListenerAdapter {
                 )
         ).queue();
 
-        textChannel.sendMessage(
-                String.format(
-                        "特殊類別", schoolYear, semester
-                )
-        ).addComponents(
-                ActionRow.of(
-                        Button.danger(buttonIdSet.getTookCoinReturn(), "廠商卡幣已退費日期登記")
-                )
-        ).queue();
+        textChannel.sendMessage("特殊類別")
+                .addComponents(
+                        ActionRow.of(
+                                Button.danger(buttonIdSet.getTookCoinReturn(), "廠商卡幣已退費日期登記")
+                        )
+                ).queue();
 
         event.getHook().sendMessage("DONE").setEphemeral(true).queue();
     }

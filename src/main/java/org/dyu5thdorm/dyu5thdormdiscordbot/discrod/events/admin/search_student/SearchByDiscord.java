@@ -35,12 +35,10 @@ public class SearchByDiscord extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        String buttonId = event.getButton().getId();
-        if (buttonId == null) return;
-
-        if (!buttonId.equals(buttonIdSet.getSearchByDiscordId())) return;
-
-        event.replyComponents(
+        String eventButtonId = event.getButton().getId();
+        if (!buttonIdSet.getSearchByDiscordId().equalsIgnoreCase(eventButtonId)) return;
+        event.deferReply().setEphemeral(true).queue();
+        event.getHook().sendMessageComponents(
                 ActionRow.of(
                         EntitySelectMenu.create(menuIdSet.getInfoByDiscordAccOption(), EntitySelectMenu.SelectTarget.USER)
                                 .setPlaceholder("請選擇一位帳號進行查詢")
@@ -51,7 +49,9 @@ public class SearchByDiscord extends ListenerAdapter {
 
     @Override
     public void onEntitySelectInteraction(EntitySelectInteractionEvent event) {
-        if (!event.getSelectMenu().getId().equals(menuIdSet.getInfoByDiscordAccOption())) return;
+        String eventMenuId = event.getSelectMenu().getId();
+        if (!menuIdSet.getInfoByDiscordAccOption().equalsIgnoreCase(eventMenuId)) return;
+        event.deferReply().setEphemeral(true).queue();
 
         List<User> userLists =  event.getMentions().getUsers();
 
@@ -59,11 +59,11 @@ public class SearchByDiscord extends ListenerAdapter {
             String userId = userList.getId();
             LivingRecord livingRecord = livingRecordService.findLivingRecordByDiscordId(userId);
             if (livingRecord == null) {
-                event.reply("查無結果").setEphemeral(true).queue();
+                event.getHook().sendMessage("查無結果").setEphemeral(true).queue();
                 return;
             }
             EmbedBuilder embedBuilder = embedGenerator.fromDiscord(livingRecord, userId);
-            event.replyEmbeds(
+            event.getHook().sendMessageEmbeds(
                     embedBuilder.build()
             ).setEphemeral(true).queue();
         }

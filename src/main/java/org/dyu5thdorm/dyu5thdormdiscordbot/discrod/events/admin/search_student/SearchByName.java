@@ -40,7 +40,8 @@ public class SearchByName extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (!event.getButton().getId().equals(buttonIdSet.getSearchByStudentName())) return;
+        String eventButtonId = event.getButton().getId();
+        if (!buttonIdSet.getSearchByStudentName().equalsIgnoreCase(eventButtonId)) return;
 
         event.replyModal(
                 Modal.create(modalIdSet.getSearchByN(), "以姓名查詢住宿生")

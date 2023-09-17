@@ -56,14 +56,13 @@ public class OnRepairModalEvent extends ListenerAdapter {
     public void onModalInteraction(ModalInteractionEvent event) {
         String eventModalId = event.getModalId();
         if (!ids.containsKey(eventModalId)) return;
-
+        event.deferReply().setEphemeral(true).queue();
         List<String> args = event.getValues().stream().map(
                 ModalMapping::getAsString
         ).toList();
-
         DiscordLink discordLink = discordLinkService.findByDiscordId(event.getUser().getId());
         if (discordLink == null) {
-            event.reply("無綁定住宿生生份者無法使用此功能。").setEphemeral(true).queue();
+            event.getHook().sendMessage("無綁定住宿生生份者無法使用此功能。").setEphemeral(true).queue();
             return;
         }
 
@@ -74,10 +73,10 @@ public class OnRepairModalEvent extends ListenerAdapter {
         );
 
         if (!handle) {
-            event.reply("報修失敗！請聯絡開發者！").setEphemeral(true).queue();
+            event.getHook().sendMessage("報修失敗！請聯絡開發者！").setEphemeral(true).queue();
             return;
         }
 
-        event.reply("報修成功！").setEphemeral(true).queue();
+        event.getHook().sendMessage("報修成功！").setEphemeral(true).queue();
     }
 }

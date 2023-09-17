@@ -25,6 +25,7 @@ public class GenerateRepair extends ListenerAdapter {
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (eventButtonId == null || !eventButtonId.equalsIgnoreCase(buttonIdSet.getGenerateReqRepair())) return;
+        event.deferReply().setEphemeral(true).queue();
 
         TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getRepair());
         if (textChannel == null) {
@@ -53,6 +54,7 @@ public class GenerateRepair extends ListenerAdapter {
                         Button.primary(buttonIdSet.getTookCoin(), "吃錢登記")
                                 .withEmoji(Emoji.fromUnicode("U+1F4B8"))
                 ).queue();
-        event.reply("DONE").setEphemeral(true).queue();
+
+        event.getHook().sendMessage("DONE").setEphemeral(true).queue();
     }
 }

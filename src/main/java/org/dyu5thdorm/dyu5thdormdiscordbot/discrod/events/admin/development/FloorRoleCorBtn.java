@@ -32,9 +32,12 @@ public class FloorRoleCorBtn extends ListenerAdapter {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getFloorRoleCorrection().equalsIgnoreCase(eventButtonId)) return;
 
+        event.deferReply().setEphemeral(true).queue();
+
         Guild thisGuild = event.getGuild();
+
         if (thisGuild == null) {
-            event.reply("找不到伺服器").setEphemeral(true).queue();
+            event.getHook().sendMessage("找不到伺服器").setEphemeral(true).queue();
             return;
         }
 
@@ -59,7 +62,6 @@ public class FloorRoleCorBtn extends ListenerAdapter {
             }
         }
 
-        event.reply("校正完畢").setEphemeral(true).queue();
+        event.getHook().sendMessage("校正完畢").setEphemeral(true).queue();
     }
-
 }

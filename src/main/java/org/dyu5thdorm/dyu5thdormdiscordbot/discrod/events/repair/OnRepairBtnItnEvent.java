@@ -23,8 +23,9 @@ public class OnRepairBtnItnEvent extends ListenerAdapter {
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String eventBtnId = event.getButton().getId();
         if (eventBtnId == null || !eventBtnId.equalsIgnoreCase(buttonIdSet.getRepair())) return;
+        event.deferReply().setEphemeral(true).queue();
 
-        event.replyComponents(
+        event.getHook().sendMessageComponents(
                 ActionRow.of(
                         selectionMenu.getMenu()
                 )

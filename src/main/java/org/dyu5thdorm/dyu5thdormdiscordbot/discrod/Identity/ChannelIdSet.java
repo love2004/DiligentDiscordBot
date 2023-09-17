@@ -44,4 +44,6 @@ public class ChannelIdSet {
     String floorFive;
     @Value("${channel.floor-six}")
     String floorSix;
+    @Value("${channel.public}")
+    String publicChannel;
 }

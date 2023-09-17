@@ -23,7 +23,7 @@ public class ReqLevModalEvent extends ListenerAdapter {
     public void onModalInteraction(ModalInteractionEvent event) {
         String eventModalId = event.getModalId();
         if (!modalIdSet.getReqForLeave().equalsIgnoreCase(eventModalId)) return;
-
+        event.deferReply().setEphemeral(true).queue();
         String reason = event.getValues().get(0).getAsString();
 
         LivingRecord record = livingRecordService.findLivingRecordByDiscordId(
@@ -31,12 +31,12 @@ public class ReqLevModalEvent extends ListenerAdapter {
         );
 
         if (record == null) {
-            event.reply("無法使用此功能，因為您非本學期之住宿生！").setEphemeral(true).queue();
+            event.getHook().sendMessage("無法使用此功能，因為您非本學期之住宿生！").setEphemeral(true).queue();
             return;
         }
 
         leaveService.save(record.getBed(), record.getStudent(), reason);
-        event.reply("""
+        event.getHook().sendMessage("""
                 請假申請成功！
                 > Leave application successful!
                 """).setEphemeral(true).queue();

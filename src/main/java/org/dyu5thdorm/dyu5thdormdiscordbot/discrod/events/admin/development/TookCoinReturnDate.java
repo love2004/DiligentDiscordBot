@@ -1,6 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
-import jakarta.annotation.PostConstruct;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.modals.TookCoinReturnDateModal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.RoleOperation;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class TookCoinReturnDate extends ListenerAdapter {
@@ -34,8 +37,6 @@ public class TookCoinReturnDate extends ListenerAdapter {
     TookCoinService tookCoinService;
     @Value("${regexp.date_year_month_day}")
     String dateYearMonthDayRegexp;
-    @Value("${date.format}")
-    String dateFormat;
     @Autowired
     LivingRecordService livingRecordService;
     @Autowired
@@ -44,12 +45,9 @@ public class TookCoinReturnDate extends ListenerAdapter {
     ChannelOperation channelOperation;
     @Autowired
     RoleOperation roleOperation;
+    @Autowired
+    TookCoinEmbed tookCoinEmbed;
     DateTimeFormatter formatter;
-
-    @PostConstruct
-    void init() {
-        formatter = DateTimeFormatter.ofPattern(dateFormat);
-    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -74,7 +72,7 @@ public class TookCoinReturnDate extends ListenerAdapter {
 
         LocalDate returnDate = toLocalDate(date);
         tookCoinService.saveReturnCoinDay(returnDate);
-        ann(event.getJDA(), returnDate);
+        mentionVictim(event.getJDA());
         event.getHook().sendMessage("登記成功！").setEphemeral(true).queue();
     }
 
@@ -85,25 +83,30 @@ public class TookCoinReturnDate extends ListenerAdapter {
         return LocalDate.of(year, month, day);
     }
 
-    void ann(JDA jda, LocalDate localDate) {
+    void mentionVictim(JDA jda) {
+        List<String> sent = new ArrayList<>();
         for (TookCoin tookCoin : tookCoinService.findNotGetBack()) {
-            var discordLink = discordLinkService.findByStudentId(tookCoin.getStudent().getStudentId());
+            var discordLink = discordLinkService.findByStudentId(
+                    tookCoin.getStudent().getStudentId()
+            );
+            if (sent.contains(discordLink.getDiscordId())) continue;
+            sent.add(discordLink.getDiscordId());
             var livingRecord = livingRecordService.findLivingRecordByDiscordId(discordLink.getDiscordId());
-            int floor = roleOperation.getFloorByBedId(livingRecord.getBed().getBedId());
-            String floorChannelId = channelOperation.getFloorChannelByFloor(floor);
+            int floor;
+            String floorChannelId;
+            if (livingRecord == null) {
+                floorChannelId = channelOperation.getChannelIdSet().getPublicChannel();
+            } else {
+                floor = roleOperation.getFloorByBedId(livingRecord.getBed().getBedId());
+                floorChannelId = channelOperation.getFloorChannelByFloor(floor);
+            }
             TextChannel floorChannel = jda.getTextChannelById(floorChannelId);
             if (floorChannel == null) continue;
-            floorChannel.sendMessage(
-                    String.format(
-                            """
-                            <@%s>
-                            您的吃錢登記的金額廠商已退費，請找時間於管理室領取。
-                            **領取期限：即日起至 __%s__ 前**
-                            """,
-                            discordLink.getDiscordId(),
-                            localDate.plusDays(7).format(formatter)
-                    )
-            ).queue();
+            EmbedBuilder mentionEmbed = tookCoinEmbed.getMentionGetCoinMessage(discordLink.getDiscordId());
+            String sentMessageId = floorChannel.sendMessageEmbeds(mentionEmbed.build()).complete().getId();
+            floorChannel.sendMessage(String.format(
+                    "<@%s>", discordLink.getDiscordId()
+            )).setMessageReference(sentMessageId).queue();
         }
     }
 }

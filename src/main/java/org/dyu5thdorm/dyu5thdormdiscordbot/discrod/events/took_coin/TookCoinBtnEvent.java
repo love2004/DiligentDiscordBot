@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -69,8 +70,8 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getTookCoin().equalsIgnoreCase(eventButtonId)) return;
-
-        event.replyComponents(
+        event.deferReply().setEphemeral(true).queue();
+        event.getHook().sendMessageComponents(
                 ActionRow.of(
                         menu.getMenu()
                 )
@@ -81,13 +82,11 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
         String eventMenuId = event.getSelectMenu().getId();
         if (!menuIdSet.getTookCoin().equalsIgnoreCase(eventMenuId)) return;
-
         String selectedOptionId = event.getSelectedOptions().get(0).getValue();
         TookCoin.Type reportType = getTypeByMenuId(selectedOptionId);
         if (reportType == null) {
             return;
         }
-
         event.replyModal(
                 tookCoinModal.getModalByType(reportType)
         ).queue();
@@ -102,32 +101,34 @@ public class TookCoinBtnEvent extends ListenerAdapter {
                 modalIdSet.getTookCoinWashMachine()
         ).contains(eventModalId)) return;
 
+        event.deferReply().setEphemeral(true).queue();
+
         List<String> args = event.getValues().stream().map(ModalMapping::getAsString).toList();
 
         boolean isWashOrDry = eventModalId.equalsIgnoreCase(modalIdSet.getTookCoinDryer())
                 || eventModalId.equalsIgnoreCase(modalIdSet.getTookCoinWashMachine());
 
         if (isWashOrDry && !args.get(0).matches(floorAreaSyntax)) {
-            event.replyEmbeds(
+            event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getBySyntaxWrong(TookCoinEmbed.SyntaxWrong.FLOOR_AREA).build()
             ).setEphemeral(true).queue();
             return;
         } else if (!isWashOrDry && !args.get(0).matches(floorSyntax)) {
-            event.replyEmbeds(
+            event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getBySyntaxWrong(TookCoinEmbed.SyntaxWrong.FLOOR).build()
             ).setEphemeral(true).queue();
             return;
         }
 
         if (!args.get(2).matches(moneySyntax)) {
-            event.replyEmbeds(
+            event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getBySyntaxWrong(TookCoinEmbed.SyntaxWrong.MONEY).build()
             ).setEphemeral(true).queue();
             return;
         }
 
         if (!args.get(3).matches(dateSyntax)) {
-            event.replyEmbeds(
+            event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getBySyntaxWrong(TookCoinEmbed.SyntaxWrong.DATE).build()
             ).setEphemeral(true).queue();
             return;
@@ -135,7 +136,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
 
         DiscordLink discordLink = discordLinkService.findByDiscordId(event.getUser().getId());
         if (discordLink == null) {
-            event.reply("未綁定住宿生身分無法進行此動作！").setEphemeral(true).queue();
+            event.getHook().sendMessage("未綁定住宿生身分無法進行此動作！").setEphemeral(true).queue();
             return;
         }
 
@@ -147,13 +148,13 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         }
 
         if (r != TookCoin.FailReason.NONE) {
-            event.replyEmbeds(
+            event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getByReason(r).build()
             ).setEphemeral(true).queue();
             return;
         }
 
-        event.reply("登記成功").setEphemeral(true).queue();
+        event.getHook().sendMessage("登記成功").setEphemeral(true).queue();
 
         TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getTookCoinCadre());
         EmbedBuilder embedBuilder = getEmbedBuilder(type, event.getUser().getId(), args, discordLink);
@@ -168,6 +169,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     @NotNull
     private EmbedBuilder getEmbedBuilder(TookCoin.Type type, String userId, List<String> args, DiscordLink discordLink) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setColor(Color.YELLOW);
         embedBuilder.setTitle("有新的一筆吃錢登記");
         embedBuilder.setDescription(
                 String.format("<@%s> 登記資訊如下", userId)
@@ -177,7 +179,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         embedBuilder.addField("故障情況說明", args.get(1), true);
         embedBuilder.addField("卡幣金額", args.get(2), true);
         embedBuilder.addField("發生時間", tookCoin.getLocalDateTime(args.get(3)).format(
-                tookCoinEmbed.getFormatter()
+                tookCoinEmbed.getDateTimeFormatter()
         ), true);
         embedBuilder.addField("回報者學號", discordLink.getStudent().getStudentId(), true);
         embedBuilder.addField("回報者姓名", discordLink.getStudent().getName(), true);
@@ -198,7 +200,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         sb.append("\n故障情況說明：").append(args.get(1));
         sb.append("\n卡幣金額：").append(args.get(2));
         sb.append("\n發生時間：").append(tookCoin.getLocalDateTime(args.get(3)).format(
-                tookCoinEmbed.getFormatter()));
+                tookCoinEmbed.getDateTimeFormatter()));
         sb.append("\n回報者學號：").append(student.getStudentId());
         sb.append("\n回報者姓名：").append(student.getName());
 

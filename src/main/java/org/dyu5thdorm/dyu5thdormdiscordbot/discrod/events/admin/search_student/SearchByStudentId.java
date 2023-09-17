@@ -37,7 +37,8 @@ public class SearchByStudentId extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (!event.getButton().getId().equals(buttonIdSet.getSearchByStudentId())) return;
+        String eventButtonId = event.getButton().getId();
+        if (!buttonIdSet.getSearchByStudentId().equalsIgnoreCase(eventButtonId)) return;
 
         event.replyModal(
                 Modal.create(modalIdSet.getSearchBySI(), "以學號查詢住宿生")
@@ -55,10 +56,9 @@ public class SearchByStudentId extends ListenerAdapter {
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
-        if (!event.getModalId().equals(modalIdSet.getSearchBySI())) return;
-
+        String eventModalId = event.getModalId();
+        if (!modalIdSet.getSearchBySI().equalsIgnoreCase(eventModalId)) return;
         String searchStudentId = event.getValue(modalIdSet.getFirstTextInput()).getAsString();
-
         Set<LivingRecord> livingRecords = livingRecordService.findAllByStudentIdContains(searchStudentId);
 
         if (livingRecords.isEmpty()) {
@@ -75,7 +75,6 @@ public class SearchByStudentId extends ListenerAdapter {
             DiscordLink discordLink = discordLinkService.findByStudentId(
                     livingRecord.getStudent().getStudentId()
             );
-
             event.getHook().sendMessageEmbeds(
                     embedGenerator.fromStudentId(livingRecord, discordLink).build()
             ).setEphemeral(true).queue();

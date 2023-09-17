@@ -42,7 +42,8 @@ public class ReqLevBtnEvent extends ListenerAdapter {
 
         LocalDate now = LocalDate.now();
         if (noCallRollDateService.exists(now)) {
-            event.reply("""
+            event.deferReply().setEphemeral(true).queue();
+            event.getHook().sendMessage("""
                     今天無須點名！
                     > No roll call today!
                     """).setEphemeral(true).queue();
@@ -51,16 +52,17 @@ public class ReqLevBtnEvent extends ListenerAdapter {
 
         LivingRecord livingRecord = livingRecordService.findLivingRecordByDiscordId(event.getUser().getId());
         if (livingRecord == null) {
-            event.reply("""
+            event.deferReply().setEphemeral(true).queue();
+            event.getHook().sendMessage("""
                     非本學期住宿生無法使用此功能。
                     > Only current semester residents can use this feature.
                     """).setEphemeral(true).queue();
             return;
         }
-
         Student student = livingRecord.getStudent();
         if (leaveTempRecordService.isRequested(livingRecord.getBed().getBedId(), student.getStudentId(), now)) {
-            event.reply("""
+            event.deferReply().setEphemeral(true).queue();
+            event.getHook().sendMessage("""
                     您今天已提交過請假申請！
                     > You have already submitted a leave request today!
                     """).setEphemeral(true).queue();
@@ -68,7 +70,8 @@ public class ReqLevBtnEvent extends ListenerAdapter {
         }
 
         if (isIllegalTime(LocalDateTime.now())) {
-            event.reply(
+            event.deferReply().setEphemeral(true).queue();
+            event.getHook().sendMessage(
                     String.format("""
                     已超過點名請假時間。點名請假時間為每天的 00:00 ~ %d:%d。
                     > You have exceeded the late leave request time. Please make your leave request within the specified time frame next time.
@@ -76,7 +79,6 @@ public class ReqLevBtnEvent extends ListenerAdapter {
             ).setEphemeral(true).queue();
             return;
         }
-
         event.replyModal(reqLevModal.getModal()).queue();
     }
 

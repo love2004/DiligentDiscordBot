@@ -23,6 +23,9 @@ public class GenerateAuth extends ListenerAdapter {
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getGenerateReqAuth().equalsIgnoreCase(eventButtonId)) return;
+
+        event.deferReply().setEphemeral(true).queue();
+
         TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getAuth());
         channelOperation.deleteAllMessage(
                 textChannel,100
@@ -53,6 +56,6 @@ public class GenerateAuth extends ListenerAdapter {
                             Button.primary(buttonIdSet.getAuth(), "驗證身分")
                     ).queue();
 
-        event.reply("DONE").setEphemeral(true).queue();
+        event.getHook().sendMessage("DONE").setEphemeral(true).queue();
     }
 }

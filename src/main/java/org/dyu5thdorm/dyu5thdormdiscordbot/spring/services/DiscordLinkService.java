@@ -38,6 +38,6 @@ public class DiscordLinkService {
     }
 
     public DiscordLink findByStudentId(String studentId) {
-        return discordLinkRepository.findByStudentStudentId(studentId).orElseGet(null);
+        return discordLinkRepository.findByStudentStudentId(studentId).orElse(null);
     }
 }

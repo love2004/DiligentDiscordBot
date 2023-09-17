@@ -22,10 +22,11 @@ public class MaintenanceModeButton extends ListenerAdapter {
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (eventButtonId == null || !eventButtonId.equalsIgnoreCase(buttonIdSet.getMaintenance())) return;
+        event.deferReply().setEphemeral(true).queue();
 
         boolean current = maintenance.isMaintenanceStatus();
         maintenance.setMaintenanceStatus(event.getJDA(), !current);
-        event.reply(
+        event.getHook().sendMessage(
                 maintenance.isMaintenanceStatus() ? "維修模式：開啟" : "維修模式：關閉"
         ).setEphemeral(true).queue();
     }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -23,12 +24,16 @@ public class TookCoinEmbed {
     }
 
     @Value("${datetime.format}")
+    String dateTimeFormat;
+    @Value("${date.format}")
     String dateFormat;
-    DateTimeFormatter formatter;
+    DateTimeFormatter dateFormatter;
+    DateTimeFormatter dateTimeFormatter;
 
     @PostConstruct
     void init() {
-        formatter = DateTimeFormatter.ofPattern(dateFormat);
+        dateFormatter = DateTimeFormatter.ofPattern(dateFormat);
+        dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
 
     public EmbedBuilder getBySyntaxWrong(SyntaxWrong syntaxWrong) {
@@ -86,8 +91,8 @@ public class TookCoinEmbed {
         embedBuilder.addField("機器", getMachineName(coin.getMachine()), true);
         embedBuilder.addField("故障情況說明", coin.getDescription(), true);
         embedBuilder.addField("金額", coin.getCoinAmount().toString(), true);
-        embedBuilder.addField("發生時間", coin.getTime().format(formatter), true);
-        embedBuilder.addField("登記時間", coin.getRecordTime().format(formatter), true);
+        embedBuilder.addField("發生時間", coin.getTime().format(dateTimeFormatter), true);
+        embedBuilder.addField("登記時間", coin.getRecordTime().format(dateTimeFormatter), true);
         embedBuilder.setFooter(coin.getId().toString());
         return embedBuilder;
     }
@@ -108,23 +113,40 @@ public class TookCoinEmbed {
         var record = tookCoinList.get(0);
         embedBuilder.setColor(Color.GREEN);
         embedBuilder.setTitle(tookCoinList.size() == 1 ? "吃錢簽收通知" : "吃錢合併簽收通知");
+        embedBuilder.setDescription(
+                String.format("<@%s> 已簽收，退款資訊如下：", discordId)
+        );
+        int returnCoinAmount = tookCoinList.stream().mapToInt(e -> e.getCoinAmount()).sum();
+        embedBuilder.addField("應退總額", String.format(
+                "**__%d__**0", returnCoinAmount
+        ), false);
         embedBuilder.addField("學號", record.getStudent().getStudentId(), true);
         embedBuilder.addField("姓名", record.getStudent().getName(), true);
-        embedBuilder.addField("簽收時間", LocalDateTime.now().format(formatter), true);
-        embedBuilder.setDescription(
-                    String.format(
-                            tookCoinList.size() == 1 ? "<@%s> **已簽收，請退回 __%d__ 元**" : "<@%s> **已合併簽收，請退回總共 __%d__ 元**",
-                            discordId,
-                            tookCoinList.size() == 1 ?
-                                    record.getCoinAmount() :
-                                    tookCoinList.stream().mapToInt(e -> e.getCoinAmount()).sum()
-                            )
-            );
+        embedBuilder.addField("簽收時間", LocalDateTime.now().format(dateTimeFormatter), true);
         embedBuilder.setFooter(tookCoinList.size() == 1 ?
                 record.getId().toString() :
                 tookCoinList.stream().map(e -> e.getId()).toList().toString()
         );
 
+        return embedBuilder;
+    }
+
+    public EmbedBuilder getMentionGetCoinMessage(String discordId) {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        LocalDate date = LocalDate.now();
+        embedBuilder.setColor(new Color(0x98FB98));
+        embedBuilder.setTitle("機器吃錢退費通知");
+        embedBuilder.setDescription("您登記的吃錢金額廠商已退費，請您**__攜帶手機__**至管理室領取。");
+        embedBuilder.addField("領取時間", String.format(
+            """
+            **%s
+            20:00 ~ 20:30**
+            """, date.format(dateFormatter)
+        ), true);
+        embedBuilder.addField("領取期限", String.format(
+                "即日起至 __**%s**__ 前", date.plusDays(7L)
+        ),true);
+        embedBuilder.setFooter("若領取時間無法配合，請另與舍長們另約時間領取。");
         return embedBuilder;
     }
 

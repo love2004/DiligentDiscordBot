@@ -27,6 +27,7 @@ public class GenerateRules extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!event.getButton().getId().equals(buttonIdSet.getGenerateRules())) return;
+        event.deferReply().setEphemeral(true).queue();
 
         TextChannel rulesChannel = event.getJDA().getTextChannelById(channelIdSet.getRules());
 
@@ -50,6 +51,6 @@ public class GenerateRules extends ListenerAdapter {
                         .withLabel("112學年大葉大學業勤學舍住宿公約及違規處理要點")
         ).queue();
 
-        event.reply("DONE").setEphemeral(true).queue();
+        event.getHook().sendMessage("DONE").queue();
     }
 }
