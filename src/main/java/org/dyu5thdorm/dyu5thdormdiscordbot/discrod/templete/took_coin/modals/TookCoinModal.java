@@ -17,10 +17,8 @@ public class TookCoinModal {
 
     @PostConstruct
     void init() {
-        TextInput description = TextInput.create(modalIdSet.getSecondTextInput(), "故障情況說明", TextInputStyle.PARAGRAPH)
-                .setPlaceholder("請說明故障情形。例如：卡幣")
-                .setRequiredRange(0, 30)
-                .build();
+        var description = TextInput.create(modalIdSet.getSecondTextInput(), "故障情況說明", TextInputStyle.PARAGRAPH)
+                .setRequiredRange(0, 50);
         TextInput coin = TextInput.create(modalIdSet.getThirdTextInput(), "卡幣金額", TextInputStyle.SHORT)
                 .setPlaceholder("請輸入卡幣金額。例如：87")
                 .setRequiredRange(1, 2)
@@ -38,7 +36,14 @@ public class TookCoinModal {
                                 .build()
 
                 )
-                .addActionRow(description)
+                .addActionRow(
+                        description.setPlaceholder(
+                        """
+                        請說明是哪台機器。
+                        超過1台時，面對它加註中左右。
+                        例如：中間洗衣機兩次共投入40元但機器都沒轉。
+                        """).build()
+                )
                 .addActionRow(coin)
                 .addActionRow(time)
                 .build();
@@ -51,7 +56,12 @@ public class TookCoinModal {
                                 .build()
 
                 )
-                .addActionRow(description)
+                .addActionRow(description.setPlaceholder(
+                        """
+                        盡量清楚說明，以利廠商盡快修復販賣機。
+                        例如：投50元選10元的麥香綠茶沒找40元、投25元選B3五香海苔東西沒掉出來
+                        """
+                ).build())
                 .addActionRow(coin)
                 .addActionRow(time)
                 .build();

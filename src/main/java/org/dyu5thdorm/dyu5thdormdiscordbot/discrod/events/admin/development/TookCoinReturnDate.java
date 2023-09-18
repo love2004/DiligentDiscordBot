@@ -72,7 +72,7 @@ public class TookCoinReturnDate extends ListenerAdapter {
 
         LocalDate returnDate = toLocalDate(date);
         tookCoinService.saveReturnCoinDay(returnDate);
-        mentionVictim(event.getJDA());
+        mentionVictim(event.getJDA(), returnDate);
         event.getHook().sendMessage("登記成功！").setEphemeral(true).queue();
     }
 
@@ -83,7 +83,7 @@ public class TookCoinReturnDate extends ListenerAdapter {
         return LocalDate.of(year, month, day);
     }
 
-    void mentionVictim(JDA jda) {
+    void mentionVictim(JDA jda, LocalDate returnDate) {
         List<String> sent = new ArrayList<>();
         for (TookCoin tookCoin : tookCoinService.findNotGetBack()) {
             var discordLink = discordLinkService.findByStudentId(
@@ -102,7 +102,7 @@ public class TookCoinReturnDate extends ListenerAdapter {
             }
             TextChannel floorChannel = jda.getTextChannelById(floorChannelId);
             if (floorChannel == null) continue;
-            EmbedBuilder mentionEmbed = tookCoinEmbed.getMentionGetCoinMessage(discordLink.getDiscordId());
+            EmbedBuilder mentionEmbed = tookCoinEmbed.getMentionGetCoinMessage(returnDate);
             String sentMessageId = floorChannel.sendMessageEmbeds(mentionEmbed.build()).complete().getId();
             floorChannel.sendMessage(String.format(
                     "<@%s>", discordLink.getDiscordId()

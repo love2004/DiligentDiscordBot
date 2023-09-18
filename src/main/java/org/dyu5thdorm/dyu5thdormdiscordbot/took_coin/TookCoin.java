@@ -104,6 +104,7 @@ public class TookCoin {
 
     public Set<org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin> getRecordUnGetByDiscordId(String discordId) {
         DiscordLink discordLink = getDiscordLinkByDiscordId(discordId);
+        if (discordLink == null) return null;
         Student student = discordLink.getStudent();
 
         return tookCoinService.findUnGetByStudentId(student.getStudentId());

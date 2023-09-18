@@ -48,9 +48,9 @@ public class TookCoinEmbed {
             }
             case DATE -> {
                 embedBuilder.setTitle("日期格式錯誤。");
-                embedBuilder.addField("正確格式(24小時制)", "**[年+月+日 時+分]**", false);
-                embedBuilder.addField("正確範例", "20230807 2007", true);
-                embedBuilder.addField("正確範例", "20231031 0807", true);
+                embedBuilder.addField("正確格式(24小時制)", "**[月+日 時+分]**", false);
+                embedBuilder.addField("正確範例", "0807 2007", true);
+                embedBuilder.addField("正確範例", "1031 0807", true);
             }
             case FLOOR -> {
                 embedBuilder.setTitle("樓層格式錯誤。");
@@ -118,7 +118,7 @@ public class TookCoinEmbed {
         );
         int returnCoinAmount = tookCoinList.stream().mapToInt(e -> e.getCoinAmount()).sum();
         embedBuilder.addField("應退總額", String.format(
-                "**__%d__**0", returnCoinAmount
+                "**__%d__**", returnCoinAmount
         ), false);
         embedBuilder.addField("學號", record.getStudent().getStudentId(), true);
         embedBuilder.addField("姓名", record.getStudent().getName(), true);
@@ -131,9 +131,8 @@ public class TookCoinEmbed {
         return embedBuilder;
     }
 
-    public EmbedBuilder getMentionGetCoinMessage(String discordId) {
+    public EmbedBuilder getMentionGetCoinMessage(LocalDate returnDate) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        LocalDate date = LocalDate.now();
         embedBuilder.setColor(new Color(0x98FB98));
         embedBuilder.setTitle("機器吃錢退費通知");
         embedBuilder.setDescription("您登記的吃錢金額廠商已退費，請您**__攜帶手機__**至管理室領取。");
@@ -141,10 +140,10 @@ public class TookCoinEmbed {
             """
             **%s
             20:00 ~ 20:30**
-            """, date.format(dateFormatter)
+            """, returnDate.format(dateFormatter)
         ), true);
         embedBuilder.addField("領取期限", String.format(
-                "即日起至 __**%s**__ 前", date.plusDays(7L)
+                "即日起至 __**%s**__ 前", returnDate.plusDays(7L)
         ),true);
         embedBuilder.setFooter("若領取時間無法配合，請另與舍長們另約時間領取。");
         return embedBuilder;

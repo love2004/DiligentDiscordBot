@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 public class LeaveTempRecordService {
@@ -39,9 +38,9 @@ public class LeaveTempRecordService {
         repository.save(leaveTempRecord);
     }
 
-    public Set<LeaveTempRecord> findAllByFloorAndDate(Integer floor, LocalDate date) {
+    public List<LeaveTempRecord> findAllByFloorAndDate(Integer floor, LocalDate date) {
         return repository.findAllByRequestTimeDate(date).stream().filter(
                 leaveTempRecord -> (leaveTempRecord.getBed().getBedId().charAt(1) - '0') == floor
-        ).collect(Collectors.toSet());
+        ).toList();
     }
 }
