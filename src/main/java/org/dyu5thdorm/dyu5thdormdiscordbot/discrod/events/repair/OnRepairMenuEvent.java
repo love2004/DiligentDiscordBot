@@ -5,17 +5,22 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.repair.modals.RepairModal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.Repair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OnRepairMenuEvent extends ListenerAdapter {
-    @Autowired
+    final
     MenuIdSet menuIdSet;
-    @Autowired
+    final
     RepairModal repairModal;
-    @Autowired
+    final
     Repair repair;
+
+    public OnRepairMenuEvent(MenuIdSet menuIdSet, RepairModal repairModal, Repair repair) {
+        this.menuIdSet = menuIdSet;
+        this.repairModal = repairModal;
+        this.repair = repair;
+    }
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {

@@ -3,7 +3,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import net.dv8tion.jda.api.EmbedBuilder;
-import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoin;
+import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -69,7 +69,7 @@ public class TookCoinEmbed {
         return embedBuilder;
     }
 
-    public EmbedBuilder getByReason(TookCoin.FailReason reason) {
+    public EmbedBuilder getByReason(TookCoinHandler.FailReason reason) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("登記失敗");
 

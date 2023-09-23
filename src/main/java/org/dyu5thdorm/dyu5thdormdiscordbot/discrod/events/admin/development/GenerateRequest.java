@@ -42,30 +42,21 @@ public class GenerateRequest extends ListenerAdapter {
 
         reqLevChannel.sendMessage(
                 String.format("""
-                        # 晚間點名請假 (Evening Roll Call Leave)
-                        - 點名時段說明 (Roll Call Period Explanation)：
-                          - **除寒、暑假、國定假日、放假前一天外，上課日皆需點名。**
+                        # 晚間點名請假
+                        - 點名時段說明：
+                          - **除寒、暑假、國定假日、一般假日(六日)、放假前一天外，上課日皆需點名。**
                           - 點名於 22:30 開始
-                          >  **Except for winter and summer breaks, national holidays, and the day before holidays, roll call is required on school days.**
-                        - 點名模式 (Roll Call Method)：
+                        - 點名模式：
                           - 樓長至房間內點名
-                          > Floor RA(Resident Advisor) will conduct roll call inside the rooms.
-                        
-                        無法到場點名者須依規定請假。
-                        > Those unable to attend roll call must follow the regulations and request leave.
-                        
-                        連續兩天點名缺席未請假者，將會通知家長。
-                        > Students who are absent from roll call for two consecutive days without requesting leave will have their parents notified.
-                        
-                        __當天點名請假時間為 **00:00 ~ %d:%d**，愈時系統不受理！__
-                        > __The deadline for requesting leave for evening roll call **on the same day is 23:00**; requests made after this time will not be accepted by the system!__
-                        
-                        請點下方「晚間點名請假 Request」開始進行請假流程。
-                        > "Please click '晚間點名請假 Request' below to begin the leave request process."
+                        - 注意事項：
+                          - 無法到場點名者須依規定請假。
+                          - 連續兩天點名缺席未請假者，將會通知家長。
+                          - __當天點名請假時間為 **00:00 ~ %d:%d**，愈時系統不受理！__
+                          - 請點下方「晚間點名請假」開始進行請假流程。
                         """, availableTimeHour, availableTimeMinute)
                 )
                 .addActionRow(
-                        Button.danger(buttonIdSet.getReqForLeave(), "晚間點名請假 Request")
+                        Button.danger(buttonIdSet.getReqForLeave(), "晚間點名請假")
         ).queue();
 
         event.getHook().sendMessage("Done").setEphemeral(true).queue();

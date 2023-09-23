@@ -7,22 +7,29 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
-import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoin;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
+import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
 
 @Component
 public class TookMoneySearch extends ListenerAdapter {
-    @Autowired
+    final
     MenuIdSet menuIdSet;
-    @Autowired
-    TookCoin tookCoin;
-    @Autowired
+    final
+    TookCoinHandler tookCoin;
+    final
     TookCoinEmbed tookCoinEmbed;
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
+
+    public TookMoneySearch(MenuIdSet menuIdSet, TookCoinHandler tookCoin, TookCoinEmbed tookCoinEmbed, ButtonIdSet buttonIdSet) {
+        this.menuIdSet = menuIdSet;
+        this.tookCoin = tookCoin;
+        this.tookCoinEmbed = tookCoinEmbed;
+        this.buttonIdSet = buttonIdSet;
+    }
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
@@ -50,16 +57,16 @@ public class TookMoneySearch extends ListenerAdapter {
         }
 
         if (queryRecords.size() > 1) {
-            boolean allReturn = queryRecords.stream().allMatch(e -> e.getIsReturn());
+            boolean allReturn = queryRecords.stream().allMatch(TookCoin::getIsReturn);
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
-            int backCoinSum = queryRecords.stream().mapToInt(value -> value.getCoinAmount()).sum();
+            int backCoinSum = queryRecords.stream().mapToInt(TookCoin::getCoinAmount).sum();
             embedBuilder.setTitle("合併簽收")
                     .setDescription("因為發現您有多筆卡幣紀錄，因此您可以點此按鈕一併領取")
                     .setColor(Color.CYAN)
                     .addField("應退總額", Integer.toString(backCoinSum), true)
                     .setFooter(
-                            queryRecords.stream().map(e -> e.getId()).toList().toString()
+                            queryRecords.stream().map(TookCoin::getId).toList().toString()
                     );
             event.getHook().sendMessageEmbeds(
                     embedBuilder.build()

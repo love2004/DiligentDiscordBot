@@ -10,7 +10,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveTempRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,15 +19,21 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class ReqLevCadreBtnEvent extends ListenerAdapter {
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     LivingRecordService livingRecordService;
-    @Autowired
+    final
     LeaveTempRecordService leaveTempRecordService;
     @Value("${datetime.format}")
     String dateFormat;
     DateTimeFormatter dateTimeFormatter;
+
+    public ReqLevCadreBtnEvent(ButtonIdSet buttonIdSet, LivingRecordService livingRecordService, LeaveTempRecordService leaveTempRecordService) {
+        this.buttonIdSet = buttonIdSet;
+        this.livingRecordService = livingRecordService;
+        this.leaveTempRecordService = leaveTempRecordService;
+    }
 
     @PostConstruct
     void init() {
@@ -58,7 +63,7 @@ public class ReqLevCadreBtnEvent extends ListenerAdapter {
         ).setEphemeral(true).queue();
         for (LeaveTempRecord e : r) {
             Integer roomId = getRoomId(e.getBed().getBedId());
-            if (isCd && roomId > 20 || !isCd && roomId <= 20) continue;
+            if ((isCd && roomId > 20 || !isCd && roomId <= 20) && floor != 1) continue;
             EmbedBuilder embedBuilder = getEmbedBuilder(floor, e, isCd);
             event.getHook().sendMessageEmbeds(embedBuilder.build()).setEphemeral(true).queue();
         }

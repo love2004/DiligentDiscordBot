@@ -1,14 +1,10 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity;
 
-import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @Getter
@@ -34,20 +30,4 @@ public class RoleIdSet {
     private String floorFive;
     @Value("${role.floor_six}")
     private String floorSix;
-    private Map<Integer, String> floorsRole;
-
-    public String getRoleIdByFloor(int floor) {
-        return floorsRole.get(floor);
-    }
-
-    @PostConstruct
-    void buildFloorsList() {
-        floorsRole = new HashMap<>();
-        floorsRole.put(1, floorOne);
-        floorsRole.put(2, floorTwo);
-        floorsRole.put(3, floorThree);
-        floorsRole.put(4, floorFour);
-        floorsRole.put(5, floorFive);
-        floorsRole.put(6, floorSix);
-    }
 }

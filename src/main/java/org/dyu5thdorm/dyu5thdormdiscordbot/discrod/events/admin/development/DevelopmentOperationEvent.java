@@ -40,7 +40,8 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
                 "機器人類別"
         ).addActionRow(
                 Button.danger(buttonIdSet.getShutdown(), "關機"),
-                Button.secondary(buttonIdSet.getMaintenance(), "維修模式(僅限開發人員使用)")
+                Button.secondary(buttonIdSet.getMaintenance(), "維修模式(僅限開發人員使用)"),
+                Button.secondary(buttonIdSet.getIpLookup(), "IP LOOKUP")
         ).queue();
 
         textChannel.sendMessage(
@@ -49,7 +50,6 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
                 Button.success(buttonIdSet.getGenerateReqAuth(), "重新生成驗證內容"),
                 Button.primary(buttonIdSet.getGenerateRules(), "重新生成公約內容"),
                 Button.success(buttonIdSet.getGenerateReqRepair(), "重新生成報修按鈕"),
-                Button.primary(buttonIdSet.getGenerateReqLev(), "重新生成請假按鈕"),
                 Button.success(buttonIdSet.getGenerateReqCadre(), "重新生成特定用戶專區按鈕")
         ).queue();
 

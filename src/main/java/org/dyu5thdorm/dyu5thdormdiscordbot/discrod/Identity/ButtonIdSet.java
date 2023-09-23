@@ -57,5 +57,6 @@ public class ButtonIdSet {
     String tookCoinGetBackMergeConfirm;
     @Value("${component.button.took-coin-return}")
     String tookCoinReturn;
-
+    @Value("${component.button.ip-lookup}")
+    String ipLookup;
 }

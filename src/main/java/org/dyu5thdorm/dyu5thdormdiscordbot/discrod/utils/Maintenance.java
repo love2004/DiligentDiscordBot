@@ -21,8 +21,8 @@ public class Maintenance {
         update(jda);
     }
 
-    public boolean isDeveloper(Member member) {
-        return member.getRoles().stream().anyMatch(role -> developerRole.equalsIgnoreCase(role.getId()));
+    public boolean isNotDeveloper(Member member) {
+        return member.getRoles().stream().noneMatch(role -> developerRole.equalsIgnoreCase(role.getId()));
     }
 
     public void update(JDA jda) {

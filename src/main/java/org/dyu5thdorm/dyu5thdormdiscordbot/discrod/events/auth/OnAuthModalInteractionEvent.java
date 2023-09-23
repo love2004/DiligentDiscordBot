@@ -12,7 +12,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,22 +19,32 @@ import java.util.Optional;
 
 @Component
 public class OnAuthModalInteractionEvent extends ListenerAdapter {
-    @Autowired
+    final
     LivingRecordService livingRecordService;
-    @Autowired
+    final
     DiscordLinkService discordLinkService;
-    @Autowired
+    final
     StudentService studentService;
-    @Autowired
+    final
     AuthEmbedBuilder authEmbedBuilder;
     @Value("${regexp.phone_number}")
     String phoneNumberSyntax;
-    @Autowired
+    final
     ModalIdSet modalIdSet;
-    @Autowired
+    final
     ChannelIdSet channelIdSet;
-    @Autowired
+    final
     RoleOperation roleOperation;
+
+    public OnAuthModalInteractionEvent(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, StudentService studentService, AuthEmbedBuilder authEmbedBuilder, ModalIdSet modalIdSet, ChannelIdSet channelIdSet, RoleOperation roleOperation) {
+        this.livingRecordService = livingRecordService;
+        this.discordLinkService = discordLinkService;
+        this.studentService = studentService;
+        this.authEmbedBuilder = authEmbedBuilder;
+        this.modalIdSet = modalIdSet;
+        this.channelIdSet = channelIdSet;
+        this.roleOperation = roleOperation;
+    }
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
@@ -43,7 +52,6 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
 
         String userId = event.getUser().getId();
 
-        // Will not be null value.
         String studentId = event.getValue(modalIdSet.getFirstTextInput()).getAsString().toUpperCase();
         String phoneNumber = event.getValue(modalIdSet.getSecondTextInput()).getAsString();
 

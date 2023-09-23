@@ -8,19 +8,19 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
 
 @Component
 public class OnAuthedUserLeaveEvent extends ListenerAdapter {
-    @Autowired
+    final
     ChannelIdSet channelIdSet;
     final DiscordLinkService discordLinkService;
 
-    public OnAuthedUserLeaveEvent(DiscordLinkService discordLinkService) {
+    public OnAuthedUserLeaveEvent(DiscordLinkService discordLinkService, ChannelIdSet channelIdSet) {
         this.discordLinkService = discordLinkService;
+        this.channelIdSet = channelIdSet;
     }
 
     @Override

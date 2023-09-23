@@ -10,7 +10,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +19,23 @@ import java.util.List;
 
 @Component
 public class TookCoinGetAllBtn extends ListenerAdapter {
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     TookCoinService tookCoinService;
     @Value("${regexp.took-coin.merge}")
     String tookCoinMergeRegex;
-    @Autowired
+    final
     TookCoinEmbed tookCoinEmbed;
-    @Autowired
+    final
     ChannelIdSet channelIdSet;
+
+    public TookCoinGetAllBtn(ButtonIdSet buttonIdSet, TookCoinService tookCoinService, TookCoinEmbed tookCoinEmbed, ChannelIdSet channelIdSet) {
+        this.buttonIdSet = buttonIdSet;
+        this.tookCoinService = tookCoinService;
+        this.tookCoinEmbed = tookCoinEmbed;
+        this.channelIdSet = channelIdSet;
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

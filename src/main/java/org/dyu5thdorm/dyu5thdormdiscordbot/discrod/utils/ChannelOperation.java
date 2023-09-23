@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -22,13 +21,14 @@ public class ChannelOperation {
 
     @PostConstruct
     void init() {
-        floorChannelMap = new HashMap<>();
-        floorChannelMap.put(1, channelIdSet.getFloorOne());
-        floorChannelMap.put(2, channelIdSet.getFloorTwo());
-        floorChannelMap.put(3, channelIdSet.getFloorThree());
-        floorChannelMap.put(4, channelIdSet.getFloorFour());
-        floorChannelMap.put(5, channelIdSet.getFloorFive());
-        floorChannelMap.put(6, channelIdSet.getFloorThree());
+        floorChannelMap = Map.of(
+                1, channelIdSet.getFloorOne(),
+                2, channelIdSet.getFloorTwo(),
+                3, channelIdSet.getFloorThree(),
+                4, channelIdSet.getFloorFour(),
+                5, channelIdSet.getFloorFive(),
+                6, channelIdSet.getFloorSix()
+        );
     }
 
     public void deleteAllMessage(TextChannel textChannel, int limit) {
@@ -44,6 +44,4 @@ public class ChannelOperation {
     public String  getFloorChannelByFloor(Integer floor) {
         return floorChannelMap.getOrDefault(floor, null);
     }
-
-
 }

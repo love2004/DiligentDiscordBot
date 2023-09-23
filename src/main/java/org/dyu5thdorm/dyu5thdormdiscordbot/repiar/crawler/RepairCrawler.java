@@ -1,11 +1,11 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.repiar.crawler;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import jakarta.annotation.PostConstruct;
+import org.dyu5thdorm.dyu5thdormdiscordbot.DormWebClient;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.RepairModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -24,11 +24,11 @@ public class RepairCrawler {
     @Value("${api.logout}")
     String logoutApiURL;
     final
-    SelfWebClient webClient;
+    DormWebClient webClient;
     final
     LoginParameter loginParameter;
 
-    public RepairCrawler(SelfWebClient webClient, LoginParameter loginParameter) {
+    public RepairCrawler(DormWebClient webClient, LoginParameter loginParameter) {
         this.webClient = webClient;
         this.loginParameter = loginParameter;
     }
@@ -68,9 +68,4 @@ public class RepairCrawler {
     public WebResponse logout() throws IOException {
         return webClient.getPage(new URL(logoutApiURL)).getWebResponse();
     }
-}
-
-@Component
-class SelfWebClient extends WebClient {
-
 }

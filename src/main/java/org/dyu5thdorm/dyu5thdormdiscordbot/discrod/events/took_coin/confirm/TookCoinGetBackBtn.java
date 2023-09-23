@@ -10,21 +10,27 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
 
 @Component
 public class TookCoinGetBackBtn extends ListenerAdapter {
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     TookCoinService tookCoinService;
-    @Autowired
+    final
     ChannelIdSet channelIdSet;
-    @Autowired
+    final
     TookCoinEmbed tookCoinEmbed;
+
+    public TookCoinGetBackBtn(ButtonIdSet buttonIdSet, TookCoinService tookCoinService, ChannelIdSet channelIdSet, TookCoinEmbed tookCoinEmbed) {
+        this.buttonIdSet = buttonIdSet;
+        this.tookCoinService = tookCoinService;
+        this.channelIdSet = channelIdSet;
+        this.tookCoinEmbed = tookCoinEmbed;
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

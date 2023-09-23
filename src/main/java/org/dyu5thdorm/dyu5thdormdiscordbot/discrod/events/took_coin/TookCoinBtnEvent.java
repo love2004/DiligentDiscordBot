@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin;
 
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
@@ -21,14 +22,12 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.line.RepairTokenSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
-import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoin;
+import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.List;
 
 @Component
@@ -42,28 +41,42 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     @Value("${regexp.date}")
     String dateSyntax;
 
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     MenuIdSet menuIdSet;
-    @Autowired
+    final
     ModalIdSet modalIdSet;
-    @Autowired
+    final
     ChannelIdSet channelIdSet;
-    @Autowired
+    final
     TookCoinMenu menu;
-    @Autowired
+    final
     TookCoinModal tookCoinModal;
-    @Autowired
-    TookCoin tookCoin;
-    @Autowired
+    final
+    TookCoinHandler tookCoin;
+    final
     DiscordLinkService discordLinkService;
-    @Autowired
+    final
     TookCoinEmbed tookCoinEmbed;
-    @Autowired
+    final
     LineNotify lineNotify;
-    @Autowired
+    final
     Maintenance maintenance;
+
+    public TookCoinBtnEvent(ButtonIdSet buttonIdSet, MenuIdSet menuIdSet, ModalIdSet modalIdSet, ChannelIdSet channelIdSet, TookCoinMenu menu, TookCoinModal tookCoinModal, TookCoinHandler tookCoin, DiscordLinkService discordLinkService, TookCoinEmbed tookCoinEmbed, LineNotify lineNotify, Maintenance maintenance) {
+        this.buttonIdSet = buttonIdSet;
+        this.menuIdSet = menuIdSet;
+        this.modalIdSet = modalIdSet;
+        this.channelIdSet = channelIdSet;
+        this.menu = menu;
+        this.tookCoinModal = tookCoinModal;
+        this.tookCoin = tookCoin;
+        this.discordLinkService = discordLinkService;
+        this.tookCoinEmbed = tookCoinEmbed;
+        this.lineNotify = lineNotify;
+        this.maintenance = maintenance;
+    }
 
 
     @Override
@@ -83,7 +96,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         String eventMenuId = event.getSelectMenu().getId();
         if (!menuIdSet.getTookCoin().equalsIgnoreCase(eventMenuId)) return;
         String selectedOptionId = event.getSelectedOptions().get(0).getValue();
-        TookCoin.Type reportType = getTypeByMenuId(selectedOptionId);
+        TookCoinHandler.Type reportType = getTypeByMenuId(selectedOptionId);
         if (reportType == null) {
             return;
         }
@@ -140,14 +153,14 @@ public class TookCoinBtnEvent extends ListenerAdapter {
             return;
         }
 
-        TookCoin.Type type = getTypeByModalId(eventModalId);
+        TookCoinHandler.Type type = getTypeByModalId(eventModalId);
 
-        TookCoin.FailReason r = tookCoin.record(type, args, discordLink.getStudent());
+        TookCoinHandler.FailReason r = tookCoin.record(type, args, discordLink.getStudent());
         if (!maintenance.isMaintenanceStatus()) {
             sendLineNotify(type, args, discordLink.getStudent());
         }
 
-        if (r != TookCoin.FailReason.NONE) {
+        if (r != TookCoinHandler.FailReason.NONE) {
             event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getByReason(r).build()
             ).setEphemeral(true).queue();
@@ -167,7 +180,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     }
 
     @NotNull
-    private EmbedBuilder getEmbedBuilder(TookCoin.Type type, String userId, List<String> args, DiscordLink discordLink) {
+    private EmbedBuilder getEmbedBuilder(TookCoinHandler.Type type, String userId, List<String> args, DiscordLink discordLink) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Color.YELLOW);
         embedBuilder.setTitle("有新的一筆吃錢登記");
@@ -186,32 +199,25 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         return embedBuilder;
     }
 
-    void sendLineNotify(TookCoin.Type type, List<String> args, Student student) {
+    @SneakyThrows
+    void sendLineNotify(TookCoinHandler.Type type, List<String> args, Student student) {
         RepairTokenSet.RepairType repairType = getTypeByTookCoinType(type);
-
         if (repairType == null) {
             return;
         }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n有新的一筆吃錢登記如下：\n");
-        sb.append("\n樓層區域：").append(args.get(0));
-        sb.append("\n機器：").append(tookCoinEmbed.getMachineName(type.name()));
-        sb.append("\n故障情況說明：").append(args.get(1));
-        sb.append("\n卡幣金額：").append(args.get(2));
-        sb.append("\n發生時間：").append(tookCoin.getLocalDateTime(args.get(3)).format(
-                tookCoinEmbed.getDateTimeFormatter()));
-        sb.append("\n回報者學號：").append(student.getStudentId());
-        sb.append("\n回報者姓名：").append(student.getName());
-
-        try {
-            lineNotify.sendMessage(sb.toString(), repairType);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        String sb = "\n有新的一筆吃錢登記如下：\n" +
+                "\n樓層區域：" + args.get(0) +
+                "\n機器：" + tookCoinEmbed.getMachineName(type.name()) +
+                "\n故障情況說明：" + args.get(1) +
+                "\n卡幣金額：" + args.get(2) +
+                "\n發生時間：" + tookCoin.getLocalDateTime(args.get(3)).format(
+                tookCoinEmbed.getDateTimeFormatter()) +
+                "\n回報者學號：" + student.getStudentId() +
+                "\n回報者姓名：" + student.getName();
+        lineNotify.sendMessage(sb, repairType);
     }
 
-    RepairTokenSet.RepairType getTypeByTookCoinType(TookCoin.Type tookCoinType) {
+    RepairTokenSet.RepairType getTypeByTookCoinType(TookCoinHandler.Type tookCoinType) {
         switch (tookCoinType) {
             case WASH_MACHINE, DRYER -> {
                 return RepairTokenSet.RepairType.WASH_AND_DRY_MACHINE;
@@ -224,23 +230,23 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         return null;
     }
 
-    TookCoin.Type getTypeByMenuId(String id) {
+    TookCoinHandler.Type getTypeByMenuId(String id) {
         if (menuIdSet.getVendingOption().equalsIgnoreCase(id)) {
-            return TookCoin.Type.VENDING;
+            return TookCoinHandler.Type.VENDING;
         } else if (menuIdSet.getDryerOption().equalsIgnoreCase(id)) {
-            return TookCoin.Type.DRYER;
+            return TookCoinHandler.Type.DRYER;
         } else if (menuIdSet.getWashingMachineOption().equalsIgnoreCase(id)) {
-            return TookCoin.Type.WASH_MACHINE;
+            return TookCoinHandler.Type.WASH_MACHINE;
         } else return null;
     }
 
-    TookCoin.Type getTypeByModalId(String id) {
+    TookCoinHandler.Type getTypeByModalId(String id) {
         if (modalIdSet.getTookCoinVending().equalsIgnoreCase(id)) {
-            return TookCoin.Type.VENDING;
+            return TookCoinHandler.Type.VENDING;
         } else if (modalIdSet.getTookCoinDryer().equalsIgnoreCase(id)) {
-            return TookCoin.Type.DRYER;
+            return TookCoinHandler.Type.DRYER;
         } else if (modalIdSet.getTookCoinWashMachine().equalsIgnoreCase(id)) {
-            return TookCoin.Type.WASH_MACHINE;
+            return TookCoinHandler.Type.WASH_MACHINE;
         } else return null;
     }
 }

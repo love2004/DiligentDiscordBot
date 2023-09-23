@@ -25,7 +25,7 @@ public class ShutdownButton extends ListenerAdapter {
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (!event.getButton().getId().equals(buttonIdSet.getShutdown())) return;
         event.deferReply().setEphemeral(true).queue();
-        if (!maintenance.isDeveloper(event.getMember())) {
+        if (maintenance.isNotDeveloper(event.getMember())) {
             event.reply("您無權限操作！").setEphemeral(true).queue();
             return;
         }

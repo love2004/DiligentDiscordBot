@@ -5,7 +5,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.FloorArea;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,7 +13,12 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class TookCoin {
+public class TookCoinHandler {
+    public TookCoinHandler(TookCoinService tookCoinService, DiscordLinkService discordLinkService) {
+        this.tookCoinService = tookCoinService;
+        this.discordLinkService = discordLinkService;
+    }
+
     public enum Type {
         WASH_MACHINE,
         DRYER,
@@ -27,9 +31,9 @@ public class TookCoin {
         NONE,
     }
 
-    @Autowired
+    final
     TookCoinService tookCoinService;
-    @Autowired
+    final
     DiscordLinkService discordLinkService;
 
     FloorArea getFloorArea(Type type, String floorOrFloorArea) {

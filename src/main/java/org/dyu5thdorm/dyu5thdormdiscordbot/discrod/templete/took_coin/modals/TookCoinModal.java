@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
-import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoin;
+import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -67,7 +67,7 @@ public class TookCoinModal {
                 .build();
     }
 
-    public Modal getModalByType(TookCoin.Type type) {
+    public Modal getModalByType(TookCoinHandler.Type type) {
         switch (type) {
             case WASH_MACHINE -> {
                 return this.washMachineModal;
