@@ -1,15 +1,22 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "student")
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @Component
 public class Student implements Serializable {

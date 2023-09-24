@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 public interface TookCoinRepository extends JpaRepository<TookCoin, Long> {
-    boolean existsByTimeAndStudent_StudentId(LocalDateTime time, String student_studentId);
+    boolean existsByEventTimeAndStudent_StudentId(LocalDateTime time, String student_studentId);
     Set<TookCoin> findAllByStudentStudentId(String student_studentId);
     Set<TookCoin> findAllByStudentStudentIdAndIsGetBack(String student_studentId, Boolean isGetBack);
 

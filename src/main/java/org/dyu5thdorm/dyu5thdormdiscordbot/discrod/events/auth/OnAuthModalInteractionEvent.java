@@ -8,7 +8,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.embeds.AuthEmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.RoleOperation;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.StudentService;

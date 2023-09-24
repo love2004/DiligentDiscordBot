@@ -1,8 +1,10 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +12,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "discord_link")
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @Component
 public class DiscordLink {

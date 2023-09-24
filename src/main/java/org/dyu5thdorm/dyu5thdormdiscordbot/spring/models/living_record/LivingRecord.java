@@ -1,13 +1,22 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
+package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record;
+
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.school_timestamp.SchoolTimestamp;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "living_record")
 @IdClass(LivingRecordId.class)
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class LivingRecord {
     @Id

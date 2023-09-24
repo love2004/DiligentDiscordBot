@@ -1,14 +1,18 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
+package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "floor_area")
 @IdClass(FloorAreaId.class)
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @Component
 public class FloorArea {

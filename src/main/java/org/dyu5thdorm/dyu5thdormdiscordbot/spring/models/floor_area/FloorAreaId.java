@@ -1,10 +1,12 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
+package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 @Data
+@Component
 public class FloorAreaId implements Serializable {
     private Long floor;
     private String areaId;

@@ -91,7 +91,7 @@ public class TookCoinEmbed {
         embedBuilder.addField("機器", getMachineName(coin.getMachine()), true);
         embedBuilder.addField("故障情況說明", coin.getDescription(), true);
         embedBuilder.addField("金額", coin.getCoinAmount().toString(), true);
-        embedBuilder.addField("發生時間", coin.getTime().format(dateTimeFormatter), true);
+        embedBuilder.addField("發生時間", coin.getEventTime().format(dateTimeFormatter), true);
         embedBuilder.addField("登記時間", coin.getRecordTime().format(dateTimeFormatter), true);
         embedBuilder.setFooter(coin.getId().toString());
         return embedBuilder;
@@ -143,7 +143,7 @@ public class TookCoinEmbed {
             """, returnDate.format(dateFormatter)
         ), true);
         embedBuilder.addField("領取期限", String.format(
-                "即日起至 __**%s**__ 前", returnDate.plusDays(7L)
+                "即日起至 __**%s**__ 以前", returnDate.plusDays(7L)
         ),true);
         embedBuilder.setFooter("若領取時間無法配合，請另與舍長們另約時間領取。");
         return embedBuilder;

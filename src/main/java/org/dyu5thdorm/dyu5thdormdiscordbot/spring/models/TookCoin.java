@@ -1,15 +1,21 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "took_coin")
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class TookCoin {
     @Id
@@ -41,11 +47,14 @@ public class TookCoin {
     @Column(name = "record_time")
     private LocalDateTime recordTime;
 
-    @Column(name = "time")
-    private LocalDateTime time;
+    @Column(name = "event_time")
+    private LocalDateTime eventTime;
 
     @Column(name = "is_return")
     private Boolean isReturn;
+
+    @Column(name = "return_time")
+    private LocalDate returnTime;
 
     @Column(name = "get_back")
     private Boolean isGetBack;

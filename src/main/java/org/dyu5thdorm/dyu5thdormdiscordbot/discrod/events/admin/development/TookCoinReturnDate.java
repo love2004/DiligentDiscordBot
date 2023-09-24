@@ -12,42 +12,50 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.Took
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.modals.TookCoinReturnDateModal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.RoleOperation;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class TookCoinReturnDate extends ListenerAdapter {
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     ModalIdSet modalIdSet;
-    @Autowired
+    final
     TookCoinReturnDateModal tookCoinReturnDateModal;
-    @Autowired
+    final
     TookCoinService tookCoinService;
     @Value("${regexp.date_year_month_day}")
     String dateYearMonthDayRegexp;
-    @Autowired
+    final
     LivingRecordService livingRecordService;
-    @Autowired
+    final
     DiscordLinkService discordLinkService;
-    @Autowired
+    final
     ChannelOperation channelOperation;
-    @Autowired
+    final
     RoleOperation roleOperation;
-    @Autowired
+    final
     TookCoinEmbed tookCoinEmbed;
-    DateTimeFormatter formatter;
+
+    public TookCoinReturnDate(ButtonIdSet buttonIdSet, ModalIdSet modalIdSet, TookCoinReturnDateModal tookCoinReturnDateModal, TookCoinService tookCoinService, LivingRecordService livingRecordService, DiscordLinkService discordLinkService, ChannelOperation channelOperation, RoleOperation roleOperation, TookCoinEmbed tookCoinEmbed) {
+        this.buttonIdSet = buttonIdSet;
+        this.modalIdSet = modalIdSet;
+        this.tookCoinReturnDateModal = tookCoinReturnDateModal;
+        this.tookCoinService = tookCoinService;
+        this.livingRecordService = livingRecordService;
+        this.discordLinkService = discordLinkService;
+        this.channelOperation = channelOperation;
+        this.roleOperation = roleOperation;
+        this.tookCoinEmbed = tookCoinEmbed;
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -76,6 +84,7 @@ public class TookCoinReturnDate extends ListenerAdapter {
         event.getHook().sendMessage("登記成功！").setEphemeral(true).queue();
     }
 
+
     LocalDate toLocalDate(String date) {
         int year = Integer.parseInt(date.substring(0, 4));
         int month = Integer.parseInt(date.substring(4, 6));
@@ -84,29 +93,26 @@ public class TookCoinReturnDate extends ListenerAdapter {
     }
 
     void mentionVictim(JDA jda, LocalDate returnDate) {
-        List<String> sent = new ArrayList<>();
-        for (TookCoin tookCoin : tookCoinService.findNotGetBack()) {
-            var discordLink = discordLinkService.findByStudentId(
-                    tookCoin.getStudent().getStudentId()
-            );
-            if (sent.contains(discordLink.getDiscordId())) continue;
-            sent.add(discordLink.getDiscordId());
-            var livingRecord = livingRecordService.findLivingRecordByDiscordId(discordLink.getDiscordId());
-            int floor;
-            String floorChannelId;
-            if (livingRecord == null) {
-                floorChannelId = channelOperation.getChannelIdSet().getPublicChannel();
-            } else {
-                floor = roleOperation.getFloorByBedId(livingRecord.getBed().getBedId());
-                floorChannelId = channelOperation.getFloorChannelByFloor(floor);
-            }
-            TextChannel floorChannel = jda.getTextChannelById(floorChannelId);
-            if (floorChannel == null) continue;
-            EmbedBuilder mentionEmbed = tookCoinEmbed.getMentionGetCoinMessage(returnDate);
-            String sentMessageId = floorChannel.sendMessageEmbeds(mentionEmbed.build()).complete().getId();
-            floorChannel.sendMessage(String.format(
-                    "<@%s>", discordLink.getDiscordId()
-            )).setMessageReference(sentMessageId).queue();
-        }
+        var notGetBackRecord = tookCoinService.findNotGetBack(returnDate, 7);
+        if (notGetBackRecord.isEmpty()) return;
+        EmbedBuilder mentionEmbed = tookCoinEmbed.getMentionGetCoinMessage(returnDate);
+        TextChannel publicChannel = jda.getTextChannelById(
+                channelOperation.getChannelIdSet().getPublicChannel()
+        );
+        String messageId = publicChannel.sendMessageEmbeds(mentionEmbed.build()).complete().getId();
+        List<String> victimDiscordIdList = notGetBackRecord.stream().map(
+                e -> {
+                    DiscordLink discordLink = discordLinkService.findByStudentId(
+                            e.getStudent().getStudentId()
+                    );
+                    return String.format(
+                            "<@%s>", discordLink.getDiscordId()
+                    );
+                }
+        ).distinct().toList();
+
+        publicChannel.sendMessage(
+                String.join(" ", victimDiscordIdList)
+        ).setMessageReference(messageId).queue();
     }
 }

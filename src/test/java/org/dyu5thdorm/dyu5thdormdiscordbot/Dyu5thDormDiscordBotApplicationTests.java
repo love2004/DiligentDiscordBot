@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot;
 
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LeaveTempRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.attendance.AttendanceRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.AttendanceRecordRepository;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.NoCallRollDateRepository;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveTempRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
@@ -9,8 +10,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDate;
 
 @SpringBootTest
 class Dyu5thDormDiscordBotApplicationTests {
@@ -26,13 +25,13 @@ class Dyu5thDormDiscordBotApplicationTests {
     NoCallRollDateRepository noCallRollDateRepository;
     @Autowired
     TookCoinService tookCoinService;
+    @Autowired
+    AttendanceRecordRepository attendanceRecordRepository;
 
     @Test
     void contextLoads() {
-        for (LeaveTempRecord leaveTempRecord : leaveTempRecordService.findAllByFloorAndDate(
-                6, LocalDate.of(2023, 9, 14)
-        )) {
-            System.out.println(leaveTempRecord.getBed().getBedId());
+        for (AttendanceRecord attendanceRecord : attendanceRecordRepository.findAll()) {
+            System.out.println(attendanceRecord);
         }
     }
 

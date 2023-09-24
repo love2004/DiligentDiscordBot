@@ -41,7 +41,7 @@ public class ChannelOperation {
         );
     }
 
-    public String  getFloorChannelByFloor(Integer floor) {
+    public String  getFloorChannelIdByFloor(Integer floor) {
         return floorChannelMap.getOrDefault(floor, null);
     }
 }

@@ -1,8 +1,8 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories;
 
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecordId;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.SchoolTimestamp;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecordId;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.school_timestamp.SchoolTimestamp;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -2,7 +2,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

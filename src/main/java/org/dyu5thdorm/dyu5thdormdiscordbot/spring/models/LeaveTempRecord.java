@@ -1,15 +1,19 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Component
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @Entity()
 @Table(name = "leave_temp_record")

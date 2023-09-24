@@ -1,7 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.took_coin;
 
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.FloorArea;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
@@ -67,17 +67,17 @@ public class TookCoinHandler {
                 Integer.valueOf(args.get(2))
         );
         tookCoinModel.setMachine(type.name());
-        tookCoinModel.setTime(
+        tookCoinModel.setEventTime(
                 getLocalDateTime(args.get(3))
         );
         tookCoinModel.setIsReturn(Boolean.FALSE);
         tookCoinModel.setIsGetBack(Boolean.FALSE);
-        if (tookCoinModel.getTime().isAfter(LocalDateTime.now())) {
+        if (tookCoinModel.getEventTime().isAfter(LocalDateTime.now())) {
             return FailReason.DATE_AFTER_NOW;
         }
 
         if (tookCoinService.existsByTimeAndStudentId(
-                tookCoinModel.getTime(), student.getStudentId())
+                tookCoinModel.getEventTime(), student.getStudentId())
         ) {
             return FailReason.TIME_REPEAT;
         }

@@ -1,7 +1,8 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
+package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.school_timestamp.SchoolTimestamp;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;

@@ -41,7 +41,10 @@ public class GenerateAdmin extends ListenerAdapter {
 
         textChannel.sendMessage(
                 String.format(
-                        ":mag: 查詢住宿生(模糊查詢)\n > 僅能查詢 %s-%s 學期的住宿生", schoolYear, semester
+                        """
+                        :mag: 查詢住宿生(模糊查詢)
+                        > 僅能查詢 %s-%s 學期的住宿生
+                        """, schoolYear, semester
                 )
         ).addComponents(
                 ActionRow.of(
@@ -55,7 +58,7 @@ public class GenerateAdmin extends ListenerAdapter {
         textChannel.sendMessage("特殊類別")
                 .addComponents(
                         ActionRow.of(
-                                Button.danger(buttonIdSet.getTookCoinReturn(), "廠商卡幣已退費日期登記")
+                                Button.danger(buttonIdSet.getTookCoinReturn(), "廠商退幣日期登記")
                         )
                 ).queue();
 

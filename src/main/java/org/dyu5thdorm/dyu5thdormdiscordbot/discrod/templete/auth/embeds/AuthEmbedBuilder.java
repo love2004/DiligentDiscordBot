@@ -1,7 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.embeds;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LivingRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
