@@ -59,4 +59,18 @@ public class ButtonIdSet {
     String tookCoinReturn;
     @Value("${component.button.ip-lookup}")
     String ipLookup;
+    @Value("${component.button.attendance}")
+    String attendance;
+    @Value("${component.button.attendance.prev}")
+    String attendancePrev;
+    @Value("${component.button.attendance.next}")
+    String attendanceNext;
+    @Value("${component.button.attendance.all-in}")
+    String attendanceAllIn;
+    @Value("${component.button.attendance.all-out}")
+    String attendanceAllOut;
+    @Value("${component.button.attendance.out}")
+    String attendanceOut;
+    @Value("${component.button.attendance.complete}")
+    String attendanceComplete;
 }

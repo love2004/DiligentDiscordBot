@@ -39,7 +39,7 @@ public class TookCoinHandler {
     FloorArea getFloorArea(Type type, String floorOrFloorArea) {
         FloorArea floorArea = new FloorArea();
         if (type == Type.VENDING) {
-            floorArea.setFloor(Long.parseLong(floorOrFloorArea));
+            floorArea.setFloor(Integer.parseInt(floorOrFloorArea));
             if (floorArea.getFloor() == 1L) {
                 floorArea.setAreaId("AB");
             } else {
@@ -47,7 +47,7 @@ public class TookCoinHandler {
             }
 
         } else {
-            Long floor = Long.parseLong(floorOrFloorArea.substring(0, 1));
+            Integer floor = Integer.parseInt(floorOrFloorArea.substring(0, 1));
             String areaId = floorOrFloorArea.substring(1, 3);
             floorArea.setFloor(floor);
             floorArea.setAreaId(areaId);
@@ -70,8 +70,6 @@ public class TookCoinHandler {
         tookCoinModel.setEventTime(
                 getLocalDateTime(args.get(3))
         );
-        tookCoinModel.setIsReturn(Boolean.FALSE);
-        tookCoinModel.setIsGetBack(Boolean.FALSE);
         if (tookCoinModel.getEventTime().isAfter(LocalDateTime.now())) {
             return FailReason.DATE_AFTER_NOW;
         }

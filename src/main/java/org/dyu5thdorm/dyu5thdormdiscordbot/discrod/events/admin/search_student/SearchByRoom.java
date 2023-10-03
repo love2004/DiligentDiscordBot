@@ -61,14 +61,14 @@ public class SearchByRoom extends ListenerAdapter {
     public void onModalInteraction(ModalInteractionEvent event) {
         if (!event.getModalId().equals(modalIdSet.getSearchByBI())) return;
 
-        String searchBedId = event.getValue(modalIdSet.getFirstTextInput()).getAsString();
+        String searchRoomId = event.getValue(modalIdSet.getFirstTextInput()).getAsString();
 
-        if (!searchBedId.matches(roomRegex)) {
+        if (!searchRoomId.matches(roomRegex)) {
             event.reply("輸入的房號格式錯誤").setEphemeral(true).queue();
             return;
         }
 
-        Set<LivingRecord> livingRecords = livingRecordService.findAllByBedIdContains(searchBedId);
+        Set<LivingRecord> livingRecords = livingRecordService.findAllByRoomId(searchRoomId);
 
         if (livingRecords.isEmpty()) {
             event.reply("查無結果").setEphemeral(true).queue();

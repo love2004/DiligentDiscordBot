@@ -1,7 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.TookCoinRepository;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.TookCoinRepo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,19 +12,14 @@ import java.util.stream.Collectors;
 @Service
 public class TookCoinService {
     final
-    TookCoinRepository tookCoinRepository;
+    TookCoinRepo tookCoinRepository;
 
-    public TookCoinService(TookCoinRepository tookCoinRepository) {
+    public TookCoinService(TookCoinRepo tookCoinRepository) {
         this.tookCoinRepository = tookCoinRepository;
     }
 
 
     public void save(TookCoin tookCoinModel) {
-        if (tookCoinModel.getIsGetBack()) {
-            tookCoinModel.setGetBackTime(
-                    LocalDateTime.now()
-            );
-        }
         tookCoinRepository.save(tookCoinModel);
     }
 
@@ -37,7 +32,7 @@ public class TookCoinService {
     }
 
     public Set<TookCoin> findUnGetByStudentId(String id) {
-        return tookCoinRepository.findAllByStudentStudentIdAndIsGetBack(id, false);
+        return tookCoinRepository.findAllByStudentStudentIdAndGetBackTimeIsNull(id);
     }
 
     public TookCoin findByRecordId(Long id) {
@@ -47,18 +42,17 @@ public class TookCoinService {
     public void saveReturnCoinDay(LocalDate localDate) {
         var r = tookCoinRepository.findAllByDateAndNotReturn(localDate);
         for (TookCoin tookCoin : r) {
-            tookCoin.setIsReturn(Boolean.TRUE);
             tookCoin.setReturnTime(localDate);
             tookCoinRepository.save(tookCoin);
         }
     }
 
     public Set<TookCoin> findNotGetBack() {
-        return tookCoinRepository.findAllByIsGetBackAndIsReturn(false, true);
+        return tookCoinRepository.findAllNotGetBack();
     }
 
     public Set<TookCoin> findNotGetBack(LocalDate returnDate, int dayIn) {
-        return tookCoinRepository.findAllByIsGetBackAndIsReturn(false, true).stream().filter(
+        return tookCoinRepository.findAllNotGetBack().stream().filter(
                 e -> {
                     if (e.getReturnTime() == null) return false;
                     return e.getReturnTime().plusDays(dayIn).isAfter(returnDate) ||

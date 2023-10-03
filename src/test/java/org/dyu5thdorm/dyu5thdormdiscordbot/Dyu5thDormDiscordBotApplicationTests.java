@@ -1,8 +1,8 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot;
 
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.attendance.AttendanceRecord;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.AttendanceRecordRepository;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.NoCallRollDateRepository;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.AttendanceRecordRepo;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.NoCallRollDateRepo;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveTempRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.NoCallRollDateService;
@@ -22,11 +22,11 @@ class Dyu5thDormDiscordBotApplicationTests {
     @Autowired
     NoCallRollDateService noCallRollDateService;
     @Autowired
-    NoCallRollDateRepository noCallRollDateRepository;
+    NoCallRollDateRepo noCallRollDateRepository;
     @Autowired
     TookCoinService tookCoinService;
     @Autowired
-    AttendanceRecordRepository attendanceRecordRepository;
+    AttendanceRecordRepo attendanceRecordRepository;
 
     @Test
     void contextLoads() {

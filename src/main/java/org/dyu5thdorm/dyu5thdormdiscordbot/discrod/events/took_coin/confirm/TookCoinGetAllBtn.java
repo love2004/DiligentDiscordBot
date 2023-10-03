@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,14 +56,12 @@ public class TookCoinGetAllBtn extends ListenerAdapter {
             return;
         }
 
-        List<TookCoin> queryList = ids.stream().map(
-                e -> tookCoinService.findByRecordId(e)
-        ).toList();
+        List<TookCoin> queryList = ids.stream().map(tookCoinService::findByRecordId).toList();
 
         if (buttonIdSet.getTookCoinGetBackMerge().equalsIgnoreCase(eventButtonId)) {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             int sum = queryList.stream().mapToInt(e -> {
-                if (e.getIsGetBack()) return 0;
+                if (e.getGetBackTime() != null) return 0;
                 return e.getCoinAmount();
             }).sum();
 
@@ -75,7 +74,7 @@ public class TookCoinGetAllBtn extends ListenerAdapter {
                     .addField("合併簽收總額", Integer.toString(sum), true)
                     .setColor(Color.ORANGE)
                     .setFooter(
-                            queryList.stream().filter(e -> !e.getIsGetBack()).map(
+                            queryList.stream().filter(e -> e.getGetBackTime() == null).map(
                                     TookCoin::getId
                             ).toList().toString()
                     );
@@ -88,11 +87,11 @@ public class TookCoinGetAllBtn extends ListenerAdapter {
         }
 
         for (TookCoin query : queryList) {
-            if (query.getIsGetBack()) {
+            if (query.getGetBackTime() != null) {
                 event.getHook().sendMessage("無法合併簽收，因為您已經簽收過了！").setEphemeral(true).queue();
                 return;
             }
-            query.setIsGetBack(Boolean.TRUE);
+            query.setGetBackTime(LocalDateTime.now());
             tookCoinService.save(query);
         }
 

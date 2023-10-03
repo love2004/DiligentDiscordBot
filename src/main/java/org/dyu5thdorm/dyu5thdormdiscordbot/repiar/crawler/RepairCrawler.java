@@ -4,7 +4,6 @@ import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import jakarta.annotation.PostConstruct;
 import org.dyu5thdorm.dyu5thdormdiscordbot.DormWebClient;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.RepairModel;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,11 +32,6 @@ public class RepairCrawler {
         this.loginParameter = loginParameter;
     }
 
-    @PostConstruct
-    void init() throws IOException {
-        login(loginParameter);
-    }
-
     public boolean repair(RepairModel parameter) throws IOException {
         if (!logged()) {
             login(loginParameter);
@@ -49,20 +43,20 @@ public class RepairCrawler {
         return webClient.getPage(request).getWebResponse().getStatusCode() == 200;
     }
 
-    public WebResponse login(LoginParameter loginParameter) throws IOException {
+    public void login(LoginParameter loginParameter) throws IOException {
         WebRequest request = new WebRequest(
                 new URL(loginApiURL)
         );
         request.setHttpMethod(HttpMethod.POST);
         String requestBody = loginParameter.getRequestBody();
         request.setRequestBody(requestBody);
-        return webClient.getPage(request).getWebResponse();
+        webClient.getPage(request).getWebResponse();
     }
 
     public boolean logged() throws IOException {
         HtmlPage page = webClient.getPage(repairApiURL);
         var result = page.querySelectorAll("[name=txt_userid]");
-        return result.size() == 0; // 0 == not login, > 0 == logged
+        return result.isEmpty();
     }
 
     public WebResponse logout() throws IOException {

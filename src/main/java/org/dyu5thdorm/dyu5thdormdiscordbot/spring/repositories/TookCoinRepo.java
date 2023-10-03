@@ -8,13 +8,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-public interface TookCoinRepository extends JpaRepository<TookCoin, Long> {
+public interface TookCoinRepo extends JpaRepository<TookCoin, Long> {
     boolean existsByEventTimeAndStudent_StudentId(LocalDateTime time, String student_studentId);
     Set<TookCoin> findAllByStudentStudentId(String student_studentId);
-    Set<TookCoin> findAllByStudentStudentIdAndIsGetBack(String student_studentId, Boolean isGetBack);
+    Set<TookCoin> findAllByStudentStudentIdAndGetBackTimeIsNull(String student_studentId);
 
-    @Query("SELECT t FROM TookCoin t WHERE t.isReturn = false AND FUNCTION('DATE', t.recordTime) < :localDate")
+    @Query("SELECT t FROM TookCoin t WHERE FUNCTION('DATE', t.recordTime) < :localDate")
     Set<TookCoin> findAllByDateAndNotReturn(LocalDate localDate);
 
-    Set<TookCoin> findAllByIsGetBackAndIsReturn(Boolean isGetBack, Boolean isReturn);
+    @Query("SELECT t FROM TookCoin t WHERE t.getBackTime is null and t.returnTime is not null")
+    Set<TookCoin> findAllNotGetBack();
 }

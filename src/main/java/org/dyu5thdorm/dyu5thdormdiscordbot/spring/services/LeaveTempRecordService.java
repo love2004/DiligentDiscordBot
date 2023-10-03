@@ -3,7 +3,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LeaveTempRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.LeaveTempRecordRepository;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.LeaveTempRecordRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,11 @@ import java.util.List;
 @Service
 public class LeaveTempRecordService {
     final
-    LeaveTempRecordRepository repository;
+    LeaveTempRecordRepo repository;
     @Autowired
     LivingRecordService livingRecordService;
 
-    public LeaveTempRecordService(LeaveTempRecordRepository repository) {
+    public LeaveTempRecordService(LeaveTempRecordRepo repository) {
         this.repository = repository;
 
     }

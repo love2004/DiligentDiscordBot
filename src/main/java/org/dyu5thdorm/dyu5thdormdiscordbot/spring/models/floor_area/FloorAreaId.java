@@ -8,6 +8,6 @@ import java.io.Serializable;
 @Data
 @Component
 public class FloorAreaId implements Serializable {
-    private Long floor;
+    private Integer floor;
     private String areaId;
 }

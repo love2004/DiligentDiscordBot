@@ -45,17 +45,14 @@ public class GenerateReqLevCadre extends ListenerAdapter {
         textChannel.sendMessage(
                 String.format(
                         """
-                        # 幹部 *暫時* 點名系統說明：
-                        點擊下方按鈕後可得知，今晚申請請假的住宿生人數，請在點名&請假系統尚未完成時，依照以下步驟進行點名：
-                        - 於每天 22:30 進行實體點名
-                        - 點名完後點下方按鈕查看今天的請假住宿生資訊
-                        - 審核請假資訊資訊並 key 入 點名 Google 試算表 (試算表製作完成後會訂選在此頻道)
+                        # 幹部點名系統說明：
+                        
                         
                         **注意！請假申請只開放到 %d:%d，若有住宿生超時仍想請假，請各位樓長依照自己的作息，斟酌申請受理與否！**
                         """, availableTimeHour, availableTimeMinute
                 )
                 ).addActionRow(
-                        Button.primary(buttonIdSet.getReqForLeaveCadre(), "查看請假申請紀錄")
+                        Button.primary(buttonIdSet.getAttendance(), "開始點名")
                 )
                 .queue();
         event.getHook().sendMessage("DONE").queue();

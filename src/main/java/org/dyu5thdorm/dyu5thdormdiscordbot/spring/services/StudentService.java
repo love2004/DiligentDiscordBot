@@ -1,7 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.StudentRepository;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.StudentRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -10,9 +10,9 @@ import java.util.Set;
 @Service
 public class StudentService {
     final
-    StudentRepository studentRepository;
+    StudentRepo studentRepository;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepo studentRepository) {
         this.studentRepository = studentRepository;
     }
 

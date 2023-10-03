@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface DiscordLinkRepository extends JpaRepository<DiscordLink, String> {
+public interface DiscordLinkRepo extends JpaRepository<DiscordLink, String> {
     boolean existsByStudent(Student student);
     Optional<DiscordLink> findByStudentStudentId(String student_studentId);
 }

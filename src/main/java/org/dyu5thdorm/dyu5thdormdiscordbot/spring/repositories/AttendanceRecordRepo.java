@@ -4,5 +4,8 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.attendance.AttendanceRe
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.attendance.AttendanceRecordId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AttendanceRecordRepository extends JpaRepository<AttendanceRecord, AttendanceRecordId> {
+import java.time.LocalDate;
+
+public interface AttendanceRecordRepo extends JpaRepository<AttendanceRecord, AttendanceRecordId> {
+    boolean existsByBedBedIdContainsAndAttendanceDateEquals(String roomId, LocalDate attendanceDate);
 }

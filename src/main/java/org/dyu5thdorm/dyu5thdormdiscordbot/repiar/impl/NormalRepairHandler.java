@@ -37,16 +37,30 @@ public class NormalRepairHandler implements RepairHandler {
         String description = args.get(2);
         String repairTime = args.get(3);
 
+        RepairModel model = factory.factory(type, reporter, location, item, description, repairTime);
+        String message = repair.getLineMessage(model);
+        return doRepair(model) && doNotify(message);
+    }
+
+    boolean doRepair(RepairModel repairModel) {
         try {
-            RepairModel model = factory.factory(type, reporter, location, item, description, repairTime);
-            String message = repair.getLineMessage(model);
-            repairCrawler.repair(model);
-            lineNotify.sendMessage(message, RepairTokenSet.RepairType.NORMAL);
-            return true;
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            repairCrawler.repair(repairModel);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            return false;
         }
 
-        return false;
+        return true;
+    }
+
+    boolean doNotify(String message) {
+        try {
+            lineNotify.sendMessage(message, RepairTokenSet.RepairType.NORMAL);
+        } catch (IOException | InterruptedException e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 }

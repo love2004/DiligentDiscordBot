@@ -18,8 +18,8 @@ public class AttendanceStatus {
 
     @Id
     @Column(name = "attendance_status_id")
-    private byte attendanceStatusId;
+    private Integer attendanceStatusId;
 
     @Column(name = "name", length = 1, nullable = false)
-    private char name;
+    private String name;
 }

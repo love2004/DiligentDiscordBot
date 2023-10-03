@@ -1,4 +1,4 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.req_lev;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.leave;
 
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -10,7 +10,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ReqLevModalEvent extends ListenerAdapter {
+public class LeaveModalEvent extends ListenerAdapter {
     final
     ModalIdSet modalIdSet;
     final
@@ -20,7 +20,7 @@ public class ReqLevModalEvent extends ListenerAdapter {
     final
     ReqLevOperation reqLevOperation;
 
-    public ReqLevModalEvent(ModalIdSet modalIdSet, LeaveTempRecordService leaveService, LivingRecordService livingRecordService, ReqLevOperation reqLevOperation) {
+    public LeaveModalEvent(ModalIdSet modalIdSet, LeaveTempRecordService leaveService, LivingRecordService livingRecordService, ReqLevOperation reqLevOperation) {
         this.modalIdSet = modalIdSet;
         this.leaveService = leaveService;
         this.livingRecordService = livingRecordService;

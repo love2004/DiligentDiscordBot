@@ -1,4 +1,4 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.req_lev.cadre;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.leave.old.cadre;
 
 import jakarta.annotation.PostConstruct;
 import net.dv8tion.jda.api.EmbedBuilder;

@@ -1,9 +1,9 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.req_lev;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.leave;
 
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.req_lev.modals.ReqLevModal;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.modals.LeaveModal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ReqLevOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 
 @Component
 @PropertySource("classpath:req_leave.properties")
-public class ReqLevBtnEvent extends ListenerAdapter {
+public class LeaveBtnEvent extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
@@ -27,16 +27,16 @@ public class ReqLevBtnEvent extends ListenerAdapter {
     final
     LivingRecordService livingRecordService;
     final
-    ReqLevModal reqLevModal;
+    LeaveModal leaveModal;
     final
     ReqLevOperation reqLevOperation;
 
-    public ReqLevBtnEvent(NoCallRollDateService noCallRollDateService, ButtonIdSet buttonIdSet, LeaveTempRecordService leaveTempRecordService, LivingRecordService livingRecordService, ReqLevModal reqLevModal, ReqLevOperation reqLevOperation) {
+    public LeaveBtnEvent(NoCallRollDateService noCallRollDateService, ButtonIdSet buttonIdSet, LeaveTempRecordService leaveTempRecordService, LivingRecordService livingRecordService, LeaveModal leaveModal, ReqLevOperation reqLevOperation) {
         this.noCallRollDateService = noCallRollDateService;
         this.buttonIdSet = buttonIdSet;
         this.leaveTempRecordService = leaveTempRecordService;
         this.livingRecordService = livingRecordService;
-        this.reqLevModal = reqLevModal;
+        this.leaveModal = leaveModal;
         this.reqLevOperation = reqLevOperation;
     }
 
@@ -81,6 +81,6 @@ public class ReqLevBtnEvent extends ListenerAdapter {
             ).setEphemeral(true).queue();
             return;
         }
-        event.replyModal(reqLevModal.getModal()).queue();
+        event.replyModal(leaveModal.getModal()).queue();
     }
 }

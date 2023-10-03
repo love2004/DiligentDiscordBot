@@ -31,7 +31,7 @@ public class SpecialRepairHandler implements RepairHandler {
             lineNotify.sendMessage(message, adapter(type));
             return true;
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
 
         return false;

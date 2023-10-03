@@ -1,0 +1,60 @@
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.attendance;
+
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.embeds.AttendanceEmbedBuilder;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+import java.util.Set;
+
+@Component
+public class AttendancePrevBtn extends ListenerAdapter {
+    final
+    ButtonIdSet buttonIdSet;
+    final
+    AttendanceHandler attendanceHandler;
+    final
+    AttendanceEmbedBuilder attendanceEmbedBuilder;
+
+    public AttendancePrevBtn(ButtonIdSet buttonIdSet, AttendanceHandler attendanceHandler, AttendanceEmbedBuilder attendanceEmbedBuilder) {
+        this.buttonIdSet = buttonIdSet;
+        this.attendanceHandler = attendanceHandler;
+        this.attendanceEmbedBuilder = attendanceEmbedBuilder;
+    }
+
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        String eventButtonId = event.getButton().getId();
+        if (!buttonIdSet.getAttendancePrev().equalsIgnoreCase(eventButtonId)) return;
+
+        event.deferReply().setEphemeral(true).queue();
+
+        if (event.getMessage().getEmbeds().isEmpty()) {
+            event.getHook().sendMessage("NULL").setEphemeral(true).queue();
+            return;
+        }
+
+        String roomId = Objects.requireNonNull(event.getMessage().getEmbeds().get(0).getFooter()).getText();
+
+            Set<LivingRecord> prev = attendanceHandler.prevRoom(roomId);
+        if (prev.isEmpty()) {
+            event.getHook().sendMessage("已是最前").setEphemeral(true).queue();
+            return;
+        }
+        boolean isEmptyRoom = attendanceHandler.isEmptyRoom(prev);
+        event.getHook().sendMessageEmbeds(
+                attendanceEmbedBuilder.getByLivingRecord(prev).build()
+        ).addActionRow(
+                Button.secondary(buttonIdSet.getAttendancePrev(), "上一房"),
+                Button.success(buttonIdSet.getAttendanceAllIn(), "全到").withDisabled(isEmptyRoom),
+                Button.primary(buttonIdSet.getAttendanceAllOut(), "全缺").withDisabled(isEmptyRoom),
+                Button.danger(buttonIdSet.getAttendanceOut(), "缺").withDisabled(isEmptyRoom),
+                Button.secondary(buttonIdSet.getAttendanceNext(), "下一房")
+        ).queue();
+    }
+}

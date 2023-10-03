@@ -50,14 +50,14 @@ public class TookMoneySearch extends ListenerAdapter {
             event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getBySearchResult(record).build()
             ).addActionRow(
-                    record.getIsReturn() ?
+                    record.getReturnTime() != null ?
                             Button.success(buttonIdSet.getTookCoinGetBack(), "簽收") :
                             Button.success(buttonIdSet.getTookCoinGetBack(), "簽收").asDisabled()
             ).setEphemeral(true).queue();
         }
 
         if (queryRecords.size() > 1) {
-            boolean allReturn = queryRecords.stream().allMatch(TookCoin::getIsReturn);
+            boolean allReturn = queryRecords.stream().allMatch(e -> e.getReturnTime() != null);
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             int backCoinSum = queryRecords.stream().mapToInt(TookCoin::getCoinAmount).sum();

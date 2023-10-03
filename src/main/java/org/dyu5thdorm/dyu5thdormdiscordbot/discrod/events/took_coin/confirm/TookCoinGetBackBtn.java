@@ -13,6 +13,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.time.LocalDateTime;
 
 @Component
 public class TookCoinGetBackBtn extends ListenerAdapter {
@@ -49,12 +50,12 @@ public class TookCoinGetBackBtn extends ListenerAdapter {
             event.getHook().sendMessage("查無結果").setEphemeral(true).queue();
             return;
         }
-        if (query.getIsGetBack()) {
+        if (query.getGetBackTime() != null) {
             event.getHook().sendMessage("無效的操作！您已簽收過了！").setEphemeral(true).queue();
             return;
         }
 
-        if (!query.getIsReturn()) {
+        if (query.getReturnTime() == null) {
             event.getHook().sendMessage("錢尚未向廠商請款！無法簽收！").setEphemeral(true).queue();
             return;
         }
@@ -73,7 +74,7 @@ public class TookCoinGetBackBtn extends ListenerAdapter {
             return;
         }
 
-        query.setIsGetBack(Boolean.TRUE);
+        query.setGetBackTime(LocalDateTime.now());
         tookCoinService.save(query);
         TextChannel cadreGetBack = event.getJDA().getTextChannelById(channelIdSet.getTookCoinGetBackCadre());
         if (cadreGetBack == null) return;

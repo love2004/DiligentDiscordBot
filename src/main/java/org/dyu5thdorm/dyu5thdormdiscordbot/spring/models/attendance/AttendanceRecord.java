@@ -22,25 +22,25 @@ import java.time.LocalDateTime;
 public class AttendanceRecord {
     @Id
     @ManyToOne
-    @JoinColumn(name = "student_id", referencedColumnName = "student_id", insertable = false, updatable = false)
+    @JoinColumn(name = "student_id", referencedColumnName = "student_id")
     private Student student;
 
     @Id
     @Column(name = "attendance_date")
     private LocalDate attendanceDate;
 
-    @Column(name = "attendance_date_time", nullable = false)
+    @Column(name = "attendance_date_time")
     private LocalDateTime attendanceDateTime;
 
     @ManyToOne
-    @JoinColumn(name = "bed_id", referencedColumnName = "bed_id", insertable = false, updatable = false)
+    @JoinColumn(name = "bed_id", referencedColumnName = "bed_id")
     private Bed bed;
 
     @ManyToOne
-    @JoinColumn(name = "attendance_status_id", referencedColumnName = "attendance_status_id", insertable = false, updatable = false)
+    @JoinColumn(name = "attendance_status_id", referencedColumnName = "attendance_status_id")
     private AttendanceStatus attendanceStatus;
 
     @ManyToOne
-    @JoinColumn(name = "cadre_id", referencedColumnName = "cadre_id", insertable = false, updatable = false)
+    @JoinColumn(name = "cadre_id", referencedColumnName = "cadre_id")
     private Cadre cadre;
 }

@@ -2,15 +2,15 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.DiscordLinkRepository;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.DiscordLinkRepo;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DiscordLinkService {
     final
-    DiscordLinkRepository discordLinkRepository;
+    DiscordLinkRepo discordLinkRepository;
 
-    public DiscordLinkService(DiscordLinkRepository discordLinkRepository) {
+    public DiscordLinkService(DiscordLinkRepo discordLinkRepository) {
         this.discordLinkRepository = discordLinkRepository;
     }
 

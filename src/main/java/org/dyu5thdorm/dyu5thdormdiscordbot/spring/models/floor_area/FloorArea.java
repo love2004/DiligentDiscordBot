@@ -18,9 +18,15 @@ import org.springframework.stereotype.Component;
 public class FloorArea {
     @Id
     @Column(name = "floor")
-    private Long floor;
+    private Integer floor;
 
     @Id
     @Column(name = "area_id")
     private String areaId;
+
+    @Column(name = "start_room_id")
+    private Integer startRoomId;
+
+    @Column(name = "end_room_id")
+    private Integer endRoomId;
 }
