@@ -7,11 +7,13 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area_cadre.FloorA
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.*;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class AttendanceHandler {
@@ -25,6 +27,8 @@ public class AttendanceHandler {
     FloorAreaService floorAreaService;
     final
     AttendanceService attendanceService;
+    @Value("${regexp.bed_id}")
+    String bedIdRegex;
 
     public AttendanceHandler(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, FloorAreaCadreService floorAreaCadreService, FloorAreaService floorAreaService, AttendanceService attendanceService) {
         this.livingRecordService = livingRecordService;
@@ -32,6 +36,10 @@ public class AttendanceHandler {
         this.floorAreaCadreService = floorAreaCadreService;
         this.floorAreaService = floorAreaService;
         this.attendanceService = attendanceService;
+    }
+
+    public boolean hasComplete(String currentRoomId, Set<LivingRecord> next) {
+        return next.isEmpty() || isLastRoom(currentRoomId);
     }
 
     public Set<LivingRecord> nextRoom(String currentRoomId) {
@@ -45,21 +53,25 @@ public class AttendanceHandler {
     // 開始點名，依照樓長的區域開始做點名。
     public Set<LivingRecord> getRoomStart(String floorCadreDiscordId) {
         DiscordLink discordLink = discordLinkService.findByDiscordId(floorCadreDiscordId);
-        if (discordLink == null) return Set.of();
+        if (discordLink == null) return null;
         Student student = discordLink.getStudent();
         Optional<FloorAreaCadre> optional = getFloorCadre(student);
-        if (optional.isEmpty()) return Set.of();
+        if (optional.isEmpty()) return null;
         FloorAreaCadre floorAreaCadre = optional.get();
         var byFloorArea = floorAreaService.findByFloorArea(floorAreaCadre.getFloorArea());
         if (byFloorArea.isEmpty()) {
-            return Set.of();
+            return null;
         }
-        Integer roomStartId = byFloorArea.get().getStartRoomId();
-        Integer floor = floorAreaCadre.getFloorArea().getFloor();
         if (isAllEmptyRoomArea(byFloorArea.get())) {
+            return null;
+        }
+
+        var notCompleteList = checkNotComplete(floorAreaCadre);
+        if (notCompleteList == null || notCompleteList.isEmpty()) {
             return Set.of();
         }
-        return roomOperation(floor, roomStartId, 0);
+
+        return notCompleteList;
     }
 
     Optional<FloorAreaCadre> getFloorCadre(Student student) {
@@ -176,11 +188,24 @@ public class AttendanceHandler {
         return true;
     }
 
-    public Set<LivingRecord> compete(String discordId) {
-        var cadreDiscordLink = discordLinkService.findByStudentId(discordId);
+    public void doAttendance(@NotNull String cadreDiscordId, @NotNull List<String> bedIds, boolean isInRoom) {
+        for (String bedId : bedIds) {
+            if (!bedId.matches(bedIdRegex)) continue;
+            attendance(
+                    bedId,
+                    isInRoom ? AttendanceStatusEnum.IN : AttendanceStatusEnum.OUT,
+                    cadreDiscordId
+            );
+        }
+    }
+
+    public Set<LivingRecord> getNotComplete(String discordId) {
+        var cadreDiscordLink = discordLinkService.findByDiscordId(discordId);
         if (cadreDiscordLink == null) return null;
         Optional<FloorAreaCadre> floorAreaCadre = floorAreaCadreService.findByCadreStudent(cadreDiscordLink.getStudent());
-        return floorAreaCadre.map(this::checkNotComplete).orElse(null);
+        return floorAreaCadre.map(this::checkNotComplete).orElse(
+                null
+        );
     }
 
     public Set<LivingRecord> checkNotComplete(FloorAreaCadre floorAreaCadre) {
@@ -188,15 +213,15 @@ public class AttendanceHandler {
         Integer startRoomId = floorAreaCadre.getFloorArea().getStartRoomId();
         Integer endRoomId = floorAreaCadre.getFloorArea().getEndRoomId();
         LocalDate today = LocalDate.now();
-        List<String> notCompete = new ArrayList<>();
-        for (int i = startRoomId; i < endRoomId; i++) {
+        for (int i = startRoomId; i <= endRoomId; i++) {
             String roomId = getRoomIdString(floor, i);
-            if (attendanceService.existByRoomIdAndData(roomId, today)) {
-                notCompete.add(roomId);
+            if (!attendanceService.existByRoomIdAndData(roomId, today)) {
+                if (isIllegalRoom(i)) continue;
+                var query = livingRecordService.findAllByRoomId(roomId);
+                if (query.isEmpty() || isEmptyRoom(query)) continue;
+                return query;
             }
         }
-        return notCompete.stream().map(
-                livingRecordService::findAllByRoomId
-        ).flatMap(Collection::stream).collect(Collectors.toSet());
+        return Set.of();
     }
 }

@@ -31,7 +31,7 @@ public class AttendanceEmbedBuilder {
             embedBuilder.setTitle("錯誤");
             return embedBuilder;
         }
-        roomId = getRoomByGetId(livingRecords.get(0).getBed().getBedId());
+        roomId = getRoomIdStringByBedId(livingRecords.get(0).getBed().getBedId());
         embedBuilder.setColor(Color.CYAN);
         embedBuilder.setTitle(roomId);
 
@@ -67,24 +67,28 @@ public class AttendanceEmbedBuilder {
 
     boolean isSameRoom(List<LivingRecord> records) {
         if (records.isEmpty()) return false;
-        String roomId = getRoomByGetId(records.get(0).getBed().getBedId());
+        String roomId = getRoomIdStringByBedId(records.get(0).getBed().getBedId());
         if (roomId == null) return false;
         return records.stream().allMatch(e -> e.getBed().getBedId().contains(roomId));
     }
 
-    String getRoomByGetId(String bedId) {
+    public String getRoomIdStringByBedId(String bedId) {
         if (!bedId.matches(bedIdRegex)) return null;
         return bedId.substring(0, 4);
     }
 
     public List<ItemComponent> getAttendanceActionRow(boolean isLastRoom, boolean isEmptyRoom) {
-         return List.of(
-                 Button.secondary(buttonIdSet.getAttendancePrev(), "上一房"),
-                 Button.success(buttonIdSet.getAttendanceAllIn(), "全到").withDisabled(isEmptyRoom),
-                 Button.primary(buttonIdSet.getAttendanceAllOut(), "全缺").withDisabled(isEmptyRoom),
-                 Button.danger(buttonIdSet.getAttendanceOut(), "缺").withDisabled(isEmptyRoom),
-                 isLastRoom ? Button.success(buttonIdSet.getAttendanceComplete(), "點名完成") :
-                         Button.secondary(buttonIdSet.getAttendanceNext(), "下一房")
-         );
+        List<ItemComponent> actionRows = new java.util.ArrayList<>(List.of(
+                Button.secondary(buttonIdSet.getAttendancePrev(), "上一房"),
+                Button.success(buttonIdSet.getAttendanceAllIn(), "全到").withDisabled(isEmptyRoom),
+                Button.primary(buttonIdSet.getAttendanceAllOut(), "全缺").withDisabled(isEmptyRoom),
+                Button.danger(buttonIdSet.getAttendanceOut(), "缺").withDisabled(isEmptyRoom)
+        ));
+        if (!isLastRoom) {
+            actionRows.add(
+                    Button.secondary(buttonIdSet.getAttendanceNext(), "下一房")
+            );
+        }
+        return actionRows;
     }
 }

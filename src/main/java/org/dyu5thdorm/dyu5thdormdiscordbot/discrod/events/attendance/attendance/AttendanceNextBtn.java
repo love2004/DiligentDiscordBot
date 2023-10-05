@@ -21,10 +21,14 @@ public class AttendanceNextBtn extends ListenerAdapter {
     final
     AttendanceEmbedBuilder attendanceEmbedBuilder;
 
-    public AttendanceNextBtn(ButtonIdSet buttonIdSet, AttendanceHandler attendanceHandler, AttendanceEmbedBuilder attendanceEmbedBuilder) {
+    final
+    AttendanceEventUtils attendanceEventUtils;
+
+    public AttendanceNextBtn(ButtonIdSet buttonIdSet, AttendanceHandler attendanceHandler, AttendanceEmbedBuilder attendanceEmbedBuilder, AttendanceEventUtils attendanceEventUtils) {
         this.buttonIdSet = buttonIdSet;
         this.attendanceHandler = attendanceHandler;
         this.attendanceEmbedBuilder = attendanceEmbedBuilder;
+        this.attendanceEventUtils = attendanceEventUtils;
     }
 
     @Override
@@ -50,19 +54,6 @@ public class AttendanceNextBtn extends ListenerAdapter {
             event.getHook().sendMessage("已是最後").setEphemeral(true).queue();
             return;
         }
-        MessageEmbed roomEmbed = attendanceEmbedBuilder.getByLivingRecord(next).build();
-        if (roomEmbed.getFooter() == null) {
-            return;
-        }
-
-        boolean isLastRoom = attendanceHandler.isLastRoom(roomEmbed.getFooter().getText());
-        boolean isEmptyRoom = attendanceHandler.isEmptyRoom(next);
-        event.getHook().sendMessageEmbeds(
-                roomEmbed
-        ).setActionRow(
-                attendanceEmbedBuilder.getAttendanceActionRow(isLastRoom, isEmptyRoom)
-        ).queue();
+        attendanceEventUtils.sendAttendanceEmbed(event, next);
     }
-
-
 }
