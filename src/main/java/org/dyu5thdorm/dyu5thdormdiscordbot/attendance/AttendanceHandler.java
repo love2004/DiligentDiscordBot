@@ -1,5 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.attendance;
 
+import jakarta.annotation.PostConstruct;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,18 +30,47 @@ public class AttendanceHandler {
     FloorAreaService floorAreaService;
     final
     AttendanceService attendanceService;
+    final
+    Maintenance maintenance;
+
     @Value("${regexp.bed_id}")
     String bedIdRegex;
+    @Value("${attendance.start.time.hour}")
+    Integer startTimeHour;
+    @Value("${attendance.start.time.min}")
+    Integer startTimeMin;
+    @Value("${attendance.end.time.hour}")
+    Integer endTimeHour;
+    @Value("${attendance.end.time.min}")
+    Integer endTimeMin;
+    LocalTime startLocalTime;
+    LocalTime endLocalTime;
 
-    public AttendanceHandler(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, FloorAreaCadreService floorAreaCadreService, FloorAreaService floorAreaService, AttendanceService attendanceService) {
+    @PostConstruct
+    void init() {
+        startLocalTime = LocalTime.of(startTimeHour, startTimeMin);
+        endLocalTime = LocalTime.of(endTimeHour, endTimeMin);
+    }
+
+    public AttendanceHandler(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, FloorAreaCadreService floorAreaCadreService, FloorAreaService floorAreaService, AttendanceService attendanceService, Maintenance maintenance) {
         this.livingRecordService = livingRecordService;
         this.discordLinkService = discordLinkService;
         this.floorAreaCadreService = floorAreaCadreService;
         this.floorAreaService = floorAreaService;
         this.attendanceService = attendanceService;
+        this.maintenance = maintenance;
     }
 
-    public boolean hasComplete(String currentRoomId, Set<LivingRecord> next) {
+    public boolean isLegalTime(@NotNull LocalTime time) {
+        return time.isBefore(startLocalTime) && !maintenance.isMaintenanceStatus();
+    }
+
+    public boolean isAfter(LocalTime time) {
+        boolean isAfterThan = time.isAfter(endLocalTime) || time.equals(endLocalTime);
+        return isAfterThan && !maintenance.isMaintenanceStatus();
+    }
+
+    public boolean hasComplete(String currentRoomId, @NotNull Set<LivingRecord> next) {
         return next.isEmpty() || isLastRoom(currentRoomId);
     }
 

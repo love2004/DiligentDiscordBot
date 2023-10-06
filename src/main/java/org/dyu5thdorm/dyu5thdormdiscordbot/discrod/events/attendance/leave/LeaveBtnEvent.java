@@ -5,9 +5,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.modals.LeaveModal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ReqLevOperation;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveTempRecordService;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.NoCallRollDateService;
 import org.springframework.context.annotation.PropertySource;
@@ -16,14 +17,14 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-@PropertySource("classpath:req_leave.properties")
+@PropertySource("classpath:attendance.properties")
 public class LeaveBtnEvent extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     NoCallRollDateService noCallRollDateService;
     final
-    LeaveTempRecordService leaveTempRecordService;
+    LeaveRecordService leaveRecordService;
     final
     LivingRecordService livingRecordService;
     final
@@ -31,14 +32,15 @@ public class LeaveBtnEvent extends ListenerAdapter {
     final
     ReqLevOperation reqLevOperation;
 
-    public LeaveBtnEvent(NoCallRollDateService noCallRollDateService, ButtonIdSet buttonIdSet, LeaveTempRecordService leaveTempRecordService, LivingRecordService livingRecordService, LeaveModal leaveModal, ReqLevOperation reqLevOperation) {
-        this.noCallRollDateService = noCallRollDateService;
+    public LeaveBtnEvent(ButtonIdSet buttonIdSet, NoCallRollDateService noCallRollDateService, LeaveRecordService leaveRecordService, LivingRecordService livingRecordService, LeaveModal leaveModal, ReqLevOperation reqLevOperation) {
         this.buttonIdSet = buttonIdSet;
-        this.leaveTempRecordService = leaveTempRecordService;
+        this.noCallRollDateService = noCallRollDateService;
+        this.leaveRecordService = leaveRecordService;
         this.livingRecordService = livingRecordService;
         this.leaveModal = leaveModal;
         this.reqLevOperation = reqLevOperation;
     }
+
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -64,7 +66,8 @@ public class LeaveBtnEvent extends ListenerAdapter {
         }
 
         Student student = livingRecord.getStudent();
-        if (leaveTempRecordService.isRequested(livingRecord.getBed().getBedId(), student.getStudentId(), now)) {
+        Bed bed = livingRecord.getBed();
+        if (leaveRecordService.existsByDate(student, bed, now)) {
             event.deferReply().setEphemeral(true).queue();
             event.getHook().sendMessage("""
                     > 您今天已提交過請假申請！

@@ -10,8 +10,8 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRec
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -24,9 +24,6 @@ public class AttendanceAllInOutBtn extends ListenerAdapter {
     AttendanceEmbedBuilder attendanceEmbedBuilder;
     final
     AttendanceEventUtils attendanceEventUtils;
-
-
-
 
     public AttendanceAllInOutBtn(AttendanceHandler attendanceHandler, ButtonIdSet buttonIdSet, AttendanceEmbedBuilder attendanceEmbedBuilder, AttendanceEventUtils attendanceEventUtils) {
         this.attendanceHandler = attendanceHandler;
@@ -41,8 +38,13 @@ public class AttendanceAllInOutBtn extends ListenerAdapter {
         if (!buttonIdSet.getAttendanceAllIn().equalsIgnoreCase(eventButtonId) &&
                 !buttonIdSet.getAttendanceAllOut().equalsIgnoreCase(eventButtonId)) return;
         event.deferReply(true).queue();
-        Optional<MessageEmbed> eventEmbed = event.getMessage().getEmbeds().stream().findFirst();
-        if (eventEmbed.isEmpty()) {
+
+        if (attendanceHandler.isAfter(LocalTime.now())) {
+            attendanceEventUtils.sendEndTime(event, false);
+            return;
+        }
+
+        if (attendanceEventUtils.getRoomIdFromMessage(event.getMessage()) == null) {
             event.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
             return;
         }
@@ -56,11 +58,6 @@ public class AttendanceAllInOutBtn extends ListenerAdapter {
                 bedIds,
                 isInStatus(eventButtonId)
         );
-
-        if (eventEmbed.get().getFooter() == null) {
-            event.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
-            return;
-        }
 
         Set<LivingRecord> next = attendanceHandler.getNotComplete(event.getUser().getId());
         if (next == null) {

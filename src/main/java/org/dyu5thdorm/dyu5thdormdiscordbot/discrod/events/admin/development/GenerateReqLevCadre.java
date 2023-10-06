@@ -6,20 +6,24 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GenerateReqLevCadre extends ListenerAdapter {
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     ChannelIdSet channelIdSet;
-    @Value("${available.time.hour}")
+    @Value("${leave.end.time.hour}")
     Integer availableTimeHour;
-    @Value("${available.time.minute}")
+    @Value("${leave.end.time.minute}")
     Integer availableTimeMinute;
+
+    public GenerateReqLevCadre(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
+        this.buttonIdSet = buttonIdSet;
+        this.channelIdSet = channelIdSet;
+    }
 
 
     @Override

@@ -5,8 +5,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.embeds.AttendanceEmbedBuilder;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalTime;
 
 @Component
 public class AttendanceBtn extends ListenerAdapter {
@@ -20,21 +24,29 @@ public class AttendanceBtn extends ListenerAdapter {
     AttendanceHandler attendanceHandler;
     final
     AttendanceEventUtils attendanceEventUtils;
+    final
+    Maintenance maintenance;
 
 
-    public AttendanceBtn(ButtonIdSet buttonIdSet, AttendanceEmbedBuilder attendanceEmbedBuilder, LivingRecordService livingRecordService, AttendanceHandler attendanceHandler, AttendanceEventUtils attendanceEventUtils) {
+    public AttendanceBtn(ButtonIdSet buttonIdSet, AttendanceEmbedBuilder attendanceEmbedBuilder, LivingRecordService livingRecordService, AttendanceHandler attendanceHandler, AttendanceEventUtils attendanceEventUtils, Maintenance maintenance) {
         this.buttonIdSet = buttonIdSet;
         this.attendanceEmbedBuilder = attendanceEmbedBuilder;
         this.livingRecordService = livingRecordService;
         this.attendanceHandler = attendanceHandler;
         this.attendanceEventUtils = attendanceEventUtils;
+        this.maintenance = maintenance;
     }
 
     @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getAttendance().equalsIgnoreCase(eventButtonId)) return;
         event.deferReply().setEphemeral(true).queue();
+
+        if (attendanceHandler.isLegalTime(LocalTime.now())) {
+            attendanceEventUtils.sendStartTime(event);
+            return;
+        }
         var startRoom = attendanceHandler.getRoomStart(event.getUser().getId());
         if (startRoom == null) {
             event.getHook().sendMessage("""
@@ -52,6 +64,12 @@ public class AttendanceBtn extends ListenerAdapter {
                     """).queue();
             return;
         }
+
+        if (attendanceHandler.isAfter(LocalTime.now())) {
+            attendanceEventUtils.sendEndTime(event, false);
+            return;
+        }
+
         attendanceEventUtils.sendAttendanceEmbed(event, startRoom);
     }
 

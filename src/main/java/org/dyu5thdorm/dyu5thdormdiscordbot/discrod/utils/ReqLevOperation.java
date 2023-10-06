@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @Component
 @Getter
 public class ReqLevOperation {
-    @Value("${available.time.hour}")
+    @Value("${leave.end.time.hour}")
     Integer availableTimeHour;
-    @Value("${available.time.minute}")
+    @Value("${leave.end.time.minute}")
     Integer availableTimeMinute;
 
     public boolean isIllegalTime() {

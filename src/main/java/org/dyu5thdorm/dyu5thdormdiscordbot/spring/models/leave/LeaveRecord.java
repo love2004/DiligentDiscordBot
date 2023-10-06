@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class LeaveRecord {
     @Id
     @ManyToOne
-    @JoinColumn(name = "student_id", referencedColumnName = "student_id", insertable = false, updatable = false)
+    @JoinColumn(name = "student_id", referencedColumnName = "student_id")
     private Student student;
 
     @Id
@@ -35,6 +35,6 @@ public class LeaveRecord {
     private LocalDateTime leaveRequestDateTime;
 
     @ManyToOne
-    @JoinColumn(name = "bed_id", referencedColumnName = "bed_id", insertable = false, updatable = false)
+    @JoinColumn(name = "bed_id", referencedColumnName = "bed_id")
     private Bed bed;
 }

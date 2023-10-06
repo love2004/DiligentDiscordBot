@@ -14,7 +14,7 @@ public class ModalIdSet {
     @Value("${component.modal.auth}")
     String auth;
     @Value("${component.modal.student-info-by-bedId}")
-    String searchByBI; // BI = Bed Id
+    String searchByBI; // BI = Bed ID
     @Value("${component.modal.student-info-by-studentId}")
     String searchBySI;
     @Value("${component.modal.student-info-by-name}")
@@ -45,6 +45,8 @@ public class ModalIdSet {
     String tookCoinReturn;
     @Value("${component.modal.request-for-leave}")
     String reqForLeave;
+    @Value("${component.modal.attendance-out}")
+    String attendanceOut;
     @Value("${component.modal.text-input-first}")
     String firstTextInput;
     @Value("${component.modal.text-input-second}")

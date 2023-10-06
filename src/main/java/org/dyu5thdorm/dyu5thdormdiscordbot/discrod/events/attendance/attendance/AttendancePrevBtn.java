@@ -8,7 +8,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.embeds.Att
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.Set;
 
 @Component
@@ -41,7 +40,12 @@ public class AttendancePrevBtn extends ListenerAdapter {
             return;
         }
 
-        String roomId = Objects.requireNonNull(event.getMessage().getEmbeds().get(0).getFooter()).getText();
+        String roomId = attendanceEventUtils.getRoomIdFromMessage(event.getMessage());
+        if (roomId == null) {
+            event.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
+            return;
+        }
+
         Set<LivingRecord> prev = attendanceHandler.prevRoom(roomId);
         if (prev.isEmpty()) {
             event.getHook().sendMessage("已是最前").setEphemeral(true).queue();

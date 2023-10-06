@@ -4,7 +4,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.LeaveTempRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.LeaveTempRecordRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,12 +13,13 @@ import java.util.List;
 public class LeaveTempRecordService {
     final
     LeaveTempRecordRepo repository;
-    @Autowired
+    final
     LivingRecordService livingRecordService;
 
-    public LeaveTempRecordService(LeaveTempRecordRepo repository) {
+    public LeaveTempRecordService(LeaveTempRecordRepo repository, LivingRecordService livingRecordService) {
         this.repository = repository;
 
+        this.livingRecordService = livingRecordService;
     }
 
     public boolean isRequested(String bedId, String studentId, LocalDate date) {

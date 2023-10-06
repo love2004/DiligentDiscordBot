@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ReqLevOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveTempRecordService;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.springframework.stereotype.Component;
 
@@ -14,13 +14,13 @@ public class LeaveModalEvent extends ListenerAdapter {
     final
     ModalIdSet modalIdSet;
     final
-    LeaveTempRecordService leaveService;
+    LeaveRecordService leaveService;
     final
     LivingRecordService livingRecordService;
     final
     ReqLevOperation reqLevOperation;
 
-    public LeaveModalEvent(ModalIdSet modalIdSet, LeaveTempRecordService leaveService, LivingRecordService livingRecordService, ReqLevOperation reqLevOperation) {
+    public LeaveModalEvent(ModalIdSet modalIdSet, LeaveRecordService leaveService, LivingRecordService livingRecordService, ReqLevOperation reqLevOperation) {
         this.modalIdSet = modalIdSet;
         this.leaveService = leaveService;
         this.livingRecordService = livingRecordService;
@@ -54,7 +54,7 @@ public class LeaveModalEvent extends ListenerAdapter {
             return;
         }
 
-        leaveService.save(record.getBed(), record.getStudent(), reason);
+        leaveService.save(record, reason);
         event.getHook().sendMessage("""
                 > 請假申請成功！
                 """).setEphemeral(true).queue();

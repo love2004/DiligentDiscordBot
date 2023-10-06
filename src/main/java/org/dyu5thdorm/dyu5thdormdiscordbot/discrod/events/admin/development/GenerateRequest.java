@@ -15,9 +15,9 @@ public class GenerateRequest extends ListenerAdapter {
     ButtonIdSet buttonIdSet;
     final
     ChannelIdSet channelIdSet;
-    @Value("${available.time.hour}")
+    @Value("${leave.end.time.hour}")
     Integer availableTimeHour;
-    @Value("${available.time.minute}")
+    @Value("${leave.end.time.minute}")
     Integer availableTimeMinute;
 
     public GenerateRequest(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
