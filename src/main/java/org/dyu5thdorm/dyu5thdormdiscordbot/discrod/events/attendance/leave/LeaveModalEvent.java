@@ -7,6 +7,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ReqLevOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,7 +30,7 @@ public class LeaveModalEvent extends ListenerAdapter {
 
 
     @Override
-    public void onModalInteraction(ModalInteractionEvent event) {
+    public void onModalInteraction(@NotNull ModalInteractionEvent event) {
         String eventModalId = event.getModalId();
         if (!modalIdSet.getReqForLeave().equalsIgnoreCase(eventModalId)) return;
         event.deferReply().setEphemeral(true).queue();
@@ -37,8 +38,9 @@ public class LeaveModalEvent extends ListenerAdapter {
         if (reqLevOperation.isIllegalTime()) {
             event.getHook().sendMessage(
                     String.format("""
-                    > 已超過點名請假時間。點名請假時間為每天的 00:00 ~ %d:%d。
-                    """, reqLevOperation.getAvailableTimeHour(), reqLevOperation.getAvailableTimeMinute())
+                    > 已超過點名請假時間。點名請假時間為每天的 0%d:0%d ~ %d:%d。
+                    """, reqLevOperation.getStartLeaveTimeHour(), reqLevOperation.getStartLeaveTimeMin(),
+                            reqLevOperation.getEndLeaveTimeHour(), reqLevOperation.getEndLeaveTimeMin())
             ).setEphemeral(true).queue();
             return;
         }

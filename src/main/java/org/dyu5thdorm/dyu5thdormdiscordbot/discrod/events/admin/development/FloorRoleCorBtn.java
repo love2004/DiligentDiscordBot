@@ -9,7 +9,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.RoleOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,13 +17,15 @@ import java.util.List;
 public class FloorRoleCorBtn extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     LivingRecordService livingRecordService;
-    @Autowired
+    final
     RoleOperation roleOperation;
 
-    public FloorRoleCorBtn(ButtonIdSet buttonIdSet) {
+    public FloorRoleCorBtn(ButtonIdSet buttonIdSet, LivingRecordService livingRecordService, RoleOperation roleOperation) {
         this.buttonIdSet = buttonIdSet;
+        this.livingRecordService = livingRecordService;
+        this.roleOperation = roleOperation;
     }
 
     @Override

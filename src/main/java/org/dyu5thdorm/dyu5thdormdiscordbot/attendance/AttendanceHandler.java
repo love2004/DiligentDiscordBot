@@ -70,10 +70,6 @@ public class AttendanceHandler {
         return isAfterThan && !maintenance.isMaintenanceStatus();
     }
 
-    public boolean hasComplete(String currentRoomId, @NotNull Set<LivingRecord> next) {
-        return next.isEmpty() || isLastRoom(currentRoomId);
-    }
-
     public Set<LivingRecord> nextRoom(String currentRoomId) {
         return roomOperation(currentRoomId, 1);
     }
@@ -205,9 +201,8 @@ public class AttendanceHandler {
 
     public boolean attendance(@NotNull String bedId, AttendanceStatusEnum statusEnum, @NotNull String cadreDiscordId) {
         var op = livingRecordService.findAllByBedId(bedId);
-        var studentCadre = discordLinkService.findByDiscordId(cadreDiscordId);
-        var cadre = floorAreaCadreService.findByCadreStudent(studentCadre.getStudent());
-        if (op.isEmpty() || cadre.isEmpty() || op.get().getStudent() == null) {
+        var cadre = getFloorAreaCadreByDiscordId(cadreDiscordId);
+        if (op.isEmpty() || cadre == null || op.get().getStudent() == null) {
             return false;
         }
 
@@ -215,7 +210,7 @@ public class AttendanceHandler {
                 op.get().getStudent(),
                 op.get().getBed(),
                 statusEnum,
-                cadre.get().getCadre()
+                cadre.getCadre()
         );
         return true;
     }
@@ -231,13 +226,20 @@ public class AttendanceHandler {
         }
     }
 
+    public void doAttendance(@NotNull String cadreDiscordId, @NotNull String roomId, Set<Character> bedSet) {
+        for (LivingRecord livingRecord : livingRecordService.findAllByRoomId(roomId)) {
+            Character queryBed = livingRecord.getBed().getBedId().charAt(5);
+            attendance(
+                    livingRecord.getBed().getBedId(),
+                    bedSet.contains(queryBed) ? AttendanceStatusEnum.OUT : AttendanceStatusEnum.IN,
+                    cadreDiscordId
+            );
+        }
+    }
+
     public Set<LivingRecord> getNotComplete(String discordId) {
-        var cadreDiscordLink = discordLinkService.findByDiscordId(discordId);
-        if (cadreDiscordLink == null) return null;
-        Optional<FloorAreaCadre> floorAreaCadre = floorAreaCadreService.findByCadreStudent(cadreDiscordLink.getStudent());
-        return floorAreaCadre.map(this::checkNotComplete).orElse(
-                null
-        );
+        FloorAreaCadre floorAreaCadre = getFloorAreaCadreByDiscordId(discordId);
+        return checkNotComplete(floorAreaCadre);
     }
 
     public Set<LivingRecord> checkNotComplete(FloorAreaCadre floorAreaCadre) {
@@ -255,5 +257,12 @@ public class AttendanceHandler {
             }
         }
         return Set.of();
+    }
+
+    FloorAreaCadre getFloorAreaCadreByDiscordId(String cadreDiscordId) {
+        var cadreDiscordLink = discordLinkService.findByDiscordId(cadreDiscordId);
+        if (cadreDiscordLink == null) return null;
+        Optional<FloorAreaCadre> floorAreaCadre = floorAreaCadreService.findByCadreStudent(cadreDiscordLink.getStudent());
+        return floorAreaCadre.orElse(null);
     }
 }

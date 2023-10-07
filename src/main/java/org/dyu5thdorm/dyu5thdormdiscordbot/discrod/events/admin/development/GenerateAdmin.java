@@ -7,20 +7,24 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GenerateAdmin extends ListenerAdapter {
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     ChannelIdSet channelIdSet;
     @Value("${school_year}")
     String schoolYear;
     @Value("${semester}")
     String semester;
+
+    public GenerateAdmin(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
+        this.buttonIdSet = buttonIdSet;
+        this.channelIdSet = channelIdSet;
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

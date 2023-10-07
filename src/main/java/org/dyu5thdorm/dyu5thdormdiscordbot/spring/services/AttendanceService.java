@@ -43,11 +43,7 @@ public class AttendanceService {
 
     AttendanceStatus getStatus(@NotNull AttendanceStatusEnum status) {
         AttendanceStatus attendanceStatus = new AttendanceStatus();
-        switch (status) {
-            case IN -> attendanceStatus.setAttendanceStatusId(1);
-            case OUT -> attendanceStatus.setAttendanceStatusId(2);
-            case EMPTY -> attendanceStatus.setAttendanceStatusId(3);
-        }
+        attendanceStatus.setAttendanceStatusId(status.getValue());
         return attendanceStatus;
     }
 }

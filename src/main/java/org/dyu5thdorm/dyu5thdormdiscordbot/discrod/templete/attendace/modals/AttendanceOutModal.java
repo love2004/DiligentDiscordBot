@@ -1,6 +1,5 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.modals;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
-@Getter
+
 public class AttendanceOutModal {
     final
     ModalIdSet modalIdSet;

@@ -7,17 +7,22 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GenerateAuth extends ListenerAdapter {
-    @Autowired
+    final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     ChannelIdSet channelIdSet;
-    @Autowired
+    final
     ChannelOperation channelOperation;
+
+    public GenerateAuth(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet, ChannelOperation channelOperation) {
+        this.buttonIdSet = buttonIdSet;
+        this.channelIdSet = channelIdSet;
+        this.channelOperation = channelOperation;
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

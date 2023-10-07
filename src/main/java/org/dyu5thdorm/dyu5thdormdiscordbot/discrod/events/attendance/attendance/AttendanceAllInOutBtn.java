@@ -60,17 +60,7 @@ public class AttendanceAllInOutBtn extends ListenerAdapter {
         );
 
         Set<LivingRecord> next = attendanceHandler.getNotComplete(event.getUser().getId());
-        if (next == null) {
-            event.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
-            return;
-        }
-
-        if (next.isEmpty()) {
-            event.getHook().sendMessage("點名完成").setEphemeral(true).queue();
-            return;
-        }
-
-        attendanceEventUtils.sendAttendanceEmbed(event, next);
+        attendanceEventUtils.showNextRoom(event, next);
     }
 
     boolean isInStatus(@NotNull String buttonId) {

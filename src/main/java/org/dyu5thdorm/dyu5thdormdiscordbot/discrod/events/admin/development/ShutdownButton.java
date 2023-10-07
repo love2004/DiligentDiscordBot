@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.Dyu5thDormDiscordBotApplication;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +12,13 @@ import org.springframework.stereotype.Component;
 public class ShutdownButton extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
-    @Autowired
+    final
     Maintenance maintenance;
 
 
-    public ShutdownButton(ButtonIdSet buttonIdSet) {
+    public ShutdownButton(ButtonIdSet buttonIdSet, Maintenance maintenance) {
         this.buttonIdSet = buttonIdSet;
+        this.maintenance = maintenance;
     }
 
     @Override

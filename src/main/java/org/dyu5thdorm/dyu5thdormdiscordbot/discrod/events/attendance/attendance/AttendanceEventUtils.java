@@ -3,6 +3,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.attendance
 import jakarta.annotation.PostConstruct;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.embeds.AttendanceEmbedBuilder;
@@ -50,22 +51,57 @@ public class AttendanceEventUtils {
         return footer == null ? null : footer.getText();
     }
 
-    public void sendAttendanceEmbed(ButtonInteractionEvent event, Set<LivingRecord> roomSet) {
+    public <T> void sendAttendanceEmbed(T event, Set<LivingRecord> roomSet) {
+        if (!(event instanceof ButtonInteractionEvent || event instanceof ModalInteractionEvent)) return;
         MessageEmbed roomEmbed = attendanceEmbedBuilder.getByLivingRecord(roomSet).build();
-        sendIfNull(event, roomEmbed);
+        if (roomEmbed.getFooter() == null) {
+            if (event instanceof ButtonInteractionEvent buttonEvent) {
+                buttonEvent.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
+            } else {
+                ModalInteractionEvent modalEvent = (ModalInteractionEvent) event;
+                modalEvent.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
+            }
+            return;
+        }
+
         boolean isEmptyRoom = attendanceHandler.isEmptyRoom(roomSet);
         boolean isLastRoom = attendanceHandler.isLastRoom(roomEmbed.getFooter().getText());
-        event.getHook().sendMessageEmbeds(
-                roomEmbed
-        ).setActionRow(
-                attendanceEmbedBuilder.getAttendanceActionRow(isLastRoom, isEmptyRoom)
-        ).queue();
+        if (event instanceof ButtonInteractionEvent buttonEvent) {
+            buttonEvent.getHook().sendMessageEmbeds(roomEmbed)
+                    .setActionRow(attendanceEmbedBuilder.getAttendanceActionRow(isLastRoom, isEmptyRoom))
+                    .queue();
+        } else {
+            ModalInteractionEvent modalEvent = (ModalInteractionEvent) event;
+            modalEvent.getHook().sendMessageEmbeds(roomEmbed)
+                    .setActionRow(attendanceEmbedBuilder.getAttendanceActionRow(isLastRoom, isEmptyRoom))
+                    .queue();
+        }
     }
 
-    public void sendIfNull(ButtonInteractionEvent event, MessageEmbed embed) {
-        if (embed.getFooter() == null) {
-            event.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
+    public <T> void showNextRoom(T event, Set<LivingRecord> next) {
+        if (!(event instanceof ButtonInteractionEvent || event instanceof ModalInteractionEvent)) return;
+        if (event instanceof ButtonInteractionEvent buttonEvent) {
+            if (next == null) {
+                buttonEvent.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
+                return;
+            }
+            if (next.isEmpty()) {
+                buttonEvent.getHook().sendMessage("點名完成").setEphemeral(true).queue();
+                return;
+            }
+
+        } else {
+            ModalInteractionEvent modalEvent = (ModalInteractionEvent) event;
+            if (next == null) {
+                modalEvent.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
+                return;
+            }
+            if (next.isEmpty()) {
+                modalEvent.getHook().sendMessage("點名完成").setEphemeral(true).queue();
+                return;
+            }
         }
+        sendAttendanceEmbed(event, next);
     }
 
     public void sendStartTime(ButtonInteractionEvent event) {

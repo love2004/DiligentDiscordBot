@@ -10,17 +10,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GenerateReqLevCadre extends ListenerAdapter {
+public class GenerateAttendance extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     ChannelIdSet channelIdSet;
-    @Value("${leave.end.time.hour}")
-    Integer availableTimeHour;
-    @Value("${leave.end.time.minute}")
-    Integer availableTimeMinute;
+    @Value("${attendance.start.time.hour}")
+    String startAttendTimeHour;
+    @Value("${attendance.start.time.min}")
+    String startAttendTimeMin;
+    @Value("${attendance.end.time.hour}")
+    String endAttendTimeHour;
+    @Value("${attendance.end.time.min}")
+    String endAttendTimeMin;
 
-    public GenerateReqLevCadre(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
+    public GenerateAttendance(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
         this.buttonIdSet = buttonIdSet;
         this.channelIdSet = channelIdSet;
     }
@@ -50,10 +54,14 @@ public class GenerateReqLevCadre extends ListenerAdapter {
                 String.format(
                         """
                         # 幹部點名系統說明：
+                        - 開放時間： %s:%s ~ %s:%s0
+                          - 請於開放時間內完成點名
+                        - 點名完成後，若有住宿生要補點，請叫他直接去請假
+                        - 點名務必確實，人對床位
+                        - 若點名系統出包，請立刻反應並先換回紙本方式點名
                         
-                        
-                        **注意！請假申請只開放到 %d:%d，若有住宿生超時仍想請假，請各位樓長依照自己的作息，斟酌申請受理與否！**
-                        """, availableTimeHour, availableTimeMinute
+                        點擊下方 **「開始點名」** 即可開始
+                        """, startAttendTimeHour, startAttendTimeMin, endAttendTimeHour, endAttendTimeMin
                 )
                 ).addActionRow(
                         Button.primary(buttonIdSet.getAttendance(), "開始點名")

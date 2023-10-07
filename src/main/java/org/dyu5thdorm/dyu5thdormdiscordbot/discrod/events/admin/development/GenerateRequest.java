@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
-import org.springframework.beans.factory.annotation.Value;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ReqLevOperation;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,15 +15,15 @@ public class GenerateRequest extends ListenerAdapter {
     ButtonIdSet buttonIdSet;
     final
     ChannelIdSet channelIdSet;
-    @Value("${leave.end.time.hour}")
-    Integer availableTimeHour;
-    @Value("${leave.end.time.minute}")
-    Integer availableTimeMinute;
+    final
+    ReqLevOperation rlOp;
 
-    public GenerateRequest(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
+    public GenerateRequest(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet, ReqLevOperation rlOp) {
         this.buttonIdSet = buttonIdSet;
         this.channelIdSet = channelIdSet;
+        this.rlOp = rlOp;
     }
+
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -51,9 +51,10 @@ public class GenerateRequest extends ListenerAdapter {
                         - 注意事項：
                           - 無法到場點名者須依規定請假。
                           - 連續兩天點名缺席未請假者，將會通知家長。
-                          - __當天點名請假時間為 **00:00 ~ %d:%d**，愈時系統不受理！__
+                          - __當天點名請假時間為 **%d0:%d0 ~ %d:%d**，愈時系統不受理！__
                           - 請點下方「晚間點名請假」開始進行請假流程。
-                        """, availableTimeHour, availableTimeMinute)
+                        """, rlOp.getStartLeaveTimeHour(), rlOp.getStartLeaveTimeMin(),
+                                rlOp.getEndLeaveTimeHour(), rlOp.getEndLeaveTimeMin())
                 )
                 .addActionRow(
                         Button.danger(buttonIdSet.getReqForLeave(), "晚間點名請假")
