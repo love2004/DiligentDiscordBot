@@ -2,7 +2,6 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.attendance;
 
 import jakarta.annotation.PostConstruct;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area_cadre.FloorAreaCadre;
@@ -61,11 +60,11 @@ public class AttendanceHandler {
         this.maintenance = maintenance;
     }
 
-    public boolean isLegalTime(@NotNull LocalTime time) {
-        return time.isBefore(startLocalTime) && !maintenance.isMaintenanceStatus();
+    public boolean isIllegalTime(@NotNull LocalTime time) {
+        return (time.isBefore(startLocalTime) || time.isAfter(endLocalTime)) && !maintenance.isMaintenanceStatus();
     }
 
-    public boolean isAfter(LocalTime time) {
+    public boolean isAfter(@NotNull LocalTime time) {
         boolean isAfterThan = time.isAfter(endLocalTime) || time.equals(endLocalTime);
         return isAfterThan && !maintenance.isMaintenanceStatus();
     }
@@ -80,12 +79,8 @@ public class AttendanceHandler {
 
     // 開始點名，依照樓長的區域開始做點名。
     public Set<LivingRecord> getRoomStart(String floorCadreDiscordId) {
-        DiscordLink discordLink = discordLinkService.findByDiscordId(floorCadreDiscordId);
-        if (discordLink == null) return null;
-        Student student = discordLink.getStudent();
-        Optional<FloorAreaCadre> optional = getFloorCadre(student);
-        if (optional.isEmpty()) return null;
-        FloorAreaCadre floorAreaCadre = optional.get();
+        FloorAreaCadre floorAreaCadre = getFloorAreaCadreByDiscordId(floorCadreDiscordId);
+        if (floorAreaCadre == null) return null;
         var byFloorArea = floorAreaService.findByFloorArea(floorAreaCadre.getFloorArea());
         if (byFloorArea.isEmpty()) {
             return null;

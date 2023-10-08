@@ -32,15 +32,15 @@ public class AttendanceEventUtils {
     LocalTime startLocalTime;
     LocalTime endLocalTime;
 
+    public AttendanceEventUtils(AttendanceEmbedBuilder attendanceEmbedBuilder, AttendanceHandler attendanceHandler) {
+        this.attendanceEmbedBuilder = attendanceEmbedBuilder;
+        this.attendanceHandler = attendanceHandler;
+    }
+
     @PostConstruct
     void init() {
         startLocalTime = LocalTime.of(startTimeHour, startTimeMin);
         endLocalTime = LocalTime.of(endTimeHour, endTimeMin);
-    }
-
-    public AttendanceEventUtils(AttendanceEmbedBuilder attendanceEmbedBuilder, AttendanceHandler attendanceHandler) {
-        this.attendanceEmbedBuilder = attendanceEmbedBuilder;
-        this.attendanceHandler = attendanceHandler;
     }
 
     public String getRoomIdFromMessage(Message message) {
@@ -86,7 +86,7 @@ public class AttendanceEventUtils {
                 return;
             }
             if (next.isEmpty()) {
-                buttonEvent.getHook().sendMessage("點名完成").setEphemeral(true).queue();
+                buttonEvent.getHook().sendMessageEmbeds(attendanceEmbedBuilder.complete().build()).setEphemeral(true).queue();
                 return;
             }
 
@@ -97,10 +97,11 @@ public class AttendanceEventUtils {
                 return;
             }
             if (next.isEmpty()) {
-                modalEvent.getHook().sendMessage("點名完成").setEphemeral(true).queue();
+                modalEvent.getHook().sendMessageEmbeds(attendanceEmbedBuilder.complete().build()).setEphemeral(true).queue();
                 return;
             }
         }
+
         sendAttendanceEmbed(event, next);
     }
 

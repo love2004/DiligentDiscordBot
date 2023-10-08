@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot;
 
+import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ReqLevOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.AttendanceRecordRepo;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.NoCallRollDateRepo;
@@ -31,10 +32,14 @@ class Dyu5thDormDiscordBotApplicationTests {
     AttendanceRecordRepo attendanceRecordRepository;
     @Autowired
     ReqLevOperation reqLevOperation;
+    @Autowired
+    AttendanceHandler attendanceHandler;
 
     @Test
     void contextLoads() {
-        System.out.println(reqLevOperation.isIllegalTime(LocalTime.of(9, 15)));
+        System.out.println(
+                attendanceHandler.isIllegalTime(LocalTime.of(21, 49))
+        );
     }
 
 }

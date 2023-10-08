@@ -6,11 +6,13 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.embeds.AttendanceEmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.util.Set;
 
 @Component
 public class AttendanceBtn extends ListenerAdapter {
@@ -27,7 +29,6 @@ public class AttendanceBtn extends ListenerAdapter {
     final
     Maintenance maintenance;
 
-
     public AttendanceBtn(ButtonIdSet buttonIdSet, AttendanceEmbedBuilder attendanceEmbedBuilder, LivingRecordService livingRecordService, AttendanceHandler attendanceHandler, AttendanceEventUtils attendanceEventUtils, Maintenance maintenance) {
         this.buttonIdSet = buttonIdSet;
         this.attendanceEmbedBuilder = attendanceEmbedBuilder;
@@ -37,17 +38,19 @@ public class AttendanceBtn extends ListenerAdapter {
         this.maintenance = maintenance;
     }
 
+
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getAttendance().equalsIgnoreCase(eventButtonId)) return;
         event.deferReply().setEphemeral(true).queue();
 
-        if (attendanceHandler.isLegalTime(LocalTime.now())) {
+        if (attendanceHandler.isIllegalTime(LocalTime.now())) {
             attendanceEventUtils.sendStartTime(event);
             return;
         }
-        var startRoom = attendanceHandler.getRoomStart(event.getUser().getId());
+
+        Set<LivingRecord> startRoom = attendanceHandler.getRoomStart(event.getUser().getId());
         if (startRoom == null) {
             event.getHook().sendMessage("""
                     有以下二個原因導致您無法使用此功能：

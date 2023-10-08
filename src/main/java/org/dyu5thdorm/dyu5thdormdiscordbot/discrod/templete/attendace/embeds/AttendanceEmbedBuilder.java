@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -90,5 +91,15 @@ public class AttendanceEmbedBuilder {
             );
         }
         return actionRows;
+    }
+
+    public EmbedBuilder complete() {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setTitle("點名完成");
+        embedBuilder.setDescription("辛苦了！");
+        embedBuilder.setImage("https://i.imgur.com/NWyr6vZ.png");
+        embedBuilder.setColor(Color.GREEN);
+        embedBuilder.setTimestamp(new Date().toInstant());
+        return embedBuilder;
     }
 }

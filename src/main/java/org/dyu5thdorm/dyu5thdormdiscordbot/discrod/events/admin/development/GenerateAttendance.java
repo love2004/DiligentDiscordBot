@@ -59,6 +59,7 @@ public class GenerateAttendance extends ListenerAdapter {
                         - 點名完成後，若有住宿生要補點，請叫他直接去請假
                         - 點名務必確實，人對床位
                         - 若點名系統出包，請立刻反應並先換回紙本方式點名
+                        - 點名系統說明：[hackmd.io/@NUTT1101/discord](https://hackmd.io/@NUTT1101/discord)
                         
                         點擊下方 **「開始點名」** 即可開始
                         """, startAttendTimeHour, startAttendTimeMin, endAttendTimeHour, endAttendTimeMin
