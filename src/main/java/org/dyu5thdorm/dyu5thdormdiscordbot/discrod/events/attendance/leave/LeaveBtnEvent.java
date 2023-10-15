@@ -79,7 +79,7 @@ public class LeaveBtnEvent extends ListenerAdapter {
             event.deferReply().setEphemeral(true).queue();
             event.getHook().sendMessage(
                     String.format("""
-                    > 已超過點名請假時間。點名請假時間為每天的 %d0:%d0 ~ %d:%d。
+                    > 操作失敗。點名請假時間為每天的 0%d:%d0 ~ %d:%d。
                     """, reqLevOperation.getStartLeaveTimeHour(), reqLevOperation.getStartLeaveTimeMin(),
                             reqLevOperation.getEndLeaveTimeHour(), reqLevOperation.getEndLeaveTimeMin())
             ).setEphemeral(true).queue();

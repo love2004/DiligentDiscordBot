@@ -10,7 +10,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "attendance_record")
@@ -29,8 +29,8 @@ public class AttendanceRecord {
     @Column(name = "attendance_date")
     private LocalDate attendanceDate;
 
-    @Column(name = "attendance_date_time")
-    private LocalDateTime attendanceDateTime;
+    @Column(name = "attendance_time")
+    private LocalTime attendanceTime;
 
     @ManyToOne
     @JoinColumn(name = "bed_id", referencedColumnName = "bed_id")

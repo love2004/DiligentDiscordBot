@@ -7,10 +7,11 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ReqLevOperation;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GenerateRequest extends ListenerAdapter {
+public class GenerateLeave extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
@@ -18,7 +19,7 @@ public class GenerateRequest extends ListenerAdapter {
     final
     ReqLevOperation rlOp;
 
-    public GenerateRequest(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet, ReqLevOperation rlOp) {
+    public GenerateLeave(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet, ReqLevOperation rlOp) {
         this.buttonIdSet = buttonIdSet;
         this.channelIdSet = channelIdSet;
         this.rlOp = rlOp;
@@ -26,7 +27,7 @@ public class GenerateRequest extends ListenerAdapter {
 
 
     @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         if (!event.getButton().getId().equalsIgnoreCase(buttonIdSet.getGenerateReqLev())) return;
         event.deferReply().setEphemeral(true).queue();
 
@@ -51,7 +52,7 @@ public class GenerateRequest extends ListenerAdapter {
                         - 注意事項：
                           - 無法到場點名者須依規定請假。
                           - 連續兩天點名缺席未請假者，將會通知家長。
-                          - __當天點名請假時間為 **%d0:%d0 ~ %d:%d**，愈時系統不受理！__
+                          - __當天點名請假時間為 **0%d:%d0 ~ %d:%d**，逾時系統不受理！__
                           - 請點下方「晚間點名請假」開始進行請假流程。
                         """, rlOp.getStartLeaveTimeHour(), rlOp.getStartLeaveTimeMin(),
                                 rlOp.getEndLeaveTimeHour(), rlOp.getEndLeaveTimeMin())

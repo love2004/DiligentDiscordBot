@@ -32,6 +32,8 @@ public class AttendanceHandler {
     final
     Maintenance maintenance;
 
+    final
+    NoCallRollDateService noCallRollDateService;
     @Value("${regexp.bed_id}")
     String bedIdRegex;
     @Value("${attendance.start.time.hour}")
@@ -51,22 +53,30 @@ public class AttendanceHandler {
         endLocalTime = LocalTime.of(endTimeHour, endTimeMin);
     }
 
-    public AttendanceHandler(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, FloorAreaCadreService floorAreaCadreService, FloorAreaService floorAreaService, AttendanceService attendanceService, Maintenance maintenance) {
+    public AttendanceHandler(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, FloorAreaCadreService floorAreaCadreService, FloorAreaService floorAreaService, AttendanceService attendanceService, Maintenance maintenance, NoCallRollDateService noCallRollDateService) {
         this.livingRecordService = livingRecordService;
         this.discordLinkService = discordLinkService;
         this.floorAreaCadreService = floorAreaCadreService;
         this.floorAreaService = floorAreaService;
         this.attendanceService = attendanceService;
         this.maintenance = maintenance;
+        this.noCallRollDateService = noCallRollDateService;
+    }
+
+    public boolean isDevMode() {
+        return maintenance.isMaintenanceStatus();
+    }
+
+    public boolean isNoCallNoDay(LocalDate localDate) {
+        return noCallRollDateService.exists(localDate);
     }
 
     public boolean isIllegalTime(@NotNull LocalTime time) {
-        return (time.isBefore(startLocalTime) || time.isAfter(endLocalTime)) && !maintenance.isMaintenanceStatus();
+        return time.isBefore(startLocalTime) || time.isAfter(endLocalTime);
     }
 
     public boolean isAfter(@NotNull LocalTime time) {
-        boolean isAfterThan = time.isAfter(endLocalTime) || time.equals(endLocalTime);
-        return isAfterThan && !maintenance.isMaintenanceStatus();
+        return time.isAfter(endLocalTime) || time.equals(endLocalTime);
     }
 
     public Set<LivingRecord> nextRoom(String currentRoomId) {

@@ -11,6 +11,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
@@ -45,7 +46,8 @@ public class AttendanceBtn extends ListenerAdapter {
         if (!buttonIdSet.getAttendance().equalsIgnoreCase(eventButtonId)) return;
         event.deferReply().setEphemeral(true).queue();
 
-        if (attendanceHandler.isIllegalTime(LocalTime.now())) {
+        boolean isIllegalTime = attendanceHandler.isIllegalTime(LocalTime.now()) || attendanceHandler.isNoCallNoDay(LocalDate.now());
+        if (!attendanceHandler.isDevMode() && isIllegalTime) {
             attendanceEventUtils.sendStartTime(event);
             return;
         }
@@ -65,11 +67,6 @@ public class AttendanceBtn extends ListenerAdapter {
             event.getHook().sendMessage("""
                     此區點名已完成。
                     """).queue();
-            return;
-        }
-
-        if (attendanceHandler.isAfter(LocalTime.now())) {
-            attendanceEventUtils.sendEndTime(event, false);
             return;
         }
 

@@ -13,9 +13,9 @@ public interface TookCoinRepo extends JpaRepository<TookCoin, Long> {
     Set<TookCoin> findAllByStudentStudentId(String student_studentId);
     Set<TookCoin> findAllByStudentStudentIdAndGetBackTimeIsNull(String student_studentId);
 
-    @Query("SELECT t FROM TookCoin t WHERE FUNCTION('DATE', t.recordTime) < :localDate")
+    @Query("SELECT t FROM TookCoin t WHERE DATE(t.recordTime) < :localDate and t.returnDate is null and t.getBackTime is null")
     Set<TookCoin> findAllByDateAndNotReturn(LocalDate localDate);
 
-    @Query("SELECT t FROM TookCoin t WHERE t.getBackTime is null and t.returnTime is not null")
+    @Query("SELECT t FROM TookCoin t WHERE t.getBackTime is null and t.returnDate is not null")
     Set<TookCoin> findAllNotGetBack();
 }

@@ -9,7 +9,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "leave_record")
@@ -31,8 +31,8 @@ public class LeaveRecord {
     @Column(name = "leave_reason", length = 50)
     private String leaveReason;
 
-    @Column(name = "leave_request_date_time", nullable = false)
-    private LocalDateTime leaveRequestDateTime;
+    @Column(name = "leave_request_time", nullable = false)
+    private LocalTime leaveRequestTime;
 
     @ManyToOne
     @JoinColumn(name = "bed_id", referencedColumnName = "bed_id")

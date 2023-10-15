@@ -55,7 +55,7 @@ public class TookCoinGetBackBtn extends ListenerAdapter {
             return;
         }
 
-        if (query.getReturnTime() == null) {
+        if (query.getReturnDate() == null) {
             event.getHook().sendMessage("錢尚未向廠商請款！無法簽收！").setEphemeral(true).queue();
             return;
         }

@@ -50,8 +50,8 @@ public class TookCoin {
     @Column(name = "event_time")
     private LocalDateTime eventTime;
 
-    @Column(name = "return_time")
-    private LocalDate returnTime;
+    @Column(name = "return_date")
+    private LocalDate returnDate;
 
     @Column(name = "get_back_time")
     private LocalDateTime getBackTime;

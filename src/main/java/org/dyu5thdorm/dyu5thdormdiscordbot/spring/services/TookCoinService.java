@@ -42,7 +42,7 @@ public class TookCoinService {
     public void saveReturnCoinDay(LocalDate localDate) {
         var r = tookCoinRepository.findAllByDateAndNotReturn(localDate);
         for (TookCoin tookCoin : r) {
-            tookCoin.setReturnTime(localDate);
+            tookCoin.setReturnDate(localDate);
             tookCoinRepository.save(tookCoin);
         }
     }
@@ -54,9 +54,9 @@ public class TookCoinService {
     public Set<TookCoin> findNotGetBack(LocalDate returnDate, int dayIn) {
         return tookCoinRepository.findAllNotGetBack().stream().filter(
                 e -> {
-                    if (e.getReturnTime() == null) return false;
-                    return e.getReturnTime().plusDays(dayIn).isAfter(returnDate) ||
-                            e.getReturnTime().plusDays(dayIn).isEqual(returnDate);
+                    if (e.getReturnDate() == null) return false;
+                    return e.getReturnDate().plusDays(dayIn).isAfter(returnDate) ||
+                            e.getReturnDate().plusDays(dayIn).isEqual(returnDate);
                 }
         ).collect(Collectors.toSet());
     }

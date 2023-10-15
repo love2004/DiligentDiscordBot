@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 public class LeaveRecordService {
@@ -29,7 +29,7 @@ public class LeaveRecordService {
         leaveRecord.setLeaveReason(reason);
         leaveRecord.setStudent(livingRecord.getStudent());
         leaveRecord.setLeaveDate(LocalDate.now());
-        leaveRecord.setLeaveRequestDateTime(LocalDateTime.now());
+        leaveRecord.setLeaveRequestTime(LocalTime.now());
         leaveRecord.setBed(livingRecord.getBed());
         this.save(leaveRecord);
     }

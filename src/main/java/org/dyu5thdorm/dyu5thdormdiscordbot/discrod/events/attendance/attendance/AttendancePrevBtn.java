@@ -46,6 +46,11 @@ public class AttendancePrevBtn extends ListenerAdapter {
             return;
         }
 
+        if (roomId.matches("^5[1-6]21$")) {
+            event.getHook().sendMessage("已是最前").setEphemeral(true).queue();
+            return;
+        }
+
         Set<LivingRecord> prev = attendanceHandler.prevRoom(roomId);
         if (prev.isEmpty()) {
             event.getHook().sendMessage("已是最前").setEphemeral(true).queue();

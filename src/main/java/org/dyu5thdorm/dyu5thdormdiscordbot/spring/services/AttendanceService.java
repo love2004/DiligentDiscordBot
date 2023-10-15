@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 public class AttendanceService {
@@ -33,7 +33,7 @@ public class AttendanceService {
         record.setAttendanceStatus(getStatus(status));
         record.setCadre(cadre);
         record.setAttendanceDate(LocalDate.now());
-        record.setAttendanceDateTime(LocalDateTime.now());
+        record.setAttendanceTime(LocalTime.now());
         this.save(record);
     }
 
