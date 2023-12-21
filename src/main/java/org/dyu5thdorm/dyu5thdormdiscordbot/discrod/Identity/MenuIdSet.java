@@ -38,5 +38,8 @@ public class MenuIdSet {
     String dryerOption;
     @Value("${component.menu.option-drinking}")
     String drinkingOption;
-
+    @Value("${component.menu.activity}")
+    String activity;
+    @Value("${component.menu.activity-channel}")
+    String activityChannel;
 }

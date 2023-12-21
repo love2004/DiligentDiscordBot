@@ -18,9 +18,10 @@ public class AttendanceService {
     final
     AttendanceRecordRepo attendanceRecordRepo;
 
-    public AttendanceService(AttendanceRecordRepo attendanceRecordRepo, org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.attendance.AttendanceStatus in, org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.attendance.AttendanceStatus out, org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.attendance.AttendanceStatus empty) {
+    public AttendanceService(AttendanceRecordRepo attendanceRecordRepo) {
         this.attendanceRecordRepo = attendanceRecordRepo;
     }
+
 
     public void save(AttendanceRecord attendanceRecord) {
         attendanceRecordRepo.save(attendanceRecord);

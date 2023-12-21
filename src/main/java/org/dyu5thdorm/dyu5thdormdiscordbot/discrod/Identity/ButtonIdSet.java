@@ -73,4 +73,10 @@ public class ButtonIdSet {
     String attendanceOut;
     @Value("${component.button.attendance.complete}")
     String attendanceComplete;
+    @Value("${component.button.generate-activity}")
+    String generateActivity;
+    @Value("${component.button.activity-participate}")
+    String activityParticipate;
+    @Value("${component.button.activity-cancel}")
+    String activityCancel;
 }

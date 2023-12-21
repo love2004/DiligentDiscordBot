@@ -65,5 +65,11 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
                 Button.primary(buttonIdSet.getGenerateReqLevCadre(), "重新生成點名按鈕"),
                 Button.primary(buttonIdSet.getGenerateReqLev(), "重新生成請假按鈕")
         ).queue();
+
+        textChannel.sendMessage(
+                "活動"
+        ).addActionRow(
+                Button.primary(buttonIdSet.getGenerateActivity(), "公告")
+        ).queue();
     }
 }

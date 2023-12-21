@@ -3,6 +3,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
 import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -125,7 +126,7 @@ public class TookCoinEmbed {
         embedBuilder.addField("簽收時間", LocalDateTime.now().format(dateTimeFormatter), true);
         embedBuilder.setFooter(tookCoinList.size() == 1 ?
                 record.getId().toString() :
-                tookCoinList.stream().map(e -> e.getId()).toList().toString()
+                tookCoinList.stream().map(TookCoin::getId).toList().toString()
         );
 
         return embedBuilder;
@@ -135,17 +136,11 @@ public class TookCoinEmbed {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(new Color(0x98FB98));
         embedBuilder.setTitle("機器吃錢退費通知");
-        embedBuilder.setDescription("您登記的吃錢金額廠商已退費，請您**__攜帶手機__**至管理室領取。");
-        embedBuilder.addField("領取時間", String.format(
-            """
-            **%s
-            20:00 ~ 20:30**
-            """, returnDate.format(dateFormatter)
-        ), true);
+        embedBuilder.setDescription("您登記的吃錢金額廠商已退費，請您**__攜帶手機__**找值班幹部領取退費。");
         embedBuilder.addField("領取期限", String.format(
                 "即日起至 __**%s**__ 以前", returnDate.plusDays(7L)
         ),true);
-        embedBuilder.setFooter("若領取時間無法配合，請另與舍長們另約時間領取。");
+        embedBuilder.setFooter("若領取時間無法配合，請另與值班幹部另約時間領取。");
         return embedBuilder;
     }
 

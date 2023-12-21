@@ -2,10 +2,8 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "floor_area")
@@ -13,8 +11,6 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
-@Component
 public class FloorArea {
     @Id
     @Column(name = "floor")

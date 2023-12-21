@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @NoArgsConstructor
-@Component
 public class DiscordLink {
     @Id
     @Column(name = "discord_id")

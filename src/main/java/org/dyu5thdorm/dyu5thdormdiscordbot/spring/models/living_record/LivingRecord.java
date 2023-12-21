@@ -2,7 +2,6 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
@@ -17,7 +16,6 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 public class LivingRecord {
     @Id
     @ManyToOne

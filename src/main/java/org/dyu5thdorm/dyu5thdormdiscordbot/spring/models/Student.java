@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
@@ -18,7 +17,6 @@ import java.io.Serializable;
 @Setter
 @ToString
 @NoArgsConstructor
-@Component
 public class Student implements Serializable {
     @Id
     @Column(name = "student_id")

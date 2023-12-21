@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -17,7 +16,6 @@ import java.time.LocalTime;
 @Setter
 @ToString
 @IdClass(LeaveRecordId.class)
-@Component
 public class LeaveRecord {
     @Id
     @ManyToOne

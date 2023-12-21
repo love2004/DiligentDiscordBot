@@ -2,7 +2,6 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 public class TookCoin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

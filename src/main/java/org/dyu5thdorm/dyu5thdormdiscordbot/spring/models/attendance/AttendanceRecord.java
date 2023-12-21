@@ -7,7 +7,6 @@ import lombok.ToString;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Cadre;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,7 +17,6 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @ToString
-@Component
 public class AttendanceRecord {
     @Id
     @ManyToOne

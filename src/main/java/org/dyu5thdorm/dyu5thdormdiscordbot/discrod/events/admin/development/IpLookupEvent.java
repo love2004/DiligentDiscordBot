@@ -6,16 +6,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.IpLookup;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
 public class IpLookupEvent extends ListenerAdapter {
-    final
-    IpLookup ipLookup;
-    final
-    Maintenance maintenance;
-    final
-    ButtonIdSet buttonIdSet;
+    final IpLookup ipLookup;
+    final Maintenance maintenance;
+    final ButtonIdSet buttonIdSet;
 
     public IpLookupEvent(IpLookup ipLookup, Maintenance maintenance, ButtonIdSet buttonIdSet) {
         this.ipLookup = ipLookup;
@@ -25,7 +23,7 @@ public class IpLookupEvent extends ListenerAdapter {
 
     @SneakyThrows
     @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String eventBtnId = event.getButton().getId();
         if (!buttonIdSet.getIpLookup().equalsIgnoreCase(eventBtnId)) return;
 
@@ -34,10 +32,8 @@ public class IpLookupEvent extends ListenerAdapter {
         if (event.getMember() == null) return;
         if (maintenance.isNotDeveloper(event.getMember())) return;
 
-        event.getHook().sendMessage(String.format(
-                """
+        event.getHook().sendMessage(String.format("""
                 ||%s||
-                """, ipLookup.getIp()
-        )).setEphemeral(true).queue();
+                """, ipLookup.getIp())).setEphemeral(true).queue();
     }
 }

@@ -15,12 +15,12 @@ public class NoCallRollDateService {
         this.repository = repository;
     }
 
-    public boolean exists(LocalDate localDate) {
-        return repository.existsByDate(localDate);
+    public boolean exists(LocalDate localDay) {
+        return repository.existsByDay(localDay);
     }
 
     public boolean save(NoCallRollDate noCallRollDate) {
-        if (this.exists(noCallRollDate.getDate())) return false;
+        if (this.exists(noCallRollDate.getDay())) return false;
         repository.save(noCallRollDate);
         return true;
     }

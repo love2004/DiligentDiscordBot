@@ -156,10 +156,6 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         TookCoinHandler.Type type = getTypeByModalId(eventModalId);
 
         TookCoinHandler.FailReason r = tookCoin.record(type, args, discordLink.getStudent());
-        if (!maintenance.isMaintenanceStatus()) {
-            sendLineNotify(type, args, discordLink.getStudent());
-        }
-
         if (r != TookCoinHandler.FailReason.NONE) {
             event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getByReason(r).build()
@@ -167,7 +163,18 @@ public class TookCoinBtnEvent extends ListenerAdapter {
             return;
         }
 
-        event.getHook().sendMessage("登記成功").setEphemeral(true).queue();
+        if (!maintenance.isMaintenanceStatus()) {
+            sendLineNotify(type, args, discordLink.getStudent());
+        }
+
+        event.getHook().sendMessage("""
+                # 登記成功！
+                退費時間為各學期每個禮拜四 **依通知後領取**。
+                退費時間若有變動都會在 <#1019840074772402187> 說明。
+                
+                > **依照此步驟查看登記紀錄：**
+                > <#1148940744854347796> -> 吃錢登記 -> 登記記錄查詢、簽收
+                """).setEphemeral(true).queue();
 
         TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getTookCoinCadre());
         EmbedBuilder embedBuilder = getEmbedBuilder(type, event.getUser().getId(), args, discordLink);

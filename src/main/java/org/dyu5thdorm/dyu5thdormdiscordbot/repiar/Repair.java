@@ -66,7 +66,6 @@ public class Repair {
         builder.append("\n報修物品：").append(repairModel.item);
         builder.append("\n報修原因：").append(repairModel.description);
         builder.append("\n可配合時間：").append(repairModel.repairTime);
-
         return builder.toString();
     }
 

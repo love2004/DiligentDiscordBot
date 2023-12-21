@@ -2,7 +2,6 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.attendance;
 
 import jakarta.annotation.PostConstruct;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area_cadre.FloorAreaCadre;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
@@ -19,21 +18,14 @@ import java.util.Set;
 
 @Component
 public class AttendanceHandler {
-    final
-    LivingRecordService livingRecordService;
-    final
-    DiscordLinkService discordLinkService;
-    final
-    FloorAreaCadreService floorAreaCadreService;
-    final
-    FloorAreaService floorAreaService;
-    final
-    AttendanceService attendanceService;
-    final
-    Maintenance maintenance;
+    final LivingRecordService livingRecordService;
+    final DiscordLinkService discordLinkService;
+    final FloorAreaCadreService floorAreaCadreService;
+    final FloorAreaService floorAreaService;
+    final AttendanceService attendanceService;
+    final Maintenance maintenance;
 
-    final
-    NoCallRollDateService noCallRollDateService;
+    final NoCallRollDateService noCallRollDateService;
     @Value("${regexp.bed_id}")
     String bedIdRegex;
     @Value("${attendance.start.time.hour}")
@@ -107,10 +99,6 @@ public class AttendanceHandler {
         return notCompleteList;
     }
 
-    Optional<FloorAreaCadre> getFloorCadre(Student student) {
-        return floorAreaCadreService.findByCadreStudent(student);
-    }
-
     String getRoomIdString(Integer floor, Integer room) {
         if (floor == null || room == null) return null;
         return "5" + floor + (room < 10 ? "0" + room : room);
@@ -129,16 +117,12 @@ public class AttendanceHandler {
             return Set.of();
         }
 
-        var query = livingRecordService.findAllByRoomId(
-                getRoomIdString(floor, roomId)
-        );
+        var query = livingRecordService.findAllByRoomId(getRoomIdString(floor, roomId));
         boolean nextOperation = offset >= 0;
         while (isEmptyRoom(query) && !query.isEmpty()) {
             roomId = findLegalRoom(floor, roomId, offset);
             if (roomId > optional.get().getEndRoomId()) return Set.of();
-            query = livingRecordService.findAllByRoomId(
-                    getRoomIdString(floor, nextOperation ? roomId++ : roomId--)
-            );
+            query = livingRecordService.findAllByRoomId(getRoomIdString(floor, nextOperation ? roomId++ : roomId--));
         }
         return query;
     }
@@ -154,9 +138,7 @@ public class AttendanceHandler {
             start++;
         }
         for (int i = start; i <= end; i++) {
-            boolean isAllNotEmpty = livingRecordService.findAllByRoomId(
-                    getRoomIdString(floor, i)
-            ).stream().anyMatch(e -> e.getStudent() != null);
+            boolean isAllNotEmpty = livingRecordService.findAllByRoomId(getRoomIdString(floor, i)).stream().anyMatch(e -> e.getStudent() != null);
             if (isAllNotEmpty) return false;
         }
         return true;
@@ -171,9 +153,7 @@ public class AttendanceHandler {
     }
 
     Integer getFloorByRoomString(@NotNull String roomIdString) {
-        return Character.getNumericValue(
-                roomIdString.charAt(1)
-        );
+        return Character.getNumericValue(roomIdString.charAt(1));
     }
 
     Integer getRoomIdByRoomString(@NotNull String roomId) {
@@ -211,34 +191,21 @@ public class AttendanceHandler {
             return false;
         }
 
-        attendanceService.save(
-                op.get().getStudent(),
-                op.get().getBed(),
-                statusEnum,
-                cadre.getCadre()
-        );
+        attendanceService.save(op.get().getStudent(), op.get().getBed(), statusEnum, cadre.getCadre());
         return true;
     }
 
     public void doAttendance(@NotNull String cadreDiscordId, @NotNull List<String> bedIds, boolean isInRoom) {
         for (String bedId : bedIds) {
             if (!bedId.matches(bedIdRegex)) continue;
-            attendance(
-                    bedId,
-                    isInRoom ? AttendanceStatusEnum.IN : AttendanceStatusEnum.OUT,
-                    cadreDiscordId
-            );
+            attendance(bedId, isInRoom ? AttendanceStatusEnum.IN : AttendanceStatusEnum.OUT, cadreDiscordId);
         }
     }
 
     public void doAttendance(@NotNull String cadreDiscordId, @NotNull String roomId, Set<Character> bedSet) {
         for (LivingRecord livingRecord : livingRecordService.findAllByRoomId(roomId)) {
             Character queryBed = livingRecord.getBed().getBedId().charAt(5);
-            attendance(
-                    livingRecord.getBed().getBedId(),
-                    bedSet.contains(queryBed) ? AttendanceStatusEnum.OUT : AttendanceStatusEnum.IN,
-                    cadreDiscordId
-            );
+            attendance(livingRecord.getBed().getBedId(), bedSet.contains(queryBed) ? AttendanceStatusEnum.OUT : AttendanceStatusEnum.IN, cadreDiscordId);
         }
     }
 

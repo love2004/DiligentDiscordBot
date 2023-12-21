@@ -2,10 +2,8 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.school_timestamp;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -15,8 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
-@Component
 public class SchoolTimestamp {
     @Id
     @Column(name = "school_year")

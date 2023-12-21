@@ -77,6 +77,11 @@ public class OnRepairModalEvent extends ListenerAdapter {
             return;
         }
 
-        event.getHook().sendMessage("報修成功！").setEphemeral(true).queue();
+        event.getHook().sendMessage("""
+                # 報修成功！
+                - 報修成功後若要更改報修內容(包含取消報修)，請與 宿舍幹部 聯繫更改，__**請勿重複報修**__。
+                - 維修人員上班時間為：上課日 星期一 ~ 星期五、星期六不固定、星期日休假。
+                - 報修後一定會盡快處理，請您耐心等候(天數約 0 ~ 7 天，若因缺料件而延期會再通知)。
+                """).setEphemeral(true).queue();
     }
 }

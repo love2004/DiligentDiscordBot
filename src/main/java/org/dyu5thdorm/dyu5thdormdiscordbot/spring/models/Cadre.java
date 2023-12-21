@@ -2,19 +2,15 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.school_timestamp.SchoolTimestamp;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "cadre")
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
-@Component
 public class Cadre {
     @Id
     @Column(name = "cadre_id")

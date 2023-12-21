@@ -99,6 +99,11 @@ public class TookCoinReturnDate extends ListenerAdapter {
         TextChannel publicChannel = jda.getTextChannelById(
                 channelOperation.getChannelIdSet().getPublicChannel()
         );
+
+        if (publicChannel == null) {
+            return;
+        }
+
         String messageId = publicChannel.sendMessageEmbeds(mentionEmbed.build()).complete().getId();
         List<String> victimDiscordIdList = notGetBackRecord.stream().map(
                 e -> {
