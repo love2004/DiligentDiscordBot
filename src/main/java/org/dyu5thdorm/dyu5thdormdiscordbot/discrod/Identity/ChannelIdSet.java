@@ -46,4 +46,6 @@ public class ChannelIdSet {
     String floorSix;
     @Value("${channel.public}")
     String publicChannel;
+    @Value("${channel.lottery}")
+    String lottery;
 }

@@ -3,6 +3,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.view.TicketView;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -69,5 +70,23 @@ public class EmbedGenerator {
 
     public EmbedBuilder fromName(LivingRecord livingRecord, DiscordLink discordLink) {
         return fromRoom(livingRecord, discordLink);
+    }
+
+    public EmbedBuilder fromWinners(int order, TicketView winner, DiscordLink dcLink) {
+        String[] table = new String[] {"一", "二", "三"};
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setColor(Color.decode("#FFD700"));
+        embedBuilder.setTitle(
+                String.format("第%s組獎品", table[order])
+        );
+
+        embedBuilder.setDescription(String.format(
+                """
+                ## 中獎者： %s
+                """,
+                dcLink == null ? "學號：" + winner + "(未綁定 Discord)" : "<@" + dcLink.getDiscordId() +">"
+        ));
+        embedBuilder.setFooter(String.format("抽獎券數量： %d 張", winner.getTicketCount().intValue()));
+        return embedBuilder;
     }
 }

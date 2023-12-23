@@ -69,7 +69,8 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
         textChannel.sendMessage(
                 "活動"
         ).addActionRow(
-                Button.primary(buttonIdSet.getGenerateActivity(), "公告")
+                Button.primary(buttonIdSet.getGenerateActivity(), "公告"),
+                Button.primary(buttonIdSet.getLottery(), "開獎")
         ).queue();
     }
 }

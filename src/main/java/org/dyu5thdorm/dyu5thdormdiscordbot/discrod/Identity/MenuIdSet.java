@@ -40,6 +40,4 @@ public class MenuIdSet {
     String drinkingOption;
     @Value("${component.menu.activity}")
     String activity;
-    @Value("${component.menu.activity-channel}")
-    String activityChannel;
 }

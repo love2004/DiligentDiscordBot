@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ActivityPartiRepo extends JpaRepository<ActivityParticipant, ActivityParticipantId> {
     ActivityParticipant findByActivityAndStudent(Activity activity, Student student);
+    ActivityParticipant findByActivityAndStudentStudentId(Activity activity, String student_studentId);
     boolean existsByActivityAndStudentAndParticipationStatus(Activity activity, Student student, Integer participationStatus);
     int countByActivityAndParticipationStatus(Activity activity, Integer participationStatus);
 }

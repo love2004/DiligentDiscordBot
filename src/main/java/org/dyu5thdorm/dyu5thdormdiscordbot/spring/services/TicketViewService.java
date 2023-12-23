@@ -4,6 +4,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.TicketViewRepo;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.view.TicketView;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,4 +23,6 @@ public class TicketViewService {
     public Optional<TicketView> getBallAmount(String studentId) {
         return ticketViewRepo.findById(studentId);
     }
+
+    public List<TicketView> getAll() {return ticketViewRepo.findAll();}
 }

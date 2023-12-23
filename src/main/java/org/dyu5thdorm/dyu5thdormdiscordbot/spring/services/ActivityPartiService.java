@@ -76,4 +76,11 @@ public class ActivityPartiService {
         Activity activity = activityRepo.findTopByOrderByActivityIdDesc();
         return activityPartiRepo.countByActivityAndParticipationStatus(activity, 1);
     }
+
+    public void lotteryWinner(String studentId) {
+        Activity activity = activityRepo.findTopByOrderByActivityIdDesc();
+        ActivityParticipant ac = this.activityPartiRepo.findByActivityAndStudentStudentId(activity, studentId);
+        ac.setParticipationStatus(Status.CONFORMED.value);
+        activityPartiRepo.save(ac);
+    }
 }
