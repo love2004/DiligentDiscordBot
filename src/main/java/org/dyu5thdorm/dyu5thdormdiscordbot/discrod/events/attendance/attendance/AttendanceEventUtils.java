@@ -110,8 +110,8 @@ public class AttendanceEventUtils {
                 String.format(
                         """
                         > 點名時間尚未開放。
-                        > 點名開放時間為上課日 %d:%d 至 %d:%d0
-                        """, startTimeHour, startTimeMin, endTimeHour, endTimeMin
+                        > 點名開放時間為上課日 %s 至 %s
+                        """, startLocalTime, endLocalTime
                 )
         ).setEphemeral(true).queue();
     }
@@ -120,8 +120,8 @@ public class AttendanceEventUtils {
         String content = String.format(
                 """
                 > 點名時間已結束。
-                > 點名開放時間為每日 %d:%d0 至 %d:%d0
-                """, startTimeHour, startTimeMin, endTimeHour, endTimeMin
+                > 點名開放時間為每日 %s 至 %s
+                """, startLocalTime, endLocalTime
         );
 
         if (reply) {

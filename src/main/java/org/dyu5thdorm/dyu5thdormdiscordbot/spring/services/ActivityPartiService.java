@@ -6,9 +6,12 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.activity_participants.ActivityParticipant;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.ActivityPartiRepo;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.ActivityRepo;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.view.TicketView;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ActivityPartiService {
@@ -77,8 +80,13 @@ public class ActivityPartiService {
         return activityPartiRepo.countByActivityAndParticipationStatus(activity, 1);
     }
 
-    public void lotteryWinner(String studentId) {
+    public void lotteryWinner(@NotNull List<TicketView> views) {
         Activity activity = activityRepo.findTopByOrderByActivityIdDesc();
+        if (views.isEmpty()) throw new IllegalArgumentException("The views collection cannot be empty.");
+        views.forEach(e -> lotteryWinner(activity, e.getStudentId()));
+    }
+
+    private void lotteryWinner(Activity activity, String studentId) {
         ActivityParticipant ac = this.activityPartiRepo.findByActivityAndStudentStudentId(activity, studentId);
         ac.setParticipationStatus(Status.CONFORMED.value);
         activityPartiRepo.save(ac);

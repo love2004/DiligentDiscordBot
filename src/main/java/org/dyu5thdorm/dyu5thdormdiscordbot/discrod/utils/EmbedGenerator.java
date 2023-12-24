@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class EmbedGenerator {
@@ -72,21 +74,22 @@ public class EmbedGenerator {
         return fromRoom(livingRecord, discordLink);
     }
 
-    public EmbedBuilder fromWinners(int order, TicketView winner, DiscordLink dcLink) {
-        String[] table = new String[] {"一", "二", "三"};
+    public EmbedBuilder fromWinners(Map<TicketView, DiscordLink> map) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
+        StringBuilder strBuilder = new StringBuilder();
         embedBuilder.setColor(Color.decode("#FFD700"));
-        embedBuilder.setTitle(
-                String.format("第%s組獎品", table[order])
-        );
-
-        embedBuilder.setDescription(String.format(
-                """
-                ## 中獎者： %s
-                """,
-                dcLink == null ? "學號：" + winner + "(未綁定 Discord)" : "<@" + dcLink.getDiscordId() +">"
-        ));
-        embedBuilder.setFooter(String.format("抽獎券數量： %d 張", winner.getTicketCount().intValue()));
+        AtomicInteger count = new AtomicInteger(1);
+        embedBuilder.setTitle("中獎資訊如下");
+        map.forEach((ticketView, dcLink) -> strBuilder.append(
+                String.format(
+                        """
+                        ### 第 %d 位：%s
+                        - 擁有抽獎券 %d 張
+                        """, count.getAndAdd(1),
+                        dcLink == null ? "學號：" + ticketView.getStudentId() + "(未綁定 Discord)" : "<@" + dcLink.getDiscordId() +">",
+                        ticketView.getTicketCount().intValue()
+                )));
+        embedBuilder.setDescription(strBuilder);
         return embedBuilder;
     }
 }

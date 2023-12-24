@@ -10,8 +10,9 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TicketViewService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.view.TicketView;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class LotteryModel {
@@ -34,16 +35,14 @@ public class LotteryModel {
         this.embedGenerator = embedGenerator;
     }
 
-    List<EmbedBuilder> getEmbedBuilders() {
+    EmbedBuilder getEmbedBuilder() {
         List<TicketView> ticketViews = viewService.getAll();
-        List<TicketView> winners = lottery.drawWinners(ticketViews, 3);
-        List<EmbedBuilder> builders = new ArrayList<>();
-        for (int i = 0; i < winners.size(); i++) {
-            DiscordLink discordLink = dcService.findByStudentId(winners.get(i).getStudentId());
-            activityPartiService.lotteryWinner(winners.get(i).getStudentId());
-            EmbedBuilder embedBuilder = embedGenerator.fromWinners(i, winners.get(i), discordLink);
-            builders.add(embedBuilder);
-        }
-        return builders;
+        List<TicketView> winners = lottery.drawWinners(ticketViews, 7);
+        activityPartiService.lotteryWinner(winners);
+        Map<TicketView, DiscordLink> resultMap = winners.stream().collect(
+                        Collectors.toMap(ticketView -> ticketView,ticketView -> dcService.findByStudentId(ticketView.getStudentId()))
+                );
+
+        return embedGenerator.fromWinners(resultMap);
     }
 }

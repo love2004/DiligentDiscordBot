@@ -15,6 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Component
 @PropertySource("classpath:attendance.properties")
@@ -31,6 +32,7 @@ public class LeaveBtnEvent extends ListenerAdapter {
     LeaveModal leaveModal;
     final
     ReqLevOperation reqLevOperation;
+    LocalTime startLeave, endLeave;
 
     public LeaveBtnEvent(ButtonIdSet buttonIdSet, NoCallRollDateService noCallRollDateService, LeaveRecordService leaveRecordService, LivingRecordService livingRecordService, LeaveModal leaveModal, ReqLevOperation reqLevOperation) {
         this.buttonIdSet = buttonIdSet;
@@ -39,6 +41,8 @@ public class LeaveBtnEvent extends ListenerAdapter {
         this.livingRecordService = livingRecordService;
         this.leaveModal = leaveModal;
         this.reqLevOperation = reqLevOperation;
+        startLeave = LocalTime.of(reqLevOperation.getStartLeaveTimeHour(), reqLevOperation.getStartLeaveTimeMin());
+        endLeave = LocalTime.of(reqLevOperation.getEndLeaveTimeHour(), reqLevOperation.getEndLeaveTimeMin());
     }
 
 
@@ -79,9 +83,8 @@ public class LeaveBtnEvent extends ListenerAdapter {
             event.deferReply().setEphemeral(true).queue();
             event.getHook().sendMessage(
                     String.format("""
-                    > 操作失敗。點名請假時間為每天的 0%d:%d0 ~ %d:%d。
-                    """, reqLevOperation.getStartLeaveTimeHour(), reqLevOperation.getStartLeaveTimeMin(),
-                            reqLevOperation.getEndLeaveTimeHour(), reqLevOperation.getEndLeaveTimeMin())
+                    > 操作失敗。點名請假時間為每天的 %s ~ %s。
+                    """,startLeave , endLeave)
             ).setEphemeral(true).queue();
             return;
         }

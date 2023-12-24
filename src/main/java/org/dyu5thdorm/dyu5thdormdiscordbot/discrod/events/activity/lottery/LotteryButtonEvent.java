@@ -29,10 +29,12 @@ public class LotteryButtonEvent extends ListenerAdapter {
         event.deferReply().setEphemeral(true).queue();
         TextChannel channel = event.getJDA().getTextChannelById(channelIdSet.getLottery());
         channel.getIterableHistory().complete().forEach(message -> message.delete().queue());
-        lotteryModel.getEmbedBuilders().forEach(e -> channel.sendMessageEmbeds(e.build()).queue());
+        channel.sendMessageEmbeds(lotteryModel.getEmbedBuilder().build()).queue();
         channel.sendMessage("""
                 ---
-                ### 以上中獎者請於 *2023/12/30 20:29:29* 以前內私訊 <@537977217397817372>，逾期視為放棄。
+                ### 🎉 恭喜
+                ### 請於 **2023年12月30日 20:29:29** 前私訊舍長 <@537977217397817372>。
+                ### ⏰ 特別提醒，若在上述截止時間後才聯繫，將視同放棄中獎資格。
                 ---
                 @everyone
                 """).queue();
