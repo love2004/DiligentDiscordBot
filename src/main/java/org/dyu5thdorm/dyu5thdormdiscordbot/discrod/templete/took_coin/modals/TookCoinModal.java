@@ -6,27 +6,38 @@ import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class TookCoinModal {
     Modal washMachineModal, dryerModal, vendingModal;
-    @Autowired
+    final
     ModalIdSet modalIdSet;
+    DateTimeFormatter formatter;
+    TextInput.Builder time;
+    @Value("${datetime-textinput.format}")
+    String format;
+
+    public TookCoinModal(ModalIdSet modalIdSet) {
+        this.modalIdSet = modalIdSet;
+    }
 
     @PostConstruct
     void init() {
-        var description = TextInput.create(modalIdSet.getSecondTextInput(), "故障情況說明", TextInputStyle.PARAGRAPH)
+        formatter = DateTimeFormatter.ofPattern(format);
+        TextInput.Builder description = TextInput.create(modalIdSet.getSecondTextInput(), "故障情況說明", TextInputStyle.PARAGRAPH)
                 .setRequiredRange(0, 50);
         TextInput coin = TextInput.create(modalIdSet.getThirdTextInput(), "卡幣金額", TextInputStyle.SHORT)
                 .setPlaceholder("請輸入卡幣金額。例如：87")
                 .setRequiredRange(1, 2)
                 .build();
-        TextInput time = TextInput.create(modalIdSet.getFourthTextInput(), "發生時間 格式：[月+日 時+分]", TextInputStyle.PARAGRAPH)
+        time = TextInput.create(modalIdSet.getFourthTextInput(), "發生時間 格式：[月+日 時+分] \n(自動帶入三分鐘前的時間)", TextInputStyle.PARAGRAPH)
                 .setPlaceholder("請輸入發生時間。\n格式(24小時制)：[月+日 時+分]\n例如：0807 2030")
-                .setRequiredRange(9, 9)
-                .build();
+                .setRequiredRange(9, 9);
 
         washMachineModal = Modal.create(modalIdSet.getTookCoinWashMachine(), "洗衣機吃錢登記")
                 .addActionRow(
@@ -45,7 +56,7 @@ public class TookCoinModal {
                         """).build()
                 )
                 .addActionRow(coin)
-                .addActionRow(time)
+                .addActionRow(time.build())
                 .build();
         dryerModal = washMachineModal.createCopy().setTitle("烘衣機吃錢登記").setId(modalIdSet.getTookCoinDryer()).build();
         vendingModal = Modal.create(modalIdSet.getTookCoinVending(), "販賣機吃錢登記")
@@ -63,22 +74,33 @@ public class TookCoinModal {
                         """
                 ).build())
                 .addActionRow(coin)
-                .addActionRow(time)
+                .addActionRow(time.build())
                 .build();
     }
 
-    public Modal getModalByType(TookCoinHandler.Type type) {
+    public Modal getModalByType(TookCoinHandler.MachineType type) {
+        Modal returnModal;
         switch (type) {
-            case WASH_MACHINE -> {
-                return this.washMachineModal;
-            }
-            case DRYER -> {
-                return this.dryerModal;
-            }
-            case VENDING -> {
-                return this.vendingModal;
-            }
+            case WASH_MACHINE -> returnModal = this.washMachineModal;
+            case DRYER -> returnModal = this.dryerModal;
+            case VENDING -> returnModal = this.vendingModal;
+            default -> returnModal = null;
         }
-        return null;
+        return timeAutoFillOut(returnModal);
+    }
+
+    Modal timeAutoFillOut(Modal modal) {
+        LocalDateTime nowMinusFiveMin = LocalDateTime.now().minusMinutes(3);
+        Modal.Builder modalCopy = modal.createCopy();
+        TextInput.Builder timeBuilderCopy = time;
+        modalCopy.getComponents().get(3).updateComponent(
+                modalIdSet.getFourthTextInput(),
+                timeBuilderCopy
+                        .setValue(
+                                formatter.format(nowMinusFiveMin)
+                        )
+                        .build()
+        );
+        return modalCopy.build();
     }
 }

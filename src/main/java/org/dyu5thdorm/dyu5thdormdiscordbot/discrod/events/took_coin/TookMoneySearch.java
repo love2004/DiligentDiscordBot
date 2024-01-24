@@ -9,6 +9,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
 import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
@@ -32,7 +33,7 @@ public class TookMoneySearch extends ListenerAdapter {
     }
 
     @Override
-    public void onStringSelectInteraction(StringSelectInteractionEvent event) {
+    public void onStringSelectInteraction(@NotNull StringSelectInteractionEvent event) {
         String eventMenuId = event.getSelectMenu().getId();
         if (!menuIdSet.getTookCoin().equalsIgnoreCase(eventMenuId)) return;
         if (!event.getSelectedOptions().get(0).getValue().equalsIgnoreCase(menuIdSet.getTookCoinSearch())) return;
@@ -62,7 +63,7 @@ public class TookMoneySearch extends ListenerAdapter {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             int backCoinSum = queryRecords.stream().mapToInt(TookCoin::getCoinAmount).sum();
             embedBuilder.setTitle("合併簽收")
-                    .setDescription("因為發現您有多筆卡幣紀錄，因此您可以點此按鈕一併領取")
+                    .setDescription("因發現您有多筆卡幣紀錄，因此您可以點此按鈕一併領取")
                     .setColor(Color.CYAN)
                     .addField("應退總額", Integer.toString(backCoinSum), true)
                     .setFooter(

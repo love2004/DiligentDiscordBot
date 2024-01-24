@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,7 +23,7 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildReady(GuildReadyEvent event) {
+    public void onGuildReady(@NotNull GuildReadyEvent event) {
         TextChannel textChannel = event.getGuild().getTextChannelById(channelIdSet.getAdminOperation());
         if (textChannel == null) return;
 
@@ -40,37 +41,30 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
                 "機器人類別"
         ).addActionRow(
                 Button.danger(buttonIdSet.getShutdown(), "關機"),
-                Button.secondary(buttonIdSet.getMaintenance(), "維修模式(僅限開發人員使用)"),
+                Button.secondary(buttonIdSet.getMaintenance(), "維修模式"),
                 Button.secondary(buttonIdSet.getIpLookup(), "IP LOOKUP")
         ).queue();
 
         textChannel.sendMessage(
-                "宿舍類別"
+                "重新產生頻道內容 (1)"
         ).addActionRow(
-                Button.success(buttonIdSet.getGenerateReqAuth(), "重新生成驗證內容"),
-                Button.primary(buttonIdSet.getGenerateRules(), "重新生成公約內容"),
-                Button.success(buttonIdSet.getGenerateReqRepair(), "重新生成報修按鈕"),
-                Button.success(buttonIdSet.getGenerateReqCadre(), "重新生成特定用戶專區按鈕")
+                Button.success(buttonIdSet.getGenerateReqAuth(), "驗證"),
+                Button.primary(buttonIdSet.getGenerateRules(), "規章"),
+                Button.success(buttonIdSet.getGenerateReqRepair(), "報修"),
+                Button.success(buttonIdSet.getGenerateReqCadre(), "特定用戶")
         ).queue();
 
         textChannel.sendMessage(
-                "宿舍類別 (2)"
+                "重新產生頻道內容 (2)"
         ).addActionRow(
-                Button.primary(buttonIdSet.getFloorRoleCorrection(), "重新校正所有成員對應樓層身份組")
+                Button.primary(buttonIdSet.getGenerateReqLevCadre(), "點名"),
+                Button.primary(buttonIdSet.getGenerateReqLev(), "請假")
         ).queue();
 
         textChannel.sendMessage(
-                "請假"
+                "身份組"
         ).addActionRow(
-                Button.primary(buttonIdSet.getGenerateReqLevCadre(), "重新生成點名按鈕"),
-                Button.primary(buttonIdSet.getGenerateReqLev(), "重新生成請假按鈕")
-        ).queue();
-
-        textChannel.sendMessage(
-                "活動"
-        ).addActionRow(
-                Button.primary(buttonIdSet.getGenerateActivity(), "公告"),
-                Button.primary(buttonIdSet.getLottery(), "開獎")
+                Button.primary(buttonIdSet.getFloorRoleCorrection(), "校正樓層身分組")
         ).queue();
     }
 }

@@ -46,16 +46,16 @@ public class GenerateAdmin extends ListenerAdapter {
         textChannel.sendMessage(
                 String.format(
                         """
-                        :mag: 查詢住宿生(模糊查詢)
-                        > 僅能查詢 %s-%s 學期的住宿生
+                        :mag: 以 帳號\\\\房號\\\\學號\\\\姓名 查詢住宿生(模糊查詢)
+                        > 僅能查詢 %s-%s 學期的業勤住宿生
                         """, schoolYear, semester
                 )
         ).addComponents(
                 ActionRow.of(
-                        Button.primary(buttonIdSet.getSearchByDiscordId(), "以帳號查詢"),
-                        Button.success(buttonIdSet.getSearchByBedId(), "以房號查詢"),
-                        Button.success(buttonIdSet.getSearchByStudentId(), "以學號查詢"),
-                        Button.success(buttonIdSet.getSearchByStudentName(), "以姓名查詢")
+                        Button.primary(buttonIdSet.getSearchByDiscordId(), "帳號"),
+                        Button.success(buttonIdSet.getSearchByBedId(), "房號"),
+                        Button.success(buttonIdSet.getSearchByStudentId(), "學號"),
+                        Button.success(buttonIdSet.getSearchByStudentName(), "姓名")
                 )
         ).queue();
 

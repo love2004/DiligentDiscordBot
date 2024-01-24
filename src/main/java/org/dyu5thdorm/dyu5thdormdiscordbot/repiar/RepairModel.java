@@ -3,6 +3,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.repiar;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 
 import java.io.UnsupportedEncodingException;
@@ -37,72 +38,43 @@ public class RepairModel {
         String format = String.format(
                 builder,
                 "F0860",
-                getTypeCode(this.type),
-                getBuildingCode(this.building),
+                this.type.getId(),
+                this.building.getId(),
                 this.location,
                 this.item,
-                getUnitCode(this.unit),
+                this.unit.getId(),
                 this.amount,
                 description + (this.repairTime != null ? ", \n可配合維修時間：" + repairTime : ""),
                 reporter.getPhoneNumber(),
-                getReportUnitCode(this.reportUnit)
+                this.reportUnit.getId()
         );
         return URLEncoder.encode(format, "BIG5");
     }
 
+    @Getter
     public enum Building {
-        Diligent,
-        LokKwan,
-        FourWilling
+        Diligent("05"), LokKwan("23"), FourWilling("07");
+        private final String id;
+        Building(String id) {
+            this.id = id;
+        }
     }
 
+    @Getter
     public enum Unit {
-        Normal
+        Normal("06");
+        private final String id;
+        Unit(String id) {
+            this.id = id;
+        }
     }
 
+    @Getter
     public enum ReportUnit {
-        Normal
-    }
-
-    String getTypeCode(Repair.Type type) {
-        switch (type) {
-            case CIVIL -> {
-                return "001";
-            }
-            case HYDRO -> {
-                return "002";
-            }
-            case DOOR -> {
-                return "014";
-            }
-            case AIR_COND -> {
-                return "005";
-            }
-            default -> {
-                return "006";
-            }
+        Normal("2700");
+        private final String id;
+        ReportUnit(String id) {
+            this.id = id;
         }
-    }
-
-    String getBuildingCode(Building building) {
-        switch (building) {
-            case LokKwan -> {
-                return  "23";
-            }
-            case FourWilling -> {
-                return "07";
-            }
-            default -> {
-                return "05";
-            }
-        }
-    }
-
-    String getUnitCode(Unit unit) {
-        return "06";
-    }
-
-    String getReportUnitCode(ReportUnit unit) {
-        return "2700";
     }
 }

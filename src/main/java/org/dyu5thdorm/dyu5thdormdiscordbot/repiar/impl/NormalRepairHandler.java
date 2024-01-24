@@ -39,7 +39,7 @@ public class NormalRepairHandler implements RepairHandler {
 
         RepairModel model = factory.factory(type, reporter, location, item, description, repairTime);
         String message = repair.getLineMessage(model);
-        return doRepair(model) && doNotify(message);
+        return doRepair(model) && sendNotify(message);
     }
 
     boolean doRepair(RepairModel repairModel) {
@@ -53,7 +53,7 @@ public class NormalRepairHandler implements RepairHandler {
         return true;
     }
 
-    boolean doNotify(String message) {
+    boolean sendNotify(String message) {
         try {
             lineNotify.sendMessage(message, RepairTokenSet.RepairType.NORMAL);
         } catch (IOException | InterruptedException e) {

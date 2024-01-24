@@ -28,7 +28,7 @@ public class GenerateLeave extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        if (!event.getButton().getId().equalsIgnoreCase(buttonIdSet.getGenerateReqLev())) return;
+        if (!buttonIdSet.getGenerateReqLev().equalsIgnoreCase(event.getButton().getId())) return;
         event.deferReply().setEphemeral(true).queue();
 
         TextChannel reqLevChannel = event.getJDA().getTextChannelById(channelIdSet.getReqLev());
@@ -43,22 +43,21 @@ public class GenerateLeave extends ListenerAdapter {
 
         reqLevChannel.sendMessage(
                 String.format("""
-                        # 晚間點名請假
+                        # 晚間點名請假\\\\補點名
                         - 點名時段說明：
                           - **除寒、暑假、國定假日、一般假日(六日)、放假前一天外，上課日皆需點名。**
                           - 點名於 22:30 開始
                         - 點名模式：
                           - 樓長至房間內點名
                         - 注意事項：
-                          - 無法到場點名者須依規定請假。
+                          - 無法到場點名或錯過點名須依規定請假\\\\補點名。
                           - 連續兩天點名缺席未請假者，將會通知家長。
-                          - __當天點名請假時間為 **0%d:%d0 ~ %d:%d**，逾時系統不受理！__
-                          - 請點下方「晚間點名請假」開始進行請假流程。
-                        """, rlOp.getStartLeaveTimeHour(), rlOp.getStartLeaveTimeMin(),
-                                rlOp.getEndLeaveTimeHour(), rlOp.getEndLeaveTimeMin())
+                          - __當天點名請假時間為 **%s ~ %s**，逾時系統不受理！__
+                          - 請點下方「晚間點名請假\\\\補點名」開始進行請假流程。
+                        """, rlOp.getStartTime(), rlOp.getEndTime())
                 )
                 .addActionRow(
-                        Button.danger(buttonIdSet.getReqForLeave(), "晚間點名請假")
+                        Button.danger(buttonIdSet.getReqForLeave(), "晚間點名請假\\補點名")
         ).queue();
 
         event.getHook().sendMessage("Done").setEphemeral(true).queue();

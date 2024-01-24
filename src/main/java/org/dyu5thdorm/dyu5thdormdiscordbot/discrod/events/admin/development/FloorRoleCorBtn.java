@@ -6,9 +6,11 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.RoleOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,14 +24,18 @@ public class FloorRoleCorBtn extends ListenerAdapter {
     final
     RoleOperation roleOperation;
 
-    public FloorRoleCorBtn(ButtonIdSet buttonIdSet, LivingRecordService livingRecordService, RoleOperation roleOperation) {
+    final
+    Maintenance maintenance;
+
+    public FloorRoleCorBtn(ButtonIdSet buttonIdSet, LivingRecordService livingRecordService, RoleOperation roleOperation, Maintenance maintenance) {
         this.buttonIdSet = buttonIdSet;
         this.livingRecordService = livingRecordService;
         this.roleOperation = roleOperation;
+        this.maintenance = maintenance;
     }
 
     @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getFloorRoleCorrection().equalsIgnoreCase(eventButtonId)) return;
 
@@ -46,7 +52,17 @@ public class FloorRoleCorBtn extends ListenerAdapter {
 
         for (Member member : members) {
             LivingRecord record = livingRecordService.findLivingRecordByDiscordId(member.getUser().getId());
-            if (record == null) continue;
+            if (record == null) {
+                if (maintenance.isMaintenanceStatus() && !member.getRoles().isEmpty()) {
+                    event.getHook().sendMessage(
+                            String.format(
+                                    "<@%s> 非本學期住宿生，該樓層身份組已被刪除，請查閱。", member.getUser().getId()
+                            )
+                    ).setEphemeral(true).queue();
+                    roleOperation.removeAllFloorRoles(thisGuild, member);
+                }
+                continue;
+            }
 
             int floor = roleOperation.getFloorByBedId(record.getBed().getBedId());
             String correctRoleId = roleOperation.getRoleIdByFloor(floor);

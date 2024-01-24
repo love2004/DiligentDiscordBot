@@ -4,10 +4,11 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.modals.LeaveModal;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ReqLevOperation;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LeaveRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.NoCallRollDateService;
@@ -15,7 +16,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Component
 @PropertySource("classpath:attendance.properties")
@@ -32,7 +32,6 @@ public class LeaveBtnEvent extends ListenerAdapter {
     LeaveModal leaveModal;
     final
     ReqLevOperation reqLevOperation;
-    LocalTime startLeave, endLeave;
 
     public LeaveBtnEvent(ButtonIdSet buttonIdSet, NoCallRollDateService noCallRollDateService, LeaveRecordService leaveRecordService, LivingRecordService livingRecordService, LeaveModal leaveModal, ReqLevOperation reqLevOperation) {
         this.buttonIdSet = buttonIdSet;
@@ -41,8 +40,6 @@ public class LeaveBtnEvent extends ListenerAdapter {
         this.livingRecordService = livingRecordService;
         this.leaveModal = leaveModal;
         this.reqLevOperation = reqLevOperation;
-        startLeave = LocalTime.of(reqLevOperation.getStartLeaveTimeHour(), reqLevOperation.getStartLeaveTimeMin());
-        endLeave = LocalTime.of(reqLevOperation.getEndLeaveTimeHour(), reqLevOperation.getEndLeaveTimeMin());
     }
 
 
@@ -74,7 +71,7 @@ public class LeaveBtnEvent extends ListenerAdapter {
         if (leaveRecordService.existsByDate(student, bed, now)) {
             event.deferReply().setEphemeral(true).queue();
             event.getHook().sendMessage("""
-                    > 您今天已提交過請假申請！
+                    > 您今天已提交過申請！
                     """).setEphemeral(true).queue();
             return;
         }
@@ -83,11 +80,12 @@ public class LeaveBtnEvent extends ListenerAdapter {
             event.deferReply().setEphemeral(true).queue();
             event.getHook().sendMessage(
                     String.format("""
-                    > 操作失敗。點名請假時間為每天的 %s ~ %s。
-                    """,startLeave , endLeave)
+                    > 操作失敗。操作時間為每天的 %s ~ %s。
+                    """, reqLevOperation.getStartTime() , reqLevOperation.getEndTime())
             ).setEphemeral(true).queue();
             return;
         }
+
         event.replyModal(leaveModal.getModal()).queue();
     }
 }

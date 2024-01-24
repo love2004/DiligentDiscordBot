@@ -6,6 +6,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.modals.AuthModal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +26,7 @@ public class OnAuthButtonInteractionEvent extends ListenerAdapter {
     }
 
     @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getAuth().equalsIgnoreCase(eventButtonId)) return;
         String userId = event.getUser().getId();

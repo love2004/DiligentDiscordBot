@@ -32,9 +32,8 @@ public class LineNotify {
 
     HttpRequest getRequest(String message, String imageUrl, RepairTokenSet.RepairType type) {
         String parameters = String.format(
-                "message=%s",URLEncoder.encode(message, StandardCharsets.UTF_8)
+                "message=%s", URLEncoder.encode(message, StandardCharsets.UTF_8)
         );
-
 
         if (imageUrl != null) {
             parameters += String.format(

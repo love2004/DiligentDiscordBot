@@ -80,7 +80,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
 
 
     @Override
-    public void onButtonInteraction(ButtonInteractionEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
         if (!buttonIdSet.getTookCoin().equalsIgnoreCase(eventButtonId)) return;
         event.deferReply().setEphemeral(true).queue();
@@ -92,11 +92,11 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     }
 
     @Override
-    public void onStringSelectInteraction(StringSelectInteractionEvent event) {
+    public void onStringSelectInteraction(@NotNull StringSelectInteractionEvent event) {
         String eventMenuId = event.getSelectMenu().getId();
         if (!menuIdSet.getTookCoin().equalsIgnoreCase(eventMenuId)) return;
         String selectedOptionId = event.getSelectedOptions().get(0).getValue();
-        TookCoinHandler.Type reportType = getTypeByMenuId(selectedOptionId);
+        TookCoinHandler.MachineType reportType = getTypeByMenuId(selectedOptionId);
         if (reportType == null) {
             return;
         }
@@ -106,7 +106,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     }
 
     @Override
-    public void onModalInteraction(ModalInteractionEvent event) {
+    public void onModalInteraction(@NotNull ModalInteractionEvent event) {
         String eventModalId = event.getModalId();
         if (!List.of(
                 modalIdSet.getTookCoinDryer(),
@@ -153,7 +153,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
             return;
         }
 
-        TookCoinHandler.Type type = getTypeByModalId(eventModalId);
+        TookCoinHandler.MachineType type = getTypeByModalId(eventModalId);
 
         TookCoinHandler.FailReason r = tookCoin.record(type, args, discordLink.getStudent());
         if (r != TookCoinHandler.FailReason.NONE) {
@@ -187,7 +187,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     }
 
     @NotNull
-    private EmbedBuilder getEmbedBuilder(TookCoinHandler.Type type, String userId, List<String> args, DiscordLink discordLink) {
+    private EmbedBuilder getEmbedBuilder(@NotNull TookCoinHandler.MachineType type, String userId, @NotNull List<String> args, @NotNull DiscordLink discordLink) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Color.YELLOW);
         embedBuilder.setTitle("有新的一筆吃錢登記");
@@ -207,7 +207,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     }
 
     @SneakyThrows
-    void sendLineNotify(TookCoinHandler.Type type, List<String> args, Student student) {
+    void sendLineNotify(TookCoinHandler.MachineType type, List<String> args, Student student) {
         RepairTokenSet.RepairType repairType = getTypeByTookCoinType(type);
         if (repairType == null) {
             return;
@@ -224,7 +224,7 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         lineNotify.sendMessage(sb, repairType);
     }
 
-    RepairTokenSet.RepairType getTypeByTookCoinType(TookCoinHandler.Type tookCoinType) {
+    RepairTokenSet.RepairType getTypeByTookCoinType(@NotNull TookCoinHandler.MachineType tookCoinType) {
         switch (tookCoinType) {
             case WASH_MACHINE, DRYER -> {
                 return RepairTokenSet.RepairType.WASH_AND_DRY_MACHINE;
@@ -237,23 +237,23 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         return null;
     }
 
-    TookCoinHandler.Type getTypeByMenuId(String id) {
+    TookCoinHandler.MachineType getTypeByMenuId(String id) {
         if (menuIdSet.getVendingOption().equalsIgnoreCase(id)) {
-            return TookCoinHandler.Type.VENDING;
+            return TookCoinHandler.MachineType.VENDING;
         } else if (menuIdSet.getDryerOption().equalsIgnoreCase(id)) {
-            return TookCoinHandler.Type.DRYER;
+            return TookCoinHandler.MachineType.DRYER;
         } else if (menuIdSet.getWashingMachineOption().equalsIgnoreCase(id)) {
-            return TookCoinHandler.Type.WASH_MACHINE;
+            return TookCoinHandler.MachineType.WASH_MACHINE;
         } else return null;
     }
 
-    TookCoinHandler.Type getTypeByModalId(String id) {
+    TookCoinHandler.MachineType getTypeByModalId(String id) {
         if (modalIdSet.getTookCoinVending().equalsIgnoreCase(id)) {
-            return TookCoinHandler.Type.VENDING;
+            return TookCoinHandler.MachineType.VENDING;
         } else if (modalIdSet.getTookCoinDryer().equalsIgnoreCase(id)) {
-            return TookCoinHandler.Type.DRYER;
+            return TookCoinHandler.MachineType.DRYER;
         } else if (modalIdSet.getTookCoinWashMachine().equalsIgnoreCase(id)) {
-            return TookCoinHandler.Type.WASH_MACHINE;
+            return TookCoinHandler.MachineType.WASH_MACHINE;
         } else return null;
     }
 }

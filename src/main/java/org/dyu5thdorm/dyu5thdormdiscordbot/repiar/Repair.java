@@ -1,23 +1,28 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.repiar;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 
 @Component
 public class Repair {
-    @Autowired
+    final
     MenuIdSet menuIdSet;
-    @Autowired
+    final
     ModalIdSet modalIdSet;
 
     Map<String, Type> modalMapping, menuMapping;
+
+    public Repair(MenuIdSet menuIdSet, ModalIdSet modalIdSet) {
+        this.menuIdSet = menuIdSet;
+        this.modalIdSet = modalIdSet;
+    }
 
     @PostConstruct
     void init() {
@@ -44,8 +49,13 @@ public class Repair {
         );
     }
 
+    @Getter
     public enum Type {
-        CIVIL, HYDRO, DOOR, AIR_COND, OTHER, WASH_AND_DRY, VENDING, DRINKING
+        CIVIL("001"), HYDRO("002"), DOOR("014"), AIR_COND("005"), OTHER("006"), WASH_AND_DRY("N.A"), VENDING("N.A"), DRINKING("N.A");
+        private final String id;
+        Type(String id) {
+            this.id = id;
+        }
     }
 
     public Type getTypeByModalId(String id) {
@@ -56,7 +66,7 @@ public class Repair {
         return menuMapping.getOrDefault(id, null);
     }
 
-    public String getLineMessage(RepairModel repairModel) {
+    public String getLineMessage(@NotNull RepairModel repairModel) {
         StringBuilder builder = new StringBuilder();
         Student reporter = repairModel.getReporter();
         builder.append("\n學號：").append(reporter.getStudentId());
@@ -69,20 +79,11 @@ public class Repair {
         return builder.toString();
     }
 
-    public String getLineMessage(Student reporter, String location, String description) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("\n學號：").append(reporter.getStudentId());
-        builder.append("\n姓名：").append(reporter.getName());
-        builder.append("\n電話：").append(reporter.getPhoneNumber());
-        builder.append("\n報修區域：").append(location);
-        builder.append("\n報修原因：").append(description);
-        return builder.toString();
+    public String getLineMessage(@NotNull Student reporter, String location, String description) {
+        return "\n學號：" + reporter.getStudentId() +
+                "\n姓名：" + reporter.getName() +
+                "\n電話：" + reporter.getPhoneNumber() +
+                "\n報修區域：" + location +
+                "\n報修原因：" + description;
     }
-
-    public boolean isNormalType(Type type) {
-        return List.of(
-                Type.CIVIL, Type.HYDRO, Type.OTHER, Type.DOOR, Type.AIR_COND
-        ).contains(type);
-    }
-
 }

@@ -47,10 +47,6 @@ public class TookCoinService {
         }
     }
 
-    public Set<TookCoin> findNotGetBack() {
-        return tookCoinRepository.findAllNotGetBack();
-    }
-
     public Set<TookCoin> findNotGetBack(LocalDate returnDate, int dayIn) {
         return tookCoinRepository.findAllNotGetBack().stream().filter(
                 e -> {

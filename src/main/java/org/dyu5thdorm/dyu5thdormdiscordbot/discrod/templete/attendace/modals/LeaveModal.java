@@ -23,12 +23,12 @@ public class LeaveModal {
 
     @PostConstruct
     void init() {
-        modal = Modal.create(modalIdSet.getReqForLeave(), "晚間點名請假")
+        modal = Modal.create(modalIdSet.getReqForLeave(), "晚間點名請假\\補點名")
                 .addComponents(
                         ActionRow.of(
-                                TextInput.create(modalIdSet.getFirstTextInput(), "請假事由(Reason)", TextInputStyle.PARAGRAPH)
+                                TextInput.create(modalIdSet.getFirstTextInput(), "事由(Reason)", TextInputStyle.PARAGRAPH)
                                         .setMaxLength(50)
-                                        .setPlaceholder("請填寫請假事由。")
+                                        .setPlaceholder("請填寫事由。")
                                         .build()
                         )
                 );
@@ -36,7 +36,7 @@ public class LeaveModal {
 
     public Modal getModal() {
         return modal.setTitle(
-                LocalDate.now() + " 晚間點名請假"
+                String.valueOf(LocalDate.now())
         ).build();
     }
 }

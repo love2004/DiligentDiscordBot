@@ -2,10 +2,10 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.repiar.crawler;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.dyu5thdorm.dyu5thdormdiscordbot.DormWebClient;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.RepairModel;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -30,6 +30,7 @@ public class RepairCrawler {
     public RepairCrawler(DormWebClient webClient, LoginParameter loginParameter) {
         this.webClient = webClient;
         this.loginParameter = loginParameter;
+        this.webClient.getOptions().setCssEnabled(false);
     }
 
     public boolean repair(RepairModel parameter) throws IOException {
@@ -43,7 +44,7 @@ public class RepairCrawler {
         return webClient.getPage(request).getWebResponse().getStatusCode() == 200;
     }
 
-    public void login(LoginParameter loginParameter) throws IOException {
+    public void login(@NotNull LoginParameter loginParameter) throws IOException {
         WebRequest request = new WebRequest(
                 new URL(loginApiURL)
         );
@@ -57,9 +58,5 @@ public class RepairCrawler {
         HtmlPage page = webClient.getPage(repairApiURL);
         var result = page.querySelectorAll("[name=txt_userid]");
         return result.isEmpty();
-    }
-
-    public WebResponse logout() throws IOException {
-        return webClient.getPage(new URL(logoutApiURL)).getWebResponse();
     }
 }

@@ -3,20 +3,18 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.view.TicketView;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class EmbedGenerator {
     @Value("${image.student-api}")
     String formatStudentImageApi;
 
-    public EmbedBuilder fromDiscord(LivingRecord livingRecord, String userId) {
+    public EmbedBuilder fromDiscord(@NotNull LivingRecord livingRecord, String userId) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("查詢結果");
         embedBuilder.setDescription(
@@ -41,7 +39,7 @@ public class EmbedGenerator {
         return embedBuilder;
     }
 
-    public EmbedBuilder fromRoom(LivingRecord livingRecord, DiscordLink discordLink) {
+    public EmbedBuilder fromRoom(@NotNull LivingRecord livingRecord, DiscordLink discordLink) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("查詢結果");
         embedBuilder
@@ -72,24 +70,5 @@ public class EmbedGenerator {
 
     public EmbedBuilder fromName(LivingRecord livingRecord, DiscordLink discordLink) {
         return fromRoom(livingRecord, discordLink);
-    }
-
-    public EmbedBuilder fromWinners(Map<TicketView, DiscordLink> map) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        StringBuilder strBuilder = new StringBuilder();
-        embedBuilder.setColor(Color.decode("#FFD700"));
-        AtomicInteger count = new AtomicInteger(1);
-        embedBuilder.setTitle("中獎資訊如下");
-        map.forEach((ticketView, dcLink) -> strBuilder.append(
-                String.format(
-                        """
-                        ### 第 %d 位：%s
-                        - 擁有抽獎券 %d 張
-                        """, count.getAndAdd(1),
-                        dcLink == null ? "學號：" + ticketView.getStudentId() + "(未綁定 Discord)" : "<@" + dcLink.getDiscordId() +">",
-                        ticketView.getTicketCount().intValue()
-                )));
-        embedBuilder.setDescription(strBuilder);
-        return embedBuilder;
     }
 }

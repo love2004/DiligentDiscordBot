@@ -127,7 +127,7 @@ public class AttendanceHandler {
         return query;
     }
 
-    boolean isAllEmptyRoomArea(FloorArea floorArea) {
+    boolean isAllEmptyRoomArea(@NotNull FloorArea floorArea) {
         Integer floor = floorArea.getFloor();
         return isAllEmptyRoomArea(floor, floorArea.getStartRoomId(), floorArea.getEndRoomId(), true);
     }

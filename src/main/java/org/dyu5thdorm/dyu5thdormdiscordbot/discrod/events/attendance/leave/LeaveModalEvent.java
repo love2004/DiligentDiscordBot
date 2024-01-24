@@ -38,9 +38,8 @@ public class LeaveModalEvent extends ListenerAdapter {
         if (reqLevOperation.isIllegalTime()) {
             event.getHook().sendMessage(
                     String.format("""
-                    > 已超過點名請假時間。點名請假時間為每天的 0%d:0%d ~ %d:%d。
-                    """, reqLevOperation.getStartLeaveTimeHour(), reqLevOperation.getStartLeaveTimeMin(),
-                            reqLevOperation.getEndLeaveTimeHour(), reqLevOperation.getEndLeaveTimeMin())
+                    > 已超過點名請假\\\\補點名時間。點名請假\\\\補點名時間為每天的 %s ~ %s。
+                    """, reqLevOperation.getStartTime(), reqLevOperation.getEndTime())
             ).setEphemeral(true).queue();
             return;
         }
@@ -58,7 +57,7 @@ public class LeaveModalEvent extends ListenerAdapter {
 
         leaveService.save(record, reason);
         event.getHook().sendMessage("""
-                > 請假申請成功！
+                > 提交成功！
                 """).setEphemeral(true).queue();
     }
 }
