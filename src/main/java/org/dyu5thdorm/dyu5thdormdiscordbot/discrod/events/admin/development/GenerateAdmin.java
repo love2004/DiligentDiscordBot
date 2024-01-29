@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -7,24 +8,24 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class GenerateAdmin extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     ChannelIdSet channelIdSet;
+    final
+    ChannelOperation channelOperation;
+
     @Value("${school_year}")
     String schoolYear;
     @Value("${semester}")
     String semester;
-
-    public GenerateAdmin(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
-        this.buttonIdSet = buttonIdSet;
-        this.channelIdSet = channelIdSet;
-    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -38,10 +39,7 @@ public class GenerateAdmin extends ListenerAdapter {
         );
 
         if (textChannel == null) return;
-
-        textChannel.getHistoryFromBeginning(100).complete().getRetrievedHistory().forEach(
-                message -> message.delete().queue()
-        );
+        channelOperation.deleteAllMessage(textChannel, 100);
 
         textChannel.sendMessage(
                 String.format(

@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.embeds;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -14,15 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class AttendanceEmbedBuilder {
     @Value("${regexp.bed_id}")
     String bedIdRegex;
     final
     ButtonIdSet buttonIdSet;
-
-    public AttendanceEmbedBuilder(ButtonIdSet buttonIdSet) {
-        this.buttonIdSet = buttonIdSet;
-    }
 
     public EmbedBuilder getByLivingRecord(List<LivingRecord> livingRecords) {
         EmbedBuilder embedBuilder = new EmbedBuilder();

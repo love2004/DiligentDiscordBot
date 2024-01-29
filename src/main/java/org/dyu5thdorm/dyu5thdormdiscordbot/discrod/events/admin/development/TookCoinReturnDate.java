@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class TookCoinReturnDate extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
@@ -32,8 +34,6 @@ public class TookCoinReturnDate extends ListenerAdapter {
     TookCoinReturnDateModal tookCoinReturnDateModal;
     final
     TookCoinService tookCoinService;
-    @Value("${regexp.date_year_month_day}")
-    String dateYearMonthDayRegexp;
     final
     LivingRecordService livingRecordService;
     final
@@ -44,18 +44,8 @@ public class TookCoinReturnDate extends ListenerAdapter {
     RoleOperation roleOperation;
     final
     TookCoinEmbed tookCoinEmbed;
-
-    public TookCoinReturnDate(ButtonIdSet buttonIdSet, ModalIdSet modalIdSet, TookCoinReturnDateModal tookCoinReturnDateModal, TookCoinService tookCoinService, LivingRecordService livingRecordService, DiscordLinkService discordLinkService, ChannelOperation channelOperation, RoleOperation roleOperation, TookCoinEmbed tookCoinEmbed) {
-        this.buttonIdSet = buttonIdSet;
-        this.modalIdSet = modalIdSet;
-        this.tookCoinReturnDateModal = tookCoinReturnDateModal;
-        this.tookCoinService = tookCoinService;
-        this.livingRecordService = livingRecordService;
-        this.discordLinkService = discordLinkService;
-        this.channelOperation = channelOperation;
-        this.roleOperation = roleOperation;
-        this.tookCoinEmbed = tookCoinEmbed;
-    }
+    @Value("${regexp.date_year_month_day}")
+    String dateYearMonthDayRegexp;
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

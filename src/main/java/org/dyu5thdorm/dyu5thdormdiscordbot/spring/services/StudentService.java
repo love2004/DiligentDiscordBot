@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
+import lombok.RequiredArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.StudentRepo;
 import org.springframework.stereotype.Service;
@@ -8,13 +9,11 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
     final
     StudentRepo studentRepository;
 
-    public StudentService(StudentRepo studentRepository) {
-        this.studentRepository = studentRepository;
-    }
 
     public boolean exists(String studentId) {
         return studentRepository.existsById(studentId);

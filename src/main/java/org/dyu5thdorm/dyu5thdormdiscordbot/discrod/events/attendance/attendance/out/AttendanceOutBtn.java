@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.attendance.out;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.modals.Modal;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalTime;
 
 @Component
+@RequiredArgsConstructor
 public class AttendanceOutBtn extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
@@ -22,13 +24,6 @@ public class AttendanceOutBtn extends ListenerAdapter {
     AttendanceEventUtils attendanceEventUtils;
     final
     AttendanceOutModal attendanceOutModal;
-
-    public AttendanceOutBtn(ButtonIdSet buttonIdSet, AttendanceHandler attendanceHandler, AttendanceEventUtils attendanceEventUtils, AttendanceOutModal attendanceOutModal) {
-        this.buttonIdSet = buttonIdSet;
-        this.attendanceHandler = attendanceHandler;
-        this.attendanceEventUtils = attendanceEventUtils;
-        this.attendanceOutModal = attendanceOutModal;
-    }
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {

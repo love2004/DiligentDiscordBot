@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.modals.ModalMapping;
@@ -15,8 +16,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class OnRepairModalEvent extends ListenerAdapter {
     final
     ModalIdSet modalIdSet;
@@ -29,14 +32,6 @@ public class OnRepairModalEvent extends ListenerAdapter {
     Repair repair;
     final
     DiscordLinkService discordLinkService;
-
-    public OnRepairModalEvent(ModalIdSet modalIdSet, NormalRepairHandler normalRepairHandler, SpecialRepairHandler specialRepairHandler, Repair repair, DiscordLinkService discordLinkService) {
-        this.modalIdSet = modalIdSet;
-        this.normalRepairHandler = normalRepairHandler;
-        this.specialRepairHandler = specialRepairHandler;
-        this.repair = repair;
-        this.discordLinkService = discordLinkService;
-    }
 
     @PostConstruct
     void initIds() {
@@ -60,15 +55,15 @@ public class OnRepairModalEvent extends ListenerAdapter {
         List<String> args = event.getValues().stream().map(
                 ModalMapping::getAsString
         ).toList();
-        DiscordLink discordLink = discordLinkService.findByDiscordId(event.getUser().getId());
-        if (discordLink == null) {
+        Optional<DiscordLink> discordLink = discordLinkService.findByDiscordId(event.getUser().getId());
+        if (discordLink.isEmpty()) {
             event.getHook().sendMessage("無綁定住宿生生份者無法使用此功能。").setEphemeral(true).queue();
             return;
         }
 
         boolean handle = ids.get(eventModalId).handle(
                 repair.getTypeByModalId(eventModalId),
-                discordLink.getStudent(),
+                discordLink.get().getStudent(),
                 args
         );
 

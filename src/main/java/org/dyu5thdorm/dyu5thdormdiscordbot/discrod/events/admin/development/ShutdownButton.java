@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.Dyu5thDormDiscordBotApplication;
@@ -9,17 +10,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ShutdownButton extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     Maintenance maintenance;
-
-
-    public ShutdownButton(ButtonIdSet buttonIdSet, Maintenance maintenance) {
-        this.buttonIdSet = buttonIdSet;
-        this.maintenance = maintenance;
-    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

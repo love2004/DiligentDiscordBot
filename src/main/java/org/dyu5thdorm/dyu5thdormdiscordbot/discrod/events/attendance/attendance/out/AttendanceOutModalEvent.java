@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.attendance.out;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class AttendanceOutModalEvent extends ListenerAdapter {
     final
     AttendanceHandler attendanceHandler;
@@ -24,13 +26,6 @@ public class AttendanceOutModalEvent extends ListenerAdapter {
 
     @Value("${regexp.bed-set}")
     String bedIdSetRegex;
-
-    public AttendanceOutModalEvent(AttendanceHandler attendanceHandler, AttendanceEventUtils attendanceEventUtils, ModalIdSet modalIdSet) {
-        this.attendanceHandler = attendanceHandler;
-        this.attendanceEventUtils = attendanceEventUtils;
-        this.modalIdSet = modalIdSet;
-    }
-
 
     @Override
     public void onModalInteraction(@NotNull ModalInteractionEvent event) {

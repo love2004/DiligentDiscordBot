@@ -1,11 +1,13 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.interactions.modals.ModalMapping;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.EmbedGenerator;
@@ -15,25 +17,22 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class SearchByStudentId extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     ModalIdSet modalIdSet;
-    final LivingRecordService livingRecordService;
-    final DiscordLinkService discordLinkService;
-    final EmbedGenerator embedGenerator;
-
-    public SearchByStudentId(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, EmbedGenerator embedGenerator, ButtonIdSet buttonIdSet, ModalIdSet modalIdSet) {
-        this.livingRecordService = livingRecordService;
-        this.discordLinkService = discordLinkService;
-        this.embedGenerator = embedGenerator;
-        this.buttonIdSet = buttonIdSet;
-        this.modalIdSet = modalIdSet;
-    }
+    final
+    LivingRecordService livingRecordService;
+    final
+    DiscordLinkService discordLinkService;
+    final
+    EmbedGenerator embedGenerator;
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -58,11 +57,25 @@ public class SearchByStudentId extends ListenerAdapter {
     public void onModalInteraction(ModalInteractionEvent event) {
         String eventModalId = event.getModalId();
         if (!modalIdSet.getSearchBySI().equalsIgnoreCase(eventModalId)) return;
-        String searchStudentId = event.getValue(modalIdSet.getFirstTextInput()).getAsString();
-        Set<LivingRecord> livingRecords = livingRecordService.findAllByStudentIdContains(searchStudentId);
 
+        Optional<ModalMapping> mapping = Optional.ofNullable(
+                event.getValue(modalIdSet.getFirstTextInput())
+        );
+
+        if (mapping.isEmpty()) {
+            event.reply("錯誤！搜尋的內容不可為空白！").setEphemeral(true).queue();
+            return;
+        }
+
+        String searchingContent = mapping.get().getAsString();
+
+        Set<LivingRecord> livingRecords = livingRecordService.findAllByStudentIdContains(searchingContent);
         if (livingRecords.isEmpty()) {
-            event.reply("查無結果").setEphemeral(true).queue();
+            event.reply(
+                    String.format(
+                            "> %s 查無結果", searchingContent
+                    )
+            ).setEphemeral(true).queue();
             return;
         }
 

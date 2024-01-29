@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.leave;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
@@ -10,7 +11,10 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
+@RequiredArgsConstructor
 public class LeaveModalEvent extends ListenerAdapter {
     final
     ModalIdSet modalIdSet;
@@ -20,13 +24,6 @@ public class LeaveModalEvent extends ListenerAdapter {
     LivingRecordService livingRecordService;
     final
     ReqLevOperation reqLevOperation;
-
-    public LeaveModalEvent(ModalIdSet modalIdSet, LeaveRecordService leaveService, LivingRecordService livingRecordService, ReqLevOperation reqLevOperation) {
-        this.modalIdSet = modalIdSet;
-        this.leaveService = leaveService;
-        this.livingRecordService = livingRecordService;
-        this.reqLevOperation = reqLevOperation;
-    }
 
 
     @Override
@@ -46,16 +43,16 @@ public class LeaveModalEvent extends ListenerAdapter {
 
         String reason = event.getValues().get(0).getAsString();
 
-        LivingRecord record = livingRecordService.findLivingRecordByDiscordId(
+        Optional<LivingRecord> record = livingRecordService.findLivingRecordByDiscordId(
                 event.getUser().getId()
         );
 
-        if (record == null) {
+        if (record.isEmpty()) {
             event.getHook().sendMessage("> 無法使用此功能，因為您非本學期之住宿生！").setEphemeral(true).queue();
             return;
         }
 
-        leaveService.save(record, reason);
+        leaveService.save(record.get(), reason);
         event.getHook().sendMessage("""
                 > 提交成功！
                 """).setEphemeral(true).queue();

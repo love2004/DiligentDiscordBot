@@ -41,8 +41,12 @@ public class ButtonIdSet {
     String generateReqAuth;
     @Value("${component.button.generate-request-repair}")
     String generateReqRepair;
+    @Value("${component.button.generate-request-took-coin}")
+    String generateReqTookCoin;
     @Value("${component.button.generate-request-cadre}")
     String generateReqCadre;
+    @Value("${component.button.generate-request-vote}")
+    String generateVote;
     @Value("${component.button.took-coin}")
     String tookCoin;
     @Value("${component.button.floor-role-correction}")
@@ -81,4 +85,10 @@ public class ButtonIdSet {
     String activityParticipate;
     @Value("${component.button.activity-cancel}")
     String activityCancel;
+    @Value("${component.button.activity-agree}")
+    String agree;
+    @Value("${component.button.activity-disagree}")
+    String disagree;
+    @Value("${component.button.activity-abstention}")
+    String abstention;
 }

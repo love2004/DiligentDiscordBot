@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.modals;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
@@ -13,18 +14,17 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
+@RequiredArgsConstructor
 public class TookCoinModal {
-    Modal washMachineModal, dryerModal, vendingModal;
     final
     ModalIdSet modalIdSet;
+
+    Modal washMachineModal, dryerModal, vendingModal;
     DateTimeFormatter formatter;
     TextInput.Builder time;
     @Value("${datetime-textinput.format}")
     String format;
 
-    public TookCoinModal(ModalIdSet modalIdSet) {
-        this.modalIdSet = modalIdSet;
-    }
 
     @PostConstruct
     void init() {

@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.line;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -14,19 +15,17 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 @PropertySource("classpath:line.properties")
+@RequiredArgsConstructor
 public class LineNotify {
     final RepairTokenSet repairTokenSet;
+
     @Value("${api}")
     String api;
-
-    public LineNotify(RepairTokenSet repairTokenSet) {
-        this.repairTokenSet = repairTokenSet;
-    }
 
     String[] headers(RepairTokenSet.RepairType type) {
         return new String[] {
                 "Content-Type", "application/x-www-form-urlencoded; charset=utf-8",
-                "Authorization", "Bearer " + repairTokenSet.getTokenByType(type)
+                "Authorization", "Bearer " + repairTokenSet.getTokenMap().get(type)
         };
     }
 

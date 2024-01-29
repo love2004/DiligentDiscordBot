@@ -1,19 +1,19 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.RoleIdSet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class RoleOperation {
-    @Autowired
-    RoleIdSet roleIdSet;
+    final RoleIdSet roleIdSet;
     Map<Integer, String> floorRoleIdMap;
 
     @PostConstruct

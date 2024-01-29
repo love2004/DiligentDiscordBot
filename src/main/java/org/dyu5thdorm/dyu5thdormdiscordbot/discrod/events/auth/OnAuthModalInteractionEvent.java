@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class OnAuthModalInteractionEvent extends ListenerAdapter {
     final
     LivingRecordService livingRecordService;
@@ -27,8 +29,6 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
     StudentService studentService;
     final
     AuthEmbedBuilder authEmbedBuilder;
-    @Value("${regexp.phone_number}")
-    String phoneNumberSyntax;
     final
     ModalIdSet modalIdSet;
     final
@@ -36,15 +36,8 @@ public class OnAuthModalInteractionEvent extends ListenerAdapter {
     final
     RoleOperation roleOperation;
 
-    public OnAuthModalInteractionEvent(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, StudentService studentService, AuthEmbedBuilder authEmbedBuilder, ModalIdSet modalIdSet, ChannelIdSet channelIdSet, RoleOperation roleOperation) {
-        this.livingRecordService = livingRecordService;
-        this.discordLinkService = discordLinkService;
-        this.studentService = studentService;
-        this.authEmbedBuilder = authEmbedBuilder;
-        this.modalIdSet = modalIdSet;
-        this.channelIdSet = channelIdSet;
-        this.roleOperation = roleOperation;
-    }
+    @Value("${regexp.phone_number}")
+    String phoneNumberSyntax;
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {

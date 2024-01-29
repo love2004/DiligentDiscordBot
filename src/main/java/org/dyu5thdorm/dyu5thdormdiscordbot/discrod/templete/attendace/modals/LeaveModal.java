@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.modals;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
@@ -11,15 +12,12 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
+@RequiredArgsConstructor
 public class LeaveModal {
     final
     ModalIdSet modalIdSet;
 
     Modal.Builder modal;
-
-    public LeaveModal(ModalIdSet modalIdSet) {
-        this.modalIdSet = modalIdSet;
-    }
 
     @PostConstruct
     void init() {

@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.confirm;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class TookCoinGetAllBtn extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
@@ -30,13 +32,6 @@ public class TookCoinGetAllBtn extends ListenerAdapter {
     TookCoinEmbed tookCoinEmbed;
     final
     ChannelIdSet channelIdSet;
-
-    public TookCoinGetAllBtn(ButtonIdSet buttonIdSet, TookCoinService tookCoinService, TookCoinEmbed tookCoinEmbed, ChannelIdSet channelIdSet) {
-        this.buttonIdSet = buttonIdSet;
-        this.tookCoinService = tookCoinService;
-        this.tookCoinEmbed = tookCoinEmbed;
-        this.channelIdSet = channelIdSet;
-    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

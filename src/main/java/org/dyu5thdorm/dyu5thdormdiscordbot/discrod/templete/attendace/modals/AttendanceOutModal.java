@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.modals;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
@@ -9,14 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
-
+@RequiredArgsConstructor
 public class AttendanceOutModal {
     final
     ModalIdSet modalIdSet;
-
-    public AttendanceOutModal(ModalIdSet modalIdSet) {
-        this.modalIdSet = modalIdSet;
-    }
 
     public Modal getModal(@NotNull String roomId) {
         return Modal.create(modalIdSet.getAttendanceOut(), "晚間點名缺席登記").addComponents(

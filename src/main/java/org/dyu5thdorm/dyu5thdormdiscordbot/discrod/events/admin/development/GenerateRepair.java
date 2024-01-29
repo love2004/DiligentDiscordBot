@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -7,24 +8,21 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class GenerateRepair extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     ChannelIdSet channelIdSet;
-
-    public GenerateRepair(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
-        this.buttonIdSet = buttonIdSet;
-        this.channelIdSet = channelIdSet;
-    }
+    final ChannelOperation channelOperation;
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        String eventButtonId = event.getButton().getId();
-        if (eventButtonId == null || !eventButtonId.equalsIgnoreCase(buttonIdSet.getGenerateReqRepair())) return;
+        if (!buttonIdSet.getGenerateReqRepair().equalsIgnoreCase(event.getButton().getId())) return;
         event.deferReply().setEphemeral(true).queue();
 
         TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getRepair());
@@ -33,9 +31,7 @@ public class GenerateRepair extends ListenerAdapter {
             return;
         }
 
-        textChannel.getHistoryFromBeginning(100).complete().getRetrievedHistory().forEach(
-                message -> message.delete().queue()
-        );
+        channelOperation.deleteAllMessage(textChannel, 100);
 
         textChannel.sendMessage("""
                         # 各類報修(水電土木、洗、烘衣機、販賣機、飲水機)
@@ -50,9 +46,6 @@ public class GenerateRepair extends ListenerAdapter {
                 .addActionRow(
                         Button.success(buttonIdSet.getRepair(), "各類報修 Repair report")
                                 .withEmoji(Emoji.fromUnicode("U+1F9F0"))
-                ).addActionRow(
-                        Button.primary(buttonIdSet.getTookCoin(), "吃錢登記")
-                                .withEmoji(Emoji.fromUnicode("U+1F4B8"))
                 ).queue();
 
         event.getHook().sendMessage("DONE").setEphemeral(true).queue();

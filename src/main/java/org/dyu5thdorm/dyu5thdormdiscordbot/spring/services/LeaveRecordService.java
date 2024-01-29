@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
+import lombok.RequiredArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.leave.LeaveRecord;
@@ -12,13 +13,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Service
+@RequiredArgsConstructor
 public class LeaveRecordService {
     final
     LeaveRecordRepo leaveRecordRepo;
-
-    public LeaveRecordService(LeaveRecordRepo leaveRecordRepo) {
-        this.leaveRecordRepo = leaveRecordRepo;
-    }
 
     public void save(LeaveRecord leaveRecord) {
         leaveRecordRepo.save(leaveRecord);

@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.attendance;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class AttendanceBtn extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
@@ -30,15 +33,6 @@ public class AttendanceBtn extends ListenerAdapter {
     final
     Maintenance maintenance;
 
-    public AttendanceBtn(ButtonIdSet buttonIdSet, AttendanceEmbedBuilder attendanceEmbedBuilder, LivingRecordService livingRecordService, AttendanceHandler attendanceHandler, AttendanceEventUtils attendanceEventUtils, Maintenance maintenance) {
-        this.buttonIdSet = buttonIdSet;
-        this.attendanceEmbedBuilder = attendanceEmbedBuilder;
-        this.livingRecordService = livingRecordService;
-        this.attendanceHandler = attendanceHandler;
-        this.attendanceEventUtils = attendanceEventUtils;
-        this.maintenance = maintenance;
-    }
-
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
@@ -52,25 +46,25 @@ public class AttendanceBtn extends ListenerAdapter {
             return;
         }
 
-        Set<LivingRecord> startRoom = attendanceHandler.getRoomStart(event.getUser().getId());
-        if (startRoom == null) {
-            event.getHook().sendMessage("""
-                    有以下二個原因導致您無法使用此功能：
-                    1. 您非宿舍某區域之正副樓長
-                    2. 此區域都為空房
-                    若有任何問題，請向開發人員提出。
-                    """).queue();
-            return;
-        }
-        
-        if (startRoom.isEmpty()) {
-            event.getHook().sendMessage("""
-                    此區點名已完成。
-                    """).queue();
+        Set<LivingRecord> startRoom;
+        Optional<AttendanceHandler.ErrorType> errorType = attendanceHandler.check(event.getUser().getId());
+
+        if (errorType.isEmpty()) {
+            startRoom = attendanceHandler.getRoomStart(event.getUser().getId());
+            attendanceEventUtils.sendAttendanceEmbed(event, startRoom);
             return;
         }
 
-        attendanceEventUtils.sendAttendanceEmbed(event, startRoom);
+        AttendanceHandler.ErrorType error = errorType.get();
+
+        event.getHook().sendMessage(
+                String.format(
+                        """
+                        %s
+                        > 若有任何問題，請聯絡本群開發人員。
+                        """, error.getMessage()
+                )
+        ).queue();
     }
 
 }

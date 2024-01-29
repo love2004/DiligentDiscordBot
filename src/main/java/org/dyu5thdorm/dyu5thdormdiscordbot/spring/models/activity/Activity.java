@@ -1,10 +1,7 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models;
+package org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.activity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +10,9 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @Entity()
+@Builder
 @Table(name = "activities")
+@AllArgsConstructor
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

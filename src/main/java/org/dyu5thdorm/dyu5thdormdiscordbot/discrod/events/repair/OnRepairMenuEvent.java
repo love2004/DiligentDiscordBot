@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
@@ -8,6 +9,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.Repair;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OnRepairMenuEvent extends ListenerAdapter {
     final
     MenuIdSet menuIdSet;
@@ -15,12 +17,6 @@ public class OnRepairMenuEvent extends ListenerAdapter {
     RepairModal repairModal;
     final
     Repair repair;
-
-    public OnRepairMenuEvent(MenuIdSet menuIdSet, RepairModal repairModal, Repair repair) {
-        this.menuIdSet = menuIdSet;
-        this.repairModal = repairModal;
-        this.repair = repair;
-    }
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {

@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
+import lombok.RequiredArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.TookCoinRepo;
 import org.springframework.stereotype.Service;
@@ -10,14 +11,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TookCoinService {
-    final
-    TookCoinRepo tookCoinRepository;
-
-    public TookCoinService(TookCoinRepo tookCoinRepository) {
-        this.tookCoinRepository = tookCoinRepository;
-    }
-
+    final TookCoinRepo tookCoinRepository;
 
     public void save(TookCoin tookCoinModel) {
         tookCoinRepository.save(tookCoinModel);

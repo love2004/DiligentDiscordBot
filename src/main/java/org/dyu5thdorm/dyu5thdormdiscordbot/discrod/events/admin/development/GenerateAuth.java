@@ -1,5 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -11,7 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class GenerateAuth extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
@@ -24,12 +30,6 @@ public class GenerateAuth extends ListenerAdapter {
     @Value("${semester}")
     String semester;
 
-    public GenerateAuth(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet, ChannelOperation channelOperation) {
-        this.buttonIdSet = buttonIdSet;
-        this.channelIdSet = channelIdSet;
-        this.channelOperation = channelOperation;
-    }
-
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String eventButtonId = event.getButton().getId();
@@ -37,7 +37,16 @@ public class GenerateAuth extends ListenerAdapter {
 
         event.deferReply().setEphemeral(true).queue();
 
-        TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getAuth());
+        Optional<TextChannel> optional = Optional.ofNullable(event.getJDA().getTextChannelById(
+                channelIdSet.getAuth()
+        ));
+
+        if (optional.isEmpty()) {
+            log.error("錯誤！驗證頻道不存在");
+            return;
+        }
+
+        TextChannel textChannel = optional.get();
         channelOperation.deleteAllMessage(
                 textChannel,100
         );

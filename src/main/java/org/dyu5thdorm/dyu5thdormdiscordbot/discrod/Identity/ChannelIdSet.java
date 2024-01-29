@@ -14,12 +14,16 @@ public class ChannelIdSet {
     String auth;
     @Value("${channel.auth-logger}")
     String authLogger;
+    @Value("${channel.announcement}")
+    String announcement;
     @Value("${channel.leave}")
     String leave;
     @Value("${channel.cadre-button}")
     String cadreButton;
     @Value("${channel.repair}")
     String repair;
+    @Value("${channel.took-coin}")
+    String tookCoin;
     @Value("${channel.admin.operation}")
     String adminOperation;
     @Value("${channel.rules}")
@@ -48,4 +52,6 @@ public class ChannelIdSet {
     String publicChannel;
     @Value("${channel.lottery}")
     String lottery;
+    @Value("${channel.vote}")
+    String vote;
 }

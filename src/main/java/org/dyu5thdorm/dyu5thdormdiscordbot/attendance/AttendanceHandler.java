@@ -1,7 +1,10 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.attendance;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area_cadre.FloorAreaCadre;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
@@ -17,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class AttendanceHandler {
     final LivingRecordService livingRecordService;
     final DiscordLinkService discordLinkService;
@@ -24,8 +28,8 @@ public class AttendanceHandler {
     final FloorAreaService floorAreaService;
     final AttendanceService attendanceService;
     final Maintenance maintenance;
-
     final NoCallRollDateService noCallRollDateService;
+
     @Value("${regexp.bed_id}")
     String bedIdRegex;
     @Value("${attendance.start.time.hour}")
@@ -43,16 +47,6 @@ public class AttendanceHandler {
     void init() {
         startLocalTime = LocalTime.of(startTimeHour, startTimeMin);
         endLocalTime = LocalTime.of(endTimeHour, endTimeMin);
-    }
-
-    public AttendanceHandler(LivingRecordService livingRecordService, DiscordLinkService discordLinkService, FloorAreaCadreService floorAreaCadreService, FloorAreaService floorAreaService, AttendanceService attendanceService, Maintenance maintenance, NoCallRollDateService noCallRollDateService) {
-        this.livingRecordService = livingRecordService;
-        this.discordLinkService = discordLinkService;
-        this.floorAreaCadreService = floorAreaCadreService;
-        this.floorAreaService = floorAreaService;
-        this.attendanceService = attendanceService;
-        this.maintenance = maintenance;
-        this.noCallRollDateService = noCallRollDateService;
     }
 
     public boolean isDevMode() {
@@ -79,24 +73,30 @@ public class AttendanceHandler {
         return roomOperation(currentRoomId, -1);
     }
 
-    // 開始點名，依照樓長的區域開始做點名。
-    public Set<LivingRecord> getRoomStart(String floorCadreDiscordId) {
-        FloorAreaCadre floorAreaCadre = getFloorAreaCadreByDiscordId(floorCadreDiscordId);
-        if (floorAreaCadre == null) return null;
-        var byFloorArea = floorAreaService.findByFloorArea(floorAreaCadre.getFloorArea());
-        if (byFloorArea.isEmpty()) {
-            return null;
-        }
-        if (isAllEmptyRoomArea(byFloorArea.get())) {
-            return null;
+    public Optional<ErrorType> check(String discordId) {
+        Optional<FloorAreaCadre> floorAreaCadre = this.getFloorAreaCadreByDiscordId(discordId);
+        if (floorAreaCadre.isEmpty()) {
+            return Optional.of(ErrorType.NOT_FLOOR_AREA_CADRE);
         }
 
-        var notCompleteList = checkNotComplete(floorAreaCadre);
-        if (notCompleteList == null || notCompleteList.isEmpty()) {
-            return Set.of();
+        FloorAreaCadre fac = floorAreaCadre.get();
+        if (isAllEmptyRoomArea(fac.getFloorArea())) {
+            return Optional.of(ErrorType.EMPTY_AREA);
         }
 
-        return notCompleteList;
+        Set<LivingRecord> notCompleteList = this.getNotComplete(fac);
+        if (notCompleteList.isEmpty()) {
+            return Optional.of(ErrorType.ATTENDANCE_COMPLETE);
+        }
+
+        return Optional.empty();
+    }
+
+    public Set<LivingRecord> getRoomStart(String discordId) {
+        Optional<ErrorType> errorType = check(discordId);
+        if (errorType.isPresent())
+            throw new RuntimeException(String.format("錯誤訊息： %s，使用此方法時應先使用check()方法檢查有無錯誤。", errorType.get().getMessage()));
+        return this.getNotComplete(discordId);
     }
 
     String getRoomIdString(Integer floor, Integer room) {
@@ -187,11 +187,11 @@ public class AttendanceHandler {
     public boolean attendance(@NotNull String bedId, AttendanceStatusEnum statusEnum, @NotNull String cadreDiscordId) {
         var op = livingRecordService.findAllByBedId(bedId);
         var cadre = getFloorAreaCadreByDiscordId(cadreDiscordId);
-        if (op.isEmpty() || cadre == null || op.get().getStudent() == null) {
+        if (op.isEmpty() || cadre.isEmpty() || op.get().getStudent() == null) {
             return false;
         }
 
-        attendanceService.save(op.get().getStudent(), op.get().getBed(), statusEnum, cadre.getCadre());
+        attendanceService.save(op.get().getStudent(), op.get().getBed(), statusEnum, cadre.get().getCadre());
         return true;
     }
 
@@ -210,11 +210,11 @@ public class AttendanceHandler {
     }
 
     public Set<LivingRecord> getNotComplete(String discordId) {
-        FloorAreaCadre floorAreaCadre = getFloorAreaCadreByDiscordId(discordId);
-        return checkNotComplete(floorAreaCadre);
+        Optional<FloorAreaCadre> floorAreaCadre = getFloorAreaCadreByDiscordId(discordId);
+        return floorAreaCadre.isEmpty() ? Set.of() : getNotComplete(floorAreaCadre.get());
     }
 
-    public Set<LivingRecord> checkNotComplete(FloorAreaCadre floorAreaCadre) {
+    public Set<LivingRecord> getNotComplete(@NotNull FloorAreaCadre floorAreaCadre) {
         Integer floor = floorAreaCadre.getFloorArea().getFloor();
         Integer startRoomId = floorAreaCadre.getFloorArea().getStartRoomId();
         Integer endRoomId = floorAreaCadre.getFloorArea().getEndRoomId();
@@ -223,7 +223,7 @@ public class AttendanceHandler {
             String roomId = getRoomIdString(floor, i);
             if (!attendanceService.existByRoomIdAndData(roomId, today)) {
                 if (isIllegalRoom(i)) continue;
-                var query = livingRecordService.findAllByRoomId(roomId);
+                Set<LivingRecord> query = livingRecordService.findAllByRoomId(roomId);
                 if (query.isEmpty() || isEmptyRoom(query)) continue;
                 return query;
             }
@@ -231,10 +231,20 @@ public class AttendanceHandler {
         return Set.of();
     }
 
-    FloorAreaCadre getFloorAreaCadreByDiscordId(String cadreDiscordId) {
-        var cadreDiscordLink = discordLinkService.findByDiscordId(cadreDiscordId);
-        if (cadreDiscordLink == null) return null;
-        Optional<FloorAreaCadre> floorAreaCadre = floorAreaCadreService.findByCadreStudent(cadreDiscordLink.getStudent());
-        return floorAreaCadre.orElse(null);
+    Optional<FloorAreaCadre> getFloorAreaCadreByDiscordId(String cadreDiscordId) {
+        Optional<DiscordLink> cadreDiscordLink = discordLinkService.findByDiscordId(cadreDiscordId);
+        if (cadreDiscordLink.isEmpty()) return Optional.empty();
+        return floorAreaCadreService.findByCadreStudent(cadreDiscordLink.get().getStudent());
+    }
+
+    @Getter
+    public enum ErrorType {
+        ATTENDANCE_COMPLETE("點名已完成，無法再次啟動點名作業。"), NOT_FLOOR_AREA_CADRE("您非特定樓層區域幹部，無法使用此功能。"), EMPTY_AREA("您所負責之點名區域皆為空房，因此您無法使用此功能。");
+
+        private final String message;
+
+        ErrorType(String message) {
+            this.message = message;
+        }
     }
 }

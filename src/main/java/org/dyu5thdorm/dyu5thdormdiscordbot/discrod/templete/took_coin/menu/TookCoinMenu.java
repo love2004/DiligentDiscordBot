@@ -2,18 +2,19 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.menu;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
+@RequiredArgsConstructor
 public class TookCoinMenu {
     StringSelectMenu menu;
-    @Autowired
-    MenuIdSet menuIdSet;
+
+    final MenuIdSet menuIdSet;
 
     @PostConstruct
     void init() {

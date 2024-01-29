@@ -2,22 +2,22 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class ChannelOperation {
     @Getter
     final
     ChannelIdSet channelIdSet;
     Map<Integer, String > floorChannelMap;
 
-    public ChannelOperation(ChannelIdSet channelIdSet) {
-        this.channelIdSet = channelIdSet;
-    }
 
     @PostConstruct
     void init() {
@@ -31,11 +31,7 @@ public class ChannelOperation {
         );
     }
 
-    public void deleteAllMessage(TextChannel textChannel, int limit) {
-        if (textChannel == null) {
-            return;
-        }
-
+    public void deleteAllMessage(@NotNull TextChannel textChannel, int limit) {
         textChannel.getHistoryFromBeginning(limit).complete().getRetrievedHistory().forEach(
                 message -> message.delete().queue()
         );

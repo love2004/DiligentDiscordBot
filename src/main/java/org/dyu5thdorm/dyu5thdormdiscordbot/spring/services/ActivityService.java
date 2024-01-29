@@ -1,21 +1,32 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
 import lombok.Getter;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Activity;
+import lombok.RequiredArgsConstructor;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.activity.Activity;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.ActivityRepo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Service
+@RequiredArgsConstructor
 public class ActivityService {
     final
     ActivityRepo activityRepo;
 
-    public ActivityService(ActivityRepo activityRepo) {
-        this.activityRepo = activityRepo;
+    public boolean overDeadline(Integer actId) {
+        return activityRepo.existsByActivityIdAndRegistrationDeadlineBefore(actId, LocalDateTime.now());
+    }
+
+    public boolean wasStart(Integer actId) {
+        return activityRepo.existsByActivityIdAndStartTimeBefore(actId, LocalDateTime.now());
+    }
+
+    public Optional<Activity> findActivity(Integer id) {
+        return activityRepo.findById(id);
     }
 
     public List<Activity> findActivitiesActive() {

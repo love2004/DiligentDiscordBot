@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
 import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,7 @@ public class TookCoinEmbed {
         dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
     }
 
-    public EmbedBuilder getBySyntaxWrong(SyntaxWrong syntaxWrong) {
+    public EmbedBuilder getBySyntaxWrong(@NotNull SyntaxWrong syntaxWrong) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
         switch (syntaxWrong) {

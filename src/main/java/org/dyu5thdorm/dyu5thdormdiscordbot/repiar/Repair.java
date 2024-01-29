@@ -2,6 +2,7 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.repiar;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class Repair {
     final
     MenuIdSet menuIdSet;
@@ -18,11 +20,6 @@ public class Repair {
     ModalIdSet modalIdSet;
 
     Map<String, Type> modalMapping, menuMapping;
-
-    public Repair(MenuIdSet menuIdSet, ModalIdSet modalIdSet) {
-        this.menuIdSet = menuIdSet;
-        this.modalIdSet = modalIdSet;
-    }
 
     @PostConstruct
     void init() {
@@ -51,7 +48,15 @@ public class Repair {
 
     @Getter
     public enum Type {
-        CIVIL("001"), HYDRO("002"), DOOR("014"), AIR_COND("005"), OTHER("006"), WASH_AND_DRY("N.A"), VENDING("N.A"), DRINKING("N.A");
+        CIVIL("001"),
+        HYDRO("002"),
+        DOOR("014"),
+        AIR_COND("005"),
+        OTHER("006"),
+        WASH_AND_DRY("N.A"),
+        VENDING("N.A"),
+        DRINKING("N.A");
+
         private final String id;
         Type(String id) {
             this.id = id;

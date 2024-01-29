@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -29,18 +30,11 @@ import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Optional;
 
 @Component
-public class TookCoinBtnEvent extends ListenerAdapter {
-    @Value("${regexp.money}")
-    String moneySyntax;
-    @Value("${regexp.floor}")
-    String floorSyntax;
-    @Value("${regexp.floor-and-area}")
-    String floorAreaSyntax;
-    @Value("${regexp.date}")
-    String dateSyntax;
-
+@RequiredArgsConstructor
+public class TookCoinEvent extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
@@ -64,20 +58,14 @@ public class TookCoinBtnEvent extends ListenerAdapter {
     final
     Maintenance maintenance;
 
-    public TookCoinBtnEvent(ButtonIdSet buttonIdSet, MenuIdSet menuIdSet, ModalIdSet modalIdSet, ChannelIdSet channelIdSet, TookCoinMenu menu, TookCoinModal tookCoinModal, TookCoinHandler tookCoin, DiscordLinkService discordLinkService, TookCoinEmbed tookCoinEmbed, LineNotify lineNotify, Maintenance maintenance) {
-        this.buttonIdSet = buttonIdSet;
-        this.menuIdSet = menuIdSet;
-        this.modalIdSet = modalIdSet;
-        this.channelIdSet = channelIdSet;
-        this.menu = menu;
-        this.tookCoinModal = tookCoinModal;
-        this.tookCoin = tookCoin;
-        this.discordLinkService = discordLinkService;
-        this.tookCoinEmbed = tookCoinEmbed;
-        this.lineNotify = lineNotify;
-        this.maintenance = maintenance;
-    }
-
+    @Value("${regexp.money}")
+    String moneySyntax;
+    @Value("${regexp.floor}")
+    String floorSyntax;
+    @Value("${regexp.floor-and-area}")
+    String floorAreaSyntax;
+    @Value("${regexp.date}")
+    String dateSyntax;
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
@@ -147,15 +135,15 @@ public class TookCoinBtnEvent extends ListenerAdapter {
             return;
         }
 
-        DiscordLink discordLink = discordLinkService.findByDiscordId(event.getUser().getId());
-        if (discordLink == null) {
+        Optional<DiscordLink> discordLink = discordLinkService.findByDiscordId(event.getUser().getId());
+        if (discordLink.isEmpty()) {
             event.getHook().sendMessage("未綁定住宿生身分無法進行此動作！").setEphemeral(true).queue();
             return;
         }
 
         TookCoinHandler.MachineType type = getTypeByModalId(eventModalId);
 
-        TookCoinHandler.FailReason r = tookCoin.record(type, args, discordLink.getStudent());
+        TookCoinHandler.FailReason r = tookCoin.record(type, args, discordLink.get().getStudent());
         if (r != TookCoinHandler.FailReason.NONE) {
             event.getHook().sendMessageEmbeds(
                     tookCoinEmbed.getByReason(r).build()
@@ -164,20 +152,23 @@ public class TookCoinBtnEvent extends ListenerAdapter {
         }
 
         if (!maintenance.isMaintenanceStatus()) {
-            sendLineNotify(type, args, discordLink.getStudent());
+            sendLineNotify(type, args, discordLink.get().getStudent());
         }
 
-        event.getHook().sendMessage("""
-                # 登記成功！
-                退費時間為各學期每個禮拜四 **依通知後領取**。
-                退費時間若有變動都會在 <#1019840074772402187> 說明。
-                
-                > **依照此步驟查看登記紀錄：**
-                > <#1148940744854347796> -> 吃錢登記 -> 登記記錄查詢、簽收
-                """).setEphemeral(true).queue();
+        event.getHook().sendMessage(
+                String.format("""
+                        # 登記成功！
+                        退費時間為各學期每個禮拜四 **依通知後領取**。
+                        退費時間若有變動都會在 <#%s> 說明。
+                                        
+                        > **依照此步驟查看登記紀錄：**
+                        > <#%s> -> 吃錢登記 -> 登記記錄查詢、簽收
+                        """, channelIdSet.getAnnouncement(), channelIdSet.getTookCoin()
+                )
+        ).setEphemeral(true).queue();
 
         TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getTookCoinCadre());
-        EmbedBuilder embedBuilder = getEmbedBuilder(type, event.getUser().getId(), args, discordLink);
+        EmbedBuilder embedBuilder = getEmbedBuilder(type, event.getUser().getId(), args, discordLink.get());
         if (textChannel == null) {
             return;
         }

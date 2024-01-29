@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.attendance;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class AttendanceAllInOutBtn extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
@@ -24,13 +26,6 @@ public class AttendanceAllInOutBtn extends ListenerAdapter {
     AttendanceEmbedBuilder attendanceEmbedBuilder;
     final
     AttendanceEventUtils attendanceEventUtils;
-
-    public AttendanceAllInOutBtn(AttendanceHandler attendanceHandler, ButtonIdSet buttonIdSet, AttendanceEmbedBuilder attendanceEmbedBuilder, AttendanceEventUtils attendanceEventUtils) {
-        this.attendanceHandler = attendanceHandler;
-        this.buttonIdSet = buttonIdSet;
-        this.attendanceEmbedBuilder = attendanceEmbedBuilder;
-        this.attendanceEventUtils = attendanceEventUtils;
-    }
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {

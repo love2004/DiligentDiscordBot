@@ -24,10 +24,6 @@ public class RepairModal {
     final
     ModalIdSet modalIdSet;
 
-    public RepairModal(ModalIdSet modalIdSet) {
-        this.modalIdSet = modalIdSet;
-    }
-
     @PostConstruct
     void init() {
         civilModal = Modal.create(

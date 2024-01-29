@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -10,16 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class IpLookupEvent extends ListenerAdapter {
     final IpLookup ipLookup;
     final Maintenance maintenance;
     final ButtonIdSet buttonIdSet;
-
-    public IpLookupEvent(IpLookup ipLookup, Maintenance maintenance, ButtonIdSet buttonIdSet) {
-        this.ipLookup = ipLookup;
-        this.maintenance = maintenance;
-        this.buttonIdSet = buttonIdSet;
-    }
 
     @SneakyThrows
     @Override

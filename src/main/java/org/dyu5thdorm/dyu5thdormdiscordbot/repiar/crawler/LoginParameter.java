@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 @Data
 @PropertySource("classpath:repair.properties")
 public class LoginParameter {
-    @Value("${account.id}")
-    String userId;
+    @Value("${account.id}") String userId;
     @Value("${account.password}")
     String password;
     @Value("${account.type}")

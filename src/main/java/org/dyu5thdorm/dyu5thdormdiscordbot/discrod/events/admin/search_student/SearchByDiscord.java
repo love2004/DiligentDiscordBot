@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -15,23 +16,20 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Component
+@RequiredArgsConstructor
 public class SearchByDiscord extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     MenuIdSet menuIdSet;
-    final LivingRecordService livingRecordService;
-    final EmbedGenerator embedGenerator;
-
-    public SearchByDiscord(LivingRecordService livingRecordService, EmbedGenerator embedGenerator, ButtonIdSet buttonIdSet, MenuIdSet menuIdSet) {
-        this.livingRecordService = livingRecordService;
-        this.embedGenerator = embedGenerator;
-        this.buttonIdSet = buttonIdSet;
-        this.menuIdSet = menuIdSet;
-    }
+    final
+    LivingRecordService livingRecordService;
+    final
+    EmbedGenerator embedGenerator;
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
@@ -41,10 +39,10 @@ public class SearchByDiscord extends ListenerAdapter {
         event.getHook().sendMessage(
                 "> 請選擇至少一位，至多四位 Discord 帳號進行查詢"
         ).addActionRow(
-            EntitySelectMenu.create(menuIdSet.getInfoByDiscordAccOption(), EntitySelectMenu.SelectTarget.USER)
-                    .setPlaceholder("請選擇帳號")
-                    .setRequiredRange(1, 4)
-                    .build()
+                EntitySelectMenu.create(menuIdSet.getInfoByDiscordAccOption(), EntitySelectMenu.SelectTarget.USER)
+                        .setPlaceholder("請選擇帳號")
+                        .setRequiredRange(1, 4)
+                        .build()
         ).setEphemeral(true).queue();
     }
 
@@ -54,17 +52,23 @@ public class SearchByDiscord extends ListenerAdapter {
         if (!menuIdSet.getInfoByDiscordAccOption().equalsIgnoreCase(eventMenuId)) return;
         event.deferReply().setEphemeral(true).queue();
 
-        List<User> userLists =  event.getMentions().getUsers();
+        List<User> userLists = event.getMentions().getUsers();
 
         for (User userList : userLists) {
             String userId = userList.getId();
-            LivingRecord livingRecord = livingRecordService.findLivingRecordByDiscordId(userId);
-            if (livingRecord == null) {
-                event.getHook().sendMessage("查無結果").setEphemeral(true).queue();
+            Optional<LivingRecord> livingRecord = livingRecordService.findLivingRecordByDiscordId(userId);
+            if (livingRecord.isEmpty()) {
+                event.getHook().sendMessage(
+                        String.format(
+                                "> <@%s> 查無結果", userId
+                        )
+                ).setEphemeral(true).queue();
                 return;
             }
-            EmbedBuilder embedBuilder = embedGenerator.fromDiscord(livingRecord, userId);
-            event.getHook().sendMessageEmbeds(
+            EmbedBuilder embedBuilder = embedGenerator.fromDiscord(livingRecord.get(), userId);
+            event.getHook().sendMessage(
+                    String.format("<@%s>", userId)
+            ).addEmbeds(
                     embedBuilder.build()
             ).setEphemeral(true).queue();
         }

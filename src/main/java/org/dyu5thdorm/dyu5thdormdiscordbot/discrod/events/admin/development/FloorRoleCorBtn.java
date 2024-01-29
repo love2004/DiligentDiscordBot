@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -14,8 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class FloorRoleCorBtn extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
@@ -26,13 +29,6 @@ public class FloorRoleCorBtn extends ListenerAdapter {
 
     final
     Maintenance maintenance;
-
-    public FloorRoleCorBtn(ButtonIdSet buttonIdSet, LivingRecordService livingRecordService, RoleOperation roleOperation, Maintenance maintenance) {
-        this.buttonIdSet = buttonIdSet;
-        this.livingRecordService = livingRecordService;
-        this.roleOperation = roleOperation;
-        this.maintenance = maintenance;
-    }
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
@@ -51,8 +47,8 @@ public class FloorRoleCorBtn extends ListenerAdapter {
         List<Member> members = thisGuild.getMembers();
 
         for (Member member : members) {
-            LivingRecord record = livingRecordService.findLivingRecordByDiscordId(member.getUser().getId());
-            if (record == null) {
+            Optional<LivingRecord> record = livingRecordService.findLivingRecordByDiscordId(member.getUser().getId());
+            if (record.isEmpty()) {
                 if (maintenance.isMaintenanceStatus() && !member.getRoles().isEmpty()) {
                     event.getHook().sendMessage(
                             String.format(
@@ -64,7 +60,7 @@ public class FloorRoleCorBtn extends ListenerAdapter {
                 continue;
             }
 
-            int floor = roleOperation.getFloorByBedId(record.getBed().getBedId());
+            int floor = roleOperation.getFloorByBedId(record.get().getBed().getBedId());
             String correctRoleId = roleOperation.getRoleIdByFloor(floor);
             Role role = thisGuild.getRoleById(correctRoleId);
             if (role == null) return;

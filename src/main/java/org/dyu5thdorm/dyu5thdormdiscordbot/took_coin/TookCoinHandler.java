@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.took_coin;
 
+import lombok.AllArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
@@ -11,32 +12,18 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class TookCoinHandler {
+    final TookCoinService tookCoinService;
+    final DiscordLinkService discordLinkService;
 
-    public TookCoinHandler(TookCoinService tookCoinService, DiscordLinkService discordLinkService) {
-        this.tookCoinService = tookCoinService;
-        this.discordLinkService = discordLinkService;
-    }
+    public enum MachineType { WASH_MACHINE, DRYER, VENDING }
 
-    public enum MachineType {
-        WASH_MACHINE,
-        DRYER,
-        VENDING
-    }
-
-    public enum FailReason {
-        DATE_AFTER_NOW,
-        TIME_REPEAT,
-        NONE,
-    }
-
-    final
-    TookCoinService tookCoinService;
-    final
-    DiscordLinkService discordLinkService;
+    public enum FailReason { DATE_AFTER_NOW, TIME_REPEAT, NONE }
 
     FloorArea getFloorArea(MachineType type, String floorOrFloorArea) {
         FloorArea floorArea = new FloorArea();
@@ -97,24 +84,15 @@ public class TookCoinHandler {
         );
     }
 
-    public Set<org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin> getRecordByDiscordId(String discordId) {
-        DiscordLink discordLink = getDiscordLinkByDiscordId(discordId);
-
-        Student student = discordLink.getStudent();
-
-        return tookCoinService.findByStudentId(student.getStudentId());
-    }
-
     public Set<org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin> getRecordUnGetByDiscordId(String discordId) {
-        DiscordLink discordLink = getDiscordLinkByDiscordId(discordId);
-        if (discordLink == null) return null;
-        Student student = discordLink.getStudent();
+        Optional<DiscordLink> discordLink = getDiscordLinkByDiscordId(discordId);
+        if (discordLink.isEmpty()) return Set.of();
+        Student student = discordLink.get().getStudent();
 
         return tookCoinService.findUnGetByStudentId(student.getStudentId());
     }
 
-    DiscordLink getDiscordLinkByDiscordId(String discordId) {
+    Optional<DiscordLink> getDiscordLinkByDiscordId(String discordId) {
         return discordLinkService.findByDiscordId(discordId);
     }
-
 }

@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -7,26 +8,25 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class GenerateRules extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     ChannelIdSet channelIdSet;
+    final ChannelOperation channelOperation;
+
     @Value("${link.rules}")
     String rulesLink;
 
-    public GenerateRules(ChannelIdSet channelIdSet, ButtonIdSet buttonIdSet) {
-        this.channelIdSet = channelIdSet;
-        this.buttonIdSet = buttonIdSet;
-    }
-
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (!event.getButton().getId().equals(buttonIdSet.getGenerateRules())) return;
+        if (!buttonIdSet.getGenerateRules().equalsIgnoreCase(event.getButton().getId())) return;
         event.deferReply().setEphemeral(true).queue();
 
         TextChannel rulesChannel = event.getJDA().getTextChannelById(channelIdSet.getRules());
@@ -35,10 +35,7 @@ public class GenerateRules extends ListenerAdapter {
             event.reply("無法生成，頻道不存在").setEphemeral(true).queue();
             return;
         }
-
-        rulesChannel.getHistoryFromBeginning(100).complete().getRetrievedHistory().forEach(
-                message -> message.delete().queue()
-        );
+        channelOperation.deleteAllMessage(rulesChannel, 100);
 
         rulesChannel.sendMessage("""
                 # 112學年大葉大學業勤學舍住宿公約及違規處理要點

@@ -14,10 +14,6 @@ public class RepairSelectionMenu {
     final
     MenuIdSet menuIdSet;
 
-    public RepairSelectionMenu(MenuIdSet menuIdSet) {
-        this.menuIdSet = menuIdSet;
-    }
-
     @PostConstruct
     void init() {
         menu = StringSelectMenu

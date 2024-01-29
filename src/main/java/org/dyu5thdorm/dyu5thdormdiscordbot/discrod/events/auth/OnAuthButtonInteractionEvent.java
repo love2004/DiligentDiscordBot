@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
@@ -10,20 +11,16 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OnAuthButtonInteractionEvent extends ListenerAdapter {
-    final AuthModal authModal;
-    final DiscordLinkService discordLinkService;
+    final
+    AuthModal authModal;
+    final
+    DiscordLinkService discordLinkService;
     final
     ButtonIdSet buttonIdSet;
     final
     Maintenance maintenance;
-
-    public OnAuthButtonInteractionEvent(AuthModal authModal, DiscordLinkService discordLinkService, ButtonIdSet buttonIdSet, Maintenance maintenance) {
-        this.authModal = authModal;
-        this.discordLinkService = discordLinkService;
-        this.buttonIdSet = buttonIdSet;
-        this.maintenance = maintenance;
-    }
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {

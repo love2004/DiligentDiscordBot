@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.attendance.attendance;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class AttendanceEventUtils {
     final
     AttendanceEmbedBuilder attendanceEmbedBuilder;
@@ -31,11 +33,6 @@ public class AttendanceEventUtils {
     Integer endTimeMin;
     LocalTime startLocalTime;
     LocalTime endLocalTime;
-
-    public AttendanceEventUtils(AttendanceEmbedBuilder attendanceEmbedBuilder, AttendanceHandler attendanceHandler) {
-        this.attendanceEmbedBuilder = attendanceEmbedBuilder;
-        this.attendanceHandler = attendanceHandler;
-    }
 
     @PostConstruct
     void init() {

@@ -3,6 +3,8 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.repiar.crawler;
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.DormWebClient;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.RepairModel;
 import org.jetbrains.annotations.NotNull;
@@ -15,21 +17,22 @@ import java.net.URL;
 
 @Component
 @PropertySource("classpath:repair.properties")
+@RequiredArgsConstructor
 public class RepairCrawler {
+    final
+    DormWebClient webClient;
+    final
+    LoginParameter loginParameter;
+
     @Value("${api.repair}")
     String repairApiURL;
     @Value("${api.login}")
     String loginApiURL;
     @Value("${api.logout}")
     String logoutApiURL;
-    final
-    DormWebClient webClient;
-    final
-    LoginParameter loginParameter;
 
-    public RepairCrawler(DormWebClient webClient, LoginParameter loginParameter) {
-        this.webClient = webClient;
-        this.loginParameter = loginParameter;
+    @PostConstruct
+    void postConstruct() {
         this.webClient.getOptions().setCssEnabled(false);
     }
 

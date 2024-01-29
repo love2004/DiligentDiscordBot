@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -13,8 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class TookMoneySearch extends ListenerAdapter {
     final
     MenuIdSet menuIdSet;
@@ -25,13 +28,6 @@ public class TookMoneySearch extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
 
-    public TookMoneySearch(MenuIdSet menuIdSet, TookCoinHandler tookCoin, TookCoinEmbed tookCoinEmbed, ButtonIdSet buttonIdSet) {
-        this.menuIdSet = menuIdSet;
-        this.tookCoin = tookCoin;
-        this.tookCoinEmbed = tookCoinEmbed;
-        this.buttonIdSet = buttonIdSet;
-    }
-
     @Override
     public void onStringSelectInteraction(@NotNull StringSelectInteractionEvent event) {
         String eventMenuId = event.getSelectMenu().getId();
@@ -40,9 +36,9 @@ public class TookMoneySearch extends ListenerAdapter {
 
         event.deferReply().setEphemeral(true).queue();
 
-        var queryRecords = tookCoin.getRecordUnGetByDiscordId(event.getUser().getId());
+        Set<TookCoin> queryRecords = tookCoin.getRecordUnGetByDiscordId(event.getUser().getId());
 
-        if (queryRecords == null || queryRecords.isEmpty()) {
+        if (queryRecords.isEmpty()) {
             event.getHook().sendMessage("查無紀錄").setEphemeral(true).queue();
             return;
         }
@@ -63,7 +59,7 @@ public class TookMoneySearch extends ListenerAdapter {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             int backCoinSum = queryRecords.stream().mapToInt(TookCoin::getCoinAmount).sum();
             embedBuilder.setTitle("合併簽收")
-                    .setDescription("因發現您有多筆卡幣紀錄，因此您可以點此按鈕一併領取")
+                    .setDescription("因發現您有多筆吃錢登記紀錄，因此您可以點此按鈕一併領取")
                     .setColor(Color.CYAN)
                     .addField("應退總額", Integer.toString(backCoinSum), true)
                     .setFooter(

@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
+import lombok.RequiredArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceStatusEnum;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Cadre;
@@ -14,14 +15,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Service
+@RequiredArgsConstructor
 public class AttendanceService {
     final
     AttendanceRecordRepo attendanceRecordRepo;
-
-    public AttendanceService(AttendanceRecordRepo attendanceRecordRepo) {
-        this.attendanceRecordRepo = attendanceRecordRepo;
-    }
-
 
     public void save(AttendanceRecord attendanceRecord) {
         attendanceRecordRepo.save(attendanceRecord);

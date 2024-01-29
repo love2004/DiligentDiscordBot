@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.school_timestamp.SchoolTimestamp;
@@ -12,25 +13,22 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class LivingRecordService {
-    private final LivingRecordRepo livingRecordRepository;
+    final
+    LivingRecordRepo livingRecordRepository;
+    final
+    DiscordLinkService discordLinkService;
+
     @Value("${school_year}")
     private Integer schoolYear;
     @Value("${semester}")
     private Integer semester;
-    final
-    SchoolTimestamp schoolTimestamp;
-    final
-    DiscordLinkService discordLinkService;
-
-    public LivingRecordService(LivingRecordRepo livingRecordRepository, DiscordLinkService discordLinkService) {
-        this.livingRecordRepository = livingRecordRepository;
-        this.discordLinkService = discordLinkService;
-        schoolTimestamp = new SchoolTimestamp();
-    }
+    private SchoolTimestamp schoolTimestamp;
 
     @PostConstruct
     private void setSchoolTimestamp() {
+        schoolTimestamp = new SchoolTimestamp();
         schoolTimestamp.setSchoolYear(schoolYear);
         schoolTimestamp.setSemester(semester);
     }
@@ -55,11 +53,10 @@ public class LivingRecordService {
         return livingRecordRepository.findAllByStudentNameContainsAndSchoolTimestampEquals(name, schoolTimestamp);
     }
 
-    public LivingRecord findLivingRecordByDiscordId(String discordId) {
-        DiscordLink discordLink = discordLinkService.findByDiscordId(discordId);
-        if (discordLink == null) return null;
-        Optional<LivingRecord> livingRecordOptional = findByStudentId(discordLink.getStudent().getStudentId());
-        return livingRecordOptional.orElse(null);
+    public Optional<LivingRecord> findLivingRecordByDiscordId(String discordId) {
+        Optional<DiscordLink> discordLink = discordLinkService.findByDiscordId(discordId);
+        if (discordLink.isEmpty()) return Optional.empty();
+        return findByStudentId(discordLink.get().getStudent().getStudentId());
     }
 
     public Set<LivingRecord> findAllByFloor(Integer floor) {

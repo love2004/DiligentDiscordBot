@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -11,16 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class DevelopmentOperationEvent extends ListenerAdapter {
     final
     ChannelIdSet channelIdSet;
     final
     ButtonIdSet buttonIdSet;
 
-    public DevelopmentOperationEvent(ButtonIdSet buttonIdSet, ChannelIdSet channelIdSet) {
-        this.buttonIdSet = buttonIdSet;
-        this.channelIdSet = channelIdSet;
-    }
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
@@ -51,6 +49,7 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
                 Button.success(buttonIdSet.getGenerateReqAuth(), "驗證"),
                 Button.primary(buttonIdSet.getGenerateRules(), "規章"),
                 Button.success(buttonIdSet.getGenerateReqRepair(), "報修"),
+                Button.success(buttonIdSet.getGenerateReqTookCoin(), "吃錢"),
                 Button.success(buttonIdSet.getGenerateReqCadre(), "特定用戶")
         ).queue();
 
@@ -59,6 +58,12 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
         ).addActionRow(
                 Button.primary(buttonIdSet.getGenerateReqLevCadre(), "點名"),
                 Button.primary(buttonIdSet.getGenerateReqLev(), "請假")
+        ).queue();
+
+        textChannel.sendMessage(
+                "重新產生頻道內容 (3)"
+        ).addActionRow(
+                Button.primary(buttonIdSet.getGenerateVote(), "投票")
         ).queue();
 
         textChannel.sendMessage(

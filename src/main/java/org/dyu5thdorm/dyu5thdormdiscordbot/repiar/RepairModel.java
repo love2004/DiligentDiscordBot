@@ -1,10 +1,8 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.repiar;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -12,17 +10,27 @@ import java.net.URLEncoder;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode
+@Builder
 public class RepairModel {
+    @NotNull
     Repair.Type type;
+    @NotNull
     Student reporter;
+    @NotNull
     Building building;
+    @NotNull
     String location;
+    @NotNull
     String item;
+    @NotNull
     Unit unit;
+    @NotNull
     Integer amount;
+    @NotNull
     String description;
-    String repairTime;
+    @NotNull
     ReportUnit reportUnit;
+    String repairTime;
 
     public String getRequestBody() throws UnsupportedEncodingException {
         return "htmldw1_action=" + "Update" +
@@ -44,8 +52,8 @@ public class RepairModel {
                 this.item,
                 this.unit.getId(),
                 this.amount,
-                description + (this.repairTime != null ? ", \n可配合維修時間：" + repairTime : ""),
-                reporter.getPhoneNumber(),
+                this.description + (this.repairTime != null ? ", \n可配合維修時間：" + this.repairTime : ""),
+                this.reporter.getPhoneNumber(),
                 this.reportUnit.getId()
         );
         return URLEncoder.encode(format, "BIG5");

@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 
 @Component
 public class AuthEmbedBuilder {
-    public EmbedBuilder successAuth(LivingRecord livingRecord) {
+    public EmbedBuilder successAuth(@NotNull LivingRecord livingRecord) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("住宿資料")
                 .setDescription("以下為您的住宿資料，若有誤或非本人請立刻與宿舍幹部反應。")
@@ -21,7 +21,7 @@ public class AuthEmbedBuilder {
         return embedBuilder;
     }
 
-    public EmbedBuilder successAuthLogger(EmbedBuilder embedBuilder, @NotNull String userId) {
+    public EmbedBuilder successAuthLogger(@NotNull EmbedBuilder embedBuilder, @NotNull String userId) {
         embedBuilder
                 .setDescription(
                         String.format("<@%s> 綁定資訊如下：", userId)

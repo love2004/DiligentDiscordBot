@@ -1,5 +1,6 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -8,16 +9,12 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.repair.menu.RepairSe
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OnRepairBtnItnEvent extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
     final
     RepairSelectionMenu selectionMenu;
-
-    public OnRepairBtnItnEvent(ButtonIdSet buttonIdSet, RepairSelectionMenu selectionMenu) {
-        this.buttonIdSet = buttonIdSet;
-        this.selectionMenu = selectionMenu;
-    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
