@@ -54,4 +54,6 @@ public class ChannelIdSet {
     String lottery;
     @Value("${channel.vote}")
     String vote;
+    @Value("${channel.leader}")
+    String leader;
 }

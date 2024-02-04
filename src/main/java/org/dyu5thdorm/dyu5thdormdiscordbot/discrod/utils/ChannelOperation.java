@@ -18,7 +18,6 @@ public class ChannelOperation {
     ChannelIdSet channelIdSet;
     Map<Integer, String > floorChannelMap;
 
-
     @PostConstruct
     void init() {
         floorChannelMap = Map.of(

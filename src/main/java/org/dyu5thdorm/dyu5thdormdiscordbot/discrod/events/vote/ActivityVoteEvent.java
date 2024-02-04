@@ -51,6 +51,7 @@ public class ActivityVoteEvent extends ListenerAdapter {
         Optional<LivingRecord> optional = lrService.findLivingRecordByDiscordId(
                 event.getUser().getId()
         );
+
         if (optional.isEmpty()) {
             event.getHook().sendMessage("非本學期住宿生無法進行投票。").setEphemeral(true).queue();
             return;

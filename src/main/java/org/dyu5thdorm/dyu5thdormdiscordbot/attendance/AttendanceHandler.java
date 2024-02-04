@@ -44,7 +44,7 @@ public class AttendanceHandler {
     LocalTime endLocalTime;
 
     @PostConstruct
-    void init() {
+    void setup() {
         startLocalTime = LocalTime.of(startTimeHour, startTimeMin);
         endLocalTime = LocalTime.of(endTimeHour, endTimeMin);
     }

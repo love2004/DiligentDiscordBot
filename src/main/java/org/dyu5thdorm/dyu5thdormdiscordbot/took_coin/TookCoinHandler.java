@@ -1,29 +1,53 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.took_coin;
 
-import lombok.AllArgsConstructor;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.dto.MachineDTO;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.TookCoinService;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TookCoinHandler {
     final TookCoinService tookCoinService;
     final DiscordLinkService discordLinkService;
 
-    public enum MachineType { WASH_MACHINE, DRYER, VENDING }
+    @Value("${datetime.format}")
+    String dateTimeFormat;
+    @Value("${date.format}")
+    String dateFormat;
+    @Value("${path-washing-and-dryer}")
+    String washingAndDryerDirPath;
+    @Value("${path-vending}")
+    String vendingDirPath;
+    Map<MachineType, String> machineTypeStringMap;
 
-    public enum FailReason { DATE_AFTER_NOW, TIME_REPEAT, NONE }
+    @PostConstruct
+    void setup() {
+        String currentDir = System.getProperty("user.dir");
+        machineTypeStringMap = new EnumMap<>(MachineType.class);
+        machineTypeStringMap.put(MachineType.WASH_MACHINE, "洗衣機");
+        machineTypeStringMap.put(MachineType.DRYER, "烘衣機");
+        machineTypeStringMap.put(MachineType.VENDING, "販賣機");
+        vendingDirPath = currentDir + vendingDirPath;
+        washingAndDryerDirPath = currentDir + washingAndDryerDirPath;
+    }
 
     FloorArea getFloorArea(MachineType type, String floorOrFloorArea) {
         FloorArea floorArea = new FloorArea();
@@ -95,4 +119,110 @@ public class TookCoinHandler {
     Optional<DiscordLink> getDiscordLinkByDiscordId(String discordId) {
         return discordLinkService.findByDiscordId(discordId);
     }
+
+    public void dumpFile() throws IOException {
+        this.createDirectory(MachineType.VENDING);
+        this.createDirectory(MachineType.WASH_MACHINE);
+        writeToFile(MachineType.VENDING);
+        writeToFile(MachineType.WASH_MACHINE);
+    }
+
+    void createDirectory(MachineType type) {
+        File file;
+        if (type == MachineType.VENDING) {
+            file = new File(vendingDirPath);
+        } else if (type == MachineType.DRYER || type == MachineType.WASH_MACHINE) {
+            file = new File(washingAndDryerDirPath);
+        } else {
+            throw new RuntimeException("error machine type");
+        }
+
+        if (!file.exists()) file.mkdirs();
+    }
+
+    void writeToFile(MachineType type) throws IOException {
+        String header = """
+                樓層, 區域, 床號, 學號, 姓名, 機器, 敘述, 金額, 發生時間, 回報時間
+                """;
+        StringBuilder builder = new StringBuilder();
+        Path path;
+        LocalDateTime now = LocalDateTime.now();
+        String fileName = DateTimeFormatter.ofPattern(dateFormat).format(now) + ".csv";
+        if (type == MachineType.WASH_MACHINE || type == MachineType.DRYER) {
+            path = Path.of(washingAndDryerDirPath + "wd-" + fileName);
+            builder.append(
+                    getCsvFileContent(
+                            MachineType.WASH_MACHINE
+                    )
+            );
+            builder.append(
+                    getCsvFileContent(
+                            MachineType.DRYER
+                    )
+            );
+        } else {
+            path = Path.of(vendingDirPath + "v-" + fileName);
+            builder.append(
+                    getCsvFileContent(
+                            MachineType.VENDING
+                    )
+            );
+        }
+
+        if (builder.isEmpty()) {
+            return;
+        } else {
+            builder.insert(0, header);
+        }
+
+        Files.writeString(
+                path,
+                builder.toString(),
+                Charset.forName("big5")
+        );
+    }
+
+    String getCsvFileContent(MachineType type) {
+        List<MachineDTO> dto = tookCoinService.findNotGetMachine(type);
+        StringBuilder sb = new StringBuilder();
+        for (MachineDTO machineDTO : dto) {
+            sb.append(machineDTO.getFloor());
+            sb.append(", ");
+            sb.append(machineDTO.getArea());
+            sb.append(", ");
+            sb.append(machineDTO.getBedId());
+            sb.append(", ");
+            sb.append(machineDTO.getStudentId());
+            sb.append(", ");
+            sb.append(machineDTO.getName());
+            sb.append(", ");
+            sb.append(
+                    machineTypeStringMap.get(type)
+            );
+            sb.append(", ");
+            sb.append(machineDTO.getDescription());
+            sb.append(", ");
+            sb.append(machineDTO.getCoinAmount());
+            sb.append(", ");
+            sb.append(
+                    DateTimeFormatter.ofPattern(dateTimeFormat).format(
+                            machineDTO.getEventTime()
+                    )
+            );
+            sb.append(", ");
+            sb.append(
+                    DateTimeFormatter.ofPattern(dateTimeFormat).format(
+                            machineDTO.getRecordTime()
+                    )
+            );
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    public enum MachineType {WASH_MACHINE, DRYER, VENDING}
+
+    public enum FailReason {DATE_AFTER_NOW, TIME_REPEAT, NONE}
+
 }

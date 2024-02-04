@@ -1,12 +1,16 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.spring.services;
 
 import lombok.RequiredArgsConstructor;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.dto.MachineDTO;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.TookCoin;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.repositories.TookCoinRepo;
+import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +18,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TookCoinService {
     final TookCoinRepo tookCoinRepository;
+
+    @Value("${school_year}")
+    Integer schoolYear;
+    @Value("${semester}")
+    Integer semester;
 
     public void save(TookCoin tookCoinModel) {
         tookCoinRepository.save(tookCoinModel);
@@ -51,5 +60,9 @@ public class TookCoinService {
                             e.getReturnDate().plusDays(dayIn).isEqual(returnDate);
                 }
         ).collect(Collectors.toSet());
+    }
+
+    public List<MachineDTO> findNotGetMachine(TookCoinHandler.MachineType machineType) {
+        return tookCoinRepository.findNotGetBackMachine(schoolYear, semester, machineType.name());
     }
 }
