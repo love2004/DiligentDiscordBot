@@ -26,7 +26,6 @@ public class FloorRoleCorBtn extends ListenerAdapter {
     LivingRecordService livingRecordService;
     final
     RoleOperation roleOperation;
-
     final
     Maintenance maintenance;
 

@@ -64,7 +64,7 @@ public class TookCoinEvent extends ListenerAdapter {
     String floorSyntax;
     @Value("${regexp.floor-and-area}")
     String floorAreaSyntax;
-    @Value("${regexp.date}")
+    @Value("${regexp.date-time}")
     String dateSyntax;
 
     @Override

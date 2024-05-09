@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.dto.AttendanceDTO;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ public class AttendanceEmbedBuilder {
     public EmbedBuilder getByLivingRecord(List<LivingRecord> livingRecords) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         String roomId;
-        if (!isSameRoom(livingRecords)) {
+        if (!this.isSameRoom(livingRecords)) {
             embedBuilder.setColor(Color.RED);
             embedBuilder.setTitle("錯誤");
             return embedBuilder;
@@ -98,6 +99,51 @@ public class AttendanceEmbedBuilder {
         embedBuilder.setImage("https://i.imgur.com/NWyr6vZ.png");
         embedBuilder.setColor(Color.GREEN);
         embedBuilder.setTimestamp(new Date().toInstant());
+        return embedBuilder;
+    }
+
+    public EmbedBuilder getPersonalCheck(Set<AttendanceDTO> records, LivingRecord livingRecord) {
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+
+        if (records.isEmpty()) {
+            embedBuilder.setTitle("查無結果");
+            embedBuilder.setColor(Color.RED);
+            return embedBuilder;
+        }
+
+        embedBuilder.setTitle("晚點名點名紀錄查詢");
+        embedBuilder.setDescription(
+                String.format(
+                        """
+                        ### 個人資訊：
+                        **床號：%s
+                        學號：%s
+                        姓名：%s**
+                              
+                        """,
+                        livingRecord.getBed().getBedId(),
+                        livingRecord.getStudent().getStudentId(),
+                        livingRecord.getStudent().getName()
+                )
+        );
+        embedBuilder.setFooter("狀態為缺且有請假資訊者，系統則會判定為假");
+        embedBuilder.setTimestamp(new Date().toInstant());
+        embedBuilder.setColor(Color.GREEN);
+        records.stream().limit(5).forEach(e -> embedBuilder.addField(
+                e.getDate().toString(),
+                String.format(
+                        """
+                        > 出席狀態：%s
+                        > 點名時間：%s
+                        %s
+                        """,
+                        e.getAttStatus(),
+                        e.getTime(),
+                        e.getLeaveReason() == null ? "" : "> 請假資訊：" + e.getLeaveReason()
+                )
+                , false
+        ));
+
         return embedBuilder;
     }
 }

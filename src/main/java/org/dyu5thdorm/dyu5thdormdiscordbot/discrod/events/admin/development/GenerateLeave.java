@@ -52,7 +52,8 @@ public class GenerateLeave extends ListenerAdapter {
                                 """, rlOp.getStartTime(), rlOp.getEndTime())
                 )
                 .addActionRow(
-                        Button.danger(buttonIdSet.getReqForLeave(), "晚間點名請假\\補點名")
+                        Button.danger(buttonIdSet.getReqForLeave(), "晚間點名請假\\補點名"),
+                        Button.primary(buttonIdSet.getGenerateAttendanceRate(), "出席狀態查詢")
                 ).queue();
 
         event.getHook().sendMessage("Done").setEphemeral(true).queue();

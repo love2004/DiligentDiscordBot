@@ -11,6 +11,7 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRec
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
+@PropertySource("classpath:regex.properties")
 public class AttendanceHandler {
     final LivingRecordService livingRecordService;
     final DiscordLinkService discordLinkService;
@@ -53,8 +55,8 @@ public class AttendanceHandler {
         return maintenance.isMaintenanceStatus();
     }
 
-    public boolean isNoCallNoDay(LocalDate localDate) {
-        return noCallRollDateService.exists(localDate);
+    public boolean isAttendanceDay(LocalDate localDate) {
+        return !noCallRollDateService.exists(localDate);
     }
 
     public boolean isIllegalTime(@NotNull LocalTime time) {
@@ -239,7 +241,9 @@ public class AttendanceHandler {
 
     @Getter
     public enum ErrorType {
-        ATTENDANCE_COMPLETE("點名已完成，無法再次啟動點名作業。"), NOT_FLOOR_AREA_CADRE("您非特定樓層區域幹部，無法使用此功能。"), EMPTY_AREA("您所負責之點名區域皆為空房，因此您無法使用此功能。");
+        ATTENDANCE_COMPLETE("點名已完成，無法再次啟動點名作業。"),
+        NOT_FLOOR_AREA_CADRE("您非特定樓層區域幹部，無法使用此功能。"),
+        EMPTY_AREA("您所負責之點名區域皆為空房，因此您無法使用此功能。");
 
         private final String message;
 

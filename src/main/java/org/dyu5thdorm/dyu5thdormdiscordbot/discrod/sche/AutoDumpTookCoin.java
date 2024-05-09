@@ -43,8 +43,7 @@ public class AutoDumpTookCoin {
         washingAndDryerPath = currentDir + washingAndDryerPath;
     }
 
-//    @Scheduled(cron = "0 0 10 * * THU")
-    @Scheduled(cron = "*/5 * * * * *")
+    @Scheduled(cron = "0 0 23 * * WED")
     void dump() {
         Optional<TextChannel> channelOptional = Optional.ofNullable(
                 discordAPI.getJda().getTextChannelById(

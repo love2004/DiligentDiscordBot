@@ -106,7 +106,7 @@ public class SearchByRoom extends ListenerAdapter {
             );
 
 
-            EmbedBuilder embedBuilder = embedGenerator.fromRoom(
+            EmbedBuilder embedBuilder = embedGenerator.infoFromRoom(
                     livingRecord, discordLink
             );
 

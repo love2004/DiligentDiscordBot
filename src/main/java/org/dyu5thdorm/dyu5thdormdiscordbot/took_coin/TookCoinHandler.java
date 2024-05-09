@@ -51,6 +51,7 @@ public class TookCoinHandler {
 
     FloorArea getFloorArea(MachineType type, String floorOrFloorArea) {
         FloorArea floorArea = new FloorArea();
+        // VENDING only in CD area
         if (type == MachineType.VENDING) {
             floorArea.setFloor(Integer.parseInt(floorOrFloorArea));
             if (floorArea.getFloor() == 1L) {

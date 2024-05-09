@@ -87,7 +87,7 @@ public class SearchByName extends ListenerAdapter {
             );
 
             event.getHook().sendMessageEmbeds(
-                    embedGenerator.fromName(livingRecord, discordLink).build()
+                    embedGenerator.infoFromName(livingRecord, discordLink).build()
             ).setEphemeral(true).queue();
         }
 

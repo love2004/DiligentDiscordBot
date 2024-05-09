@@ -89,7 +89,7 @@ public class SearchByStudentId extends ListenerAdapter {
                     livingRecord.getStudent().getStudentId()
             );
             event.getHook().sendMessageEmbeds(
-                    embedGenerator.fromStudentId(livingRecord, discordLink).build()
+                    embedGenerator.infoFromStudentId(livingRecord, discordLink).build()
             ).setEphemeral(true).queue();
         }
 

@@ -24,11 +24,11 @@ public class RepairCrawler {
     final
     LoginParameter loginParameter;
 
-    @Value("${api.repair}")
+    @Value("${api.repair.table}")
     String repairApiURL;
-    @Value("${api.login}")
+    @Value("${api.repair.login}")
     String loginApiURL;
-    @Value("${api.logout}")
+    @Value("${api.repair.logout}")
     String logoutApiURL;
 
     @PostConstruct

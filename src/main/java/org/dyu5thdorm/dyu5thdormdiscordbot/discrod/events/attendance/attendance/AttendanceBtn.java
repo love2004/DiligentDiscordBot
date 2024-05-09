@@ -40,7 +40,7 @@ public class AttendanceBtn extends ListenerAdapter {
         if (!buttonIdSet.getAttendance().equalsIgnoreCase(eventButtonId)) return;
         event.deferReply().setEphemeral(true).queue();
 
-        boolean isIllegalTime = attendanceHandler.isIllegalTime(LocalTime.now()) || attendanceHandler.isNoCallNoDay(LocalDate.now());
+        boolean isIllegalTime = attendanceHandler.isIllegalTime(LocalTime.now()) && attendanceHandler.isAttendanceDay(LocalDate.now());
         if (!attendanceHandler.isDevMode() && isIllegalTime) {
             attendanceEventUtils.sendStartTime(event);
             return;
@@ -60,9 +60,9 @@ public class AttendanceBtn extends ListenerAdapter {
         event.getHook().sendMessage(
                 String.format(
                         """
-                        %s
-                        > 若有任何問題，請聯絡本群開發人員。
-                        """, error.getMessage()
+                                %s
+                                > 若有任何問題，請聯絡本群開發人員。
+                                """, error.getMessage()
                 )
         ).queue();
     }

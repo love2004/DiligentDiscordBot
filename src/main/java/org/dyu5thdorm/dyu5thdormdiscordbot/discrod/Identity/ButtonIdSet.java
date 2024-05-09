@@ -4,12 +4,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 
 @Component
 @Getter
 @Setter(AccessLevel.NONE)
+@PropertySource("classpath:discord-id-list.properties")
 public class ButtonIdSet {
     @Value("${component.button.auth}")
     String auth;
@@ -27,6 +29,10 @@ public class ButtonIdSet {
     String shutdown;
     @Value("${component.button.request-for-leave}")
     String reqForLeave;
+    @Value("${component.button.generate-attendance-rate}")
+    String generateAttendanceRate;
+    @Value("${component.button.attendance-rate}")
+    String attendanceRate;
     @Value("${component.button.request-for-leave-cadre}")
     String reqForLeaveCadre;
     @Value("${component.button.maintenance}")

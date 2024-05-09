@@ -35,8 +35,4 @@ public class ChannelOperation {
                 message -> message.delete().queue()
         );
     }
-
-    public String  getFloorChannelIdByFloor(Integer floor) {
-        return floorChannelMap.getOrDefault(floor, null);
-    }
 }

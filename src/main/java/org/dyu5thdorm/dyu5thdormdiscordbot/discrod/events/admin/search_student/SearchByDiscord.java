@@ -65,7 +65,7 @@ public class SearchByDiscord extends ListenerAdapter {
                 ).setEphemeral(true).queue();
                 return;
             }
-            EmbedBuilder embedBuilder = embedGenerator.fromDiscord(livingRecord.get(), userId);
+            EmbedBuilder embedBuilder = embedGenerator.infoFromDiscord(livingRecord.get(), userId);
             event.getHook().sendMessage(
                     String.format("<@%s>", userId)
             ).addEmbeds(

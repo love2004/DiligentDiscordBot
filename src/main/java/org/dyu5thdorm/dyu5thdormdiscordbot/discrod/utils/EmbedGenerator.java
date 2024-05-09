@@ -14,7 +14,7 @@ public class EmbedGenerator {
     @Value("${image.student-api}")
     String formatStudentImageApi;
 
-    public EmbedBuilder fromDiscord(@NotNull LivingRecord livingRecord, String userId) {
+    public EmbedBuilder infoFromDiscord(@NotNull LivingRecord livingRecord, String userId) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("查詢結果");
         embedBuilder.setDescription(
@@ -39,7 +39,7 @@ public class EmbedGenerator {
         return embedBuilder;
     }
 
-    public EmbedBuilder fromRoom(@NotNull LivingRecord livingRecord, DiscordLink discordLink) {
+    public EmbedBuilder infoFromRoom(@NotNull LivingRecord livingRecord, DiscordLink discordLink) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("查詢結果");
         embedBuilder
@@ -64,11 +64,13 @@ public class EmbedGenerator {
             return embedBuilder;
     }
 
-    public EmbedBuilder fromStudentId(LivingRecord livingRecord, DiscordLink discordLink) {
-        return fromRoom(livingRecord, discordLink);
+    public EmbedBuilder infoFromStudentId(LivingRecord livingRecord, DiscordLink discordLink) {
+        return infoFromRoom(livingRecord, discordLink);
     }
 
-    public EmbedBuilder fromName(LivingRecord livingRecord, DiscordLink discordLink) {
-        return fromRoom(livingRecord, discordLink);
+    public EmbedBuilder infoFromName(LivingRecord livingRecord, DiscordLink discordLink) {
+        return infoFromRoom(livingRecord, discordLink);
     }
+
+
 }

@@ -14,12 +14,12 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 @Component
-@PropertySource("classpath:line.properties")
+@PropertySource("classpath:api.properties")
 @RequiredArgsConstructor
 public class LineNotify {
     final RepairTokenSet repairTokenSet;
 
-    @Value("${api}")
+    @Value("${api.line-notify}")
     String api;
 
     String[] headers(RepairTokenSet.RepairType type) {
