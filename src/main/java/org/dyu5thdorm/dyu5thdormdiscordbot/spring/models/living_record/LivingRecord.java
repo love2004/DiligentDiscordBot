@@ -8,8 +8,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Bed;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.school_timestamp.SchoolTimestamp;
 
-import java.util.Date;
-
 @Entity
 @Table(name = "living_record")
 @IdClass(LivingRecordId.class)
@@ -33,8 +31,5 @@ public class LivingRecord {
             @JoinColumn(name = "semester", referencedColumnName = "semester")
     })
     private SchoolTimestamp schoolTimestamp;
-
-    @Column(name = "update_time")
-    private Date updateTime;
 }
 
