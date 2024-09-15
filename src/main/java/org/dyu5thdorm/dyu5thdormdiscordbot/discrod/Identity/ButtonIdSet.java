@@ -97,4 +97,6 @@ public class ButtonIdSet {
     String disagree;
     @Value("${component.button.activity-abstention}")
     String abstention;
+    @Value("${component.button.get-back}")
+    String getBack;
 }

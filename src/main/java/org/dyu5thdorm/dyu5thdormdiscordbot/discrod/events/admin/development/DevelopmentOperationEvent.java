@@ -57,13 +57,8 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
                 "重新產生頻道內容 (2)"
         ).addActionRow(
                 Button.primary(buttonIdSet.getGenerateReqLevCadre(), "點名"),
-                Button.primary(buttonIdSet.getGenerateReqLev(), "請假")
-        ).queue();
-
-        textChannel.sendMessage(
-                "重新產生頻道內容 (3)"
-        ).addActionRow(
-                Button.primary(buttonIdSet.getGenerateVote(), "投票")
+                Button.primary(buttonIdSet.getGenerateReqLev(), "請假"),
+                Button.primary(buttonIdSet.getGetBack(), "廠商退幣")
         ).queue();
 
         textChannel.sendMessage(

@@ -56,4 +56,6 @@ public class ChannelIdSet {
     String vote;
     @Value("${channel.leader}")
     String leader;
+    @Value("${channel.get-back}")
+    String getBack;
 }

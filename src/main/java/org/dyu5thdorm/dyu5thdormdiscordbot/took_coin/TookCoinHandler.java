@@ -39,7 +39,7 @@ public class TookCoinHandler {
     Map<MachineType, String> machineTypeStringMap;
 
     @PostConstruct
-    void setup() {
+    void setup() throws IOException {
         String currentDir = System.getProperty("user.dir");
         machineTypeStringMap = new EnumMap<>(MachineType.class);
         machineTypeStringMap.put(MachineType.WASH_MACHINE, "洗衣機");

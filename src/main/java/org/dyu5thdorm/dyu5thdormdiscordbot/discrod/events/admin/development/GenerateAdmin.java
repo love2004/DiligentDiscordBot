@@ -57,13 +57,6 @@ public class GenerateAdmin extends ListenerAdapter {
                 )
         ).queue();
 
-        textChannel.sendMessage("特殊類別")
-                .addComponents(
-                        ActionRow.of(
-                                Button.danger(buttonIdSet.getTookCoinReturn(), "廠商退幣日期登記")
-                        )
-                ).queue();
-
         event.getHook().sendMessage("DONE").setEphemeral(true).queue();
     }
 }
