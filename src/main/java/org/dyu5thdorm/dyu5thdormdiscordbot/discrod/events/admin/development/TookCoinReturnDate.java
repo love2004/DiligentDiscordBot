@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
@@ -71,7 +73,18 @@ public class TookCoinReturnDate extends ListenerAdapter {
         LocalDate returnDate = toLocalDate(date);
         tookCoinService.saveReturnCoinDay(returnDate);
         mentionVictim(event.getJDA(), returnDate);
+
         event.getHook().sendMessage("登記成功！").setEphemeral(true).queue();
+
+        event.getChannel().getIterableHistory().forEach(
+                message -> message.delete().complete()
+        );
+
+        event.getChannel().sendMessageComponents(
+                ActionRow.of(
+                        Button.danger(buttonIdSet.getTookCoinReturn(), "廠商退幣日期登記")
+                )
+        ).queue();
     }
 
 

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GenerateGetBack extends ListenerAdapter {
+public class GenerateReturnByFirm extends ListenerAdapter {
     final ButtonIdSet buttonIdSet;
     final ChannelIdSet channelIdSet;
     final ChannelOperation channelOperation;
@@ -21,11 +21,11 @@ public class GenerateGetBack extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String buttonId = event.getButton().getId();
-        if (!buttonIdSet.getGetBack().equalsIgnoreCase(buttonId)) return;
+        if (!buttonIdSet.getReturnByFirm().equalsIgnoreCase(buttonId)) return;
 
         event.deferReply().setEphemeral(true).queue();
 
-        TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getGetBack());
+        TextChannel textChannel = event.getJDA().getTextChannelById(channelIdSet.getReturnByFirm());
 
         if (textChannel == null) return;
         channelOperation.deleteAllMessage(textChannel, 100);

@@ -58,7 +58,7 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
         ).addActionRow(
                 Button.primary(buttonIdSet.getGenerateReqLevCadre(), "點名"),
                 Button.primary(buttonIdSet.getGenerateReqLev(), "請假"),
-                Button.primary(buttonIdSet.getGetBack(), "廠商退幣")
+                Button.primary(buttonIdSet.getReturnByFirm(), "廠商退幣")
         ).queue();
 
         textChannel.sendMessage(
