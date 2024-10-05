@@ -15,6 +15,6 @@ public class AttendanceDTO {
     @NotNull
     LocalTime time;
     @NotNull
-    String attStatus;
+    Integer statusId;
     String leaveReason;
 }

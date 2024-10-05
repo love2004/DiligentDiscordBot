@@ -15,7 +15,7 @@ public interface AttendanceRecordRepo extends JpaRepository<AttendanceRecord, At
     @Query("SELECT new org.dyu5thdorm.dyu5thdormdiscordbot.spring.dto.AttendanceDTO( " +
             "ar.attendanceDate," +
             "ar.attendanceTime," +
-            "ar.attendanceStatus.name," +
+            "ar.attendanceStatus.attendanceStatusId," +
             "lr.leaveReason)" +
             "from AttendanceRecord ar left join LeaveRecord lr on ar.attendanceDate = lr.leaveDate and ar.student = lr.student " +
             "where ar.student = :student " +

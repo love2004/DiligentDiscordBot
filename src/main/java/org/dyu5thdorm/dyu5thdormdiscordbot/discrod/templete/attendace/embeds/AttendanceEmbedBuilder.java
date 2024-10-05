@@ -137,7 +137,9 @@ public class AttendanceEmbedBuilder {
                         > 點名時間：%s
                         %s
                         """,
-                        e.getAttStatus(),
+                        this.attendanceStatus(
+                                e.getStatusId(), e.getLeaveReason()
+                        ),
                         e.getTime(),
                         e.getLeaveReason() == null ? "" : "> 請假資訊：" + e.getLeaveReason()
                 )
@@ -145,5 +147,15 @@ public class AttendanceEmbedBuilder {
         ));
 
         return embedBuilder;
+    }
+
+    String attendanceStatus(Integer status, String reason) {
+        if (status == 1) {
+            return "到";
+        } else if (status == 2 && reason != null) {
+            return "假";
+        }
+
+        return "缺";
     }
 }
