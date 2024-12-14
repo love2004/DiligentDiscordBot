@@ -13,24 +13,41 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AuthModal {
-    Modal modal;
+    Modal defaultModal, phoneModal, mailModal;
     final
     ModalIdSet modalIdSet;
 
     @PostConstruct
     void init() {
-        modal = Modal.create(modalIdSet.getAuth(), "認證")
+        defaultModal = Modal.create(modalIdSet.getAuth(), "認證(Verify)")
                 .addActionRow(
                         TextInput.create(modalIdSet.getFirstTextInput(), "學號(student id)", TextInputStyle.SHORT)
                                 .setRequiredRange(8,8)
                                 .setRequired(true)
                                 .setPlaceholder("F0000001")
                                 .build()
-                ).addActionRow(
-                        TextInput.create(modalIdSet.getSecondTextInput(), "手機電話號碼(phone number)", TextInputStyle.SHORT)
+                ).build();
+
+        phoneModal = defaultModal
+                .createCopy()
+                .setId(modalIdSet.getAuthPhone())
+                .addActionRow(
+                        TextInput.create(modalIdSet.getSecondTextInput(), "臺灣手機號碼(Taiwan phone number)", TextInputStyle.SHORT)
                                 .setRequiredRange(10,10)
                                 .setRequired(true)
                                 .setPlaceholder("0912345678")
+                                .build()
+                )
+                .build();
+
+        mailModal = defaultModal
+                .createCopy()
+                .setId(modalIdSet.getAuthMail())
+                .addActionRow(
+                        TextInput.create(modalIdSet.getSecondTextInput(), "電子郵件(Email)", TextInputStyle.SHORT)
+                                .setMaxLength(254)
+                                .setRequired(true)
+                                .setPlaceholder("hello@dyu5thdorm.org")
                                 .build()
                 )
                 .build();

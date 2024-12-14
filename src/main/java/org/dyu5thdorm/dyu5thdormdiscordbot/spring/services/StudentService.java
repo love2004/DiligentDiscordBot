@@ -27,6 +27,14 @@ public class StudentService {
         });
     }
 
+    public void saveStudentEmail(String studentId, String email) {
+        Optional<Student> getStudent = studentRepository.findById(studentId);
+        getStudent.ifPresent(student -> {
+            student.setEmail(email);
+            studentRepository.save(student);
+        });
+    }
+
     public Optional<Student> findByStudentId(String studentId) {
         return studentRepository.findById(studentId);
     }

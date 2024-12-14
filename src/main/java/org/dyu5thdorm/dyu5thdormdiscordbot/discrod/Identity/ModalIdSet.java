@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 public class ModalIdSet {
     @Value("${component.modal.auth}")
     String auth;
+    @Value("${component.modal.auth-phone}")
+    String authPhone;
+    @Value("${component.modal.auth-mail}")
+    String authMail;
     @Value("${component.modal.student-info-by-bedId}")
     String searchByBI; // BI = Bed ID
     @Value("${component.modal.student-info-by-studentId}")

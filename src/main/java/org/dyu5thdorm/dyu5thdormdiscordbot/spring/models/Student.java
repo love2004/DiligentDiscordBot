@@ -36,6 +36,9 @@ public class Student implements Serializable {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "email")
+    private String email;
+
     public Student(String studentId) {
         this.studentId = studentId;
     }

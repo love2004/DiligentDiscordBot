@@ -3,8 +3,11 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.auth;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.menu.AuthMenu;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.auth.modals.AuthModal;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.AuthErrorType;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +24,7 @@ public class OnAuthButtonInteractionEvent extends ListenerAdapter {
     ButtonIdSet buttonIdSet;
     final
     Maintenance maintenance;
+    final AuthMenu authMenu;
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
@@ -29,9 +33,22 @@ public class OnAuthButtonInteractionEvent extends ListenerAdapter {
         String userId = event.getUser().getId();
         if (discordLinkService.isLinked(userId)) {
             event.deferReply().setEphemeral(true).queue();
-            event.getHook().sendMessage("您已完成驗證，無需再次提交驗證請求。").setEphemeral(true).queue();
+            event.getHook().sendMessage(
+                    AuthErrorType.Linked.getMsg()
+            ).setEphemeral(true).queue();
             return;
         }
-        event.replyModal(authModal.getModal()).queue();
+
+        event.reply("""
+                        請選擇驗證方式
+                        > Please choose a verification method
+                        """)
+                .addComponents(
+                        ActionRow.of(
+                                authMenu.getSelectMenu()
+                        )
+                )
+                .setEphemeral(true)
+                .queue();
     }
 }
