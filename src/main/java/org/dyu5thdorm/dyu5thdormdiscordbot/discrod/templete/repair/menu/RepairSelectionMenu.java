@@ -26,6 +26,7 @@ public class RepairSelectionMenu {
                 .addOption("洗、烘衣機 Washing machine or Dryer", menuIdSet.getWashAndDryOption(), "各樓層洗衣機、烘衣機(不含脫水機)", Emoji.fromUnicode("U+1F9FA"))
                 .addOption("販賣機 Vending", menuIdSet.getVendingOption(), "各樓層販賣機", Emoji.fromUnicode("U+1F4B0"))
                 .addOption("飲水機 Water dispenser", menuIdSet.getDrinkingOption(), "各樓層飲水機", Emoji.fromUnicode("U+1F6B0"))
+                .addOption("房內網路 Internet", menuIdSet.getInternetOption(), "房內網路", Emoji.fromUnicode("U+1F310"))
                 .addOption("其他 Others", menuIdSet.getOtherOption(), "其他類別", Emoji.fromUnicode("U+1F6E0"))
                 .build();
     }

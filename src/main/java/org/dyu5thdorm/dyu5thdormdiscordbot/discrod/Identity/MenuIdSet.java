@@ -42,4 +42,6 @@ public class MenuIdSet {
     String activity;
     @Value("${component.menu.auth}")
     String auth;
+    @Value("component.menu.internet")
+    String internetOption;
 }

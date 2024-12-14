@@ -17,4 +17,7 @@ public class Bed {
     @Id
     @Column(name = "bed_id")
     String bedId;
+
+    @Column(name = "internet_number")
+    String internetNumber;
 }
