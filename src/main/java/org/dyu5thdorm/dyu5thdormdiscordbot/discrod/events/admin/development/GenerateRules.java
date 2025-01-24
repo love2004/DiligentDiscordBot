@@ -21,8 +21,10 @@ public class GenerateRules extends ListenerAdapter {
     ChannelIdSet channelIdSet;
     final ChannelOperation channelOperation;
 
-    @Value("${link.rules}")
-    String rulesLink;
+    @Value("${link.rules.zh-tw}")
+    String rulesLinkZHTW;
+    @Value("${link.rules.en}")
+    String rulesLinkEn;
     @Value("${school_year}")
     String schoolYear;
 
@@ -43,18 +45,23 @@ public class GenerateRules extends ListenerAdapter {
                 String.format(
                 """
                 # %s 學年大葉大學業勤學舍住宿公約及違規處理要點
-
-                - 請所有住宿生詳細閱讀住宿公約，以確保了解自己的權益和義務。
-
-                - 宿舍有權在必要時對住宿公約進行修改或更新。
-                \t- 任何對公約的變更都將以Discord內全體廣播的方式通知所有住宿生。
-                """, this.schoolYear)
+                > Da-Yeh University Accommodation Rules (%sth Year)
+                ### 請所有住宿生詳細閱讀住宿公約，以確保了解自己的權益和義務。
+                > Residents, please read the agreement to understand your rights and duties.
+                ### 宿舍有權在必要時對住宿公約進行修改或更新。
+                > The dorm reserves the right to modify or update the agreement when necessary.
+                ### 公約及處理要點連結如下，請詳閱：
+                > The agreement links are below. Please review carefully:
+                
+                """, this.schoolYear, this.schoolYear)
         ).addActionRow(
-                Button.link(rulesLink, Emoji.fromUnicode("U+1F4D6"))
+                Button.link(rulesLinkZHTW, Emoji.fromUnicode("U+1F4D6"))
                         .withLabel(
-                                String.format(
-                                        "%s 學年大葉大學業勤學舍住宿公約及違規處理要點", this.schoolYear
-                                )
+                                "正體中文"
+                        ),
+                Button.link(rulesLinkEn, Emoji.fromUnicode("U+1F4D6"))
+                        .withLabel(
+                                "English"
                         )
         ).queue();
 
