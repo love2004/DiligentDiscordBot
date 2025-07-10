@@ -48,18 +48,20 @@ public class Repair {
 
     @Getter
     public enum Type {
-        CIVIL("001"),
-        HYDRO("002"),
-        DOOR("014"),
-        AIR_COND("005"),
-        OTHER("006"),
-        WASH_AND_DRY("N.A"),
-        VENDING("N.A"),
-        DRINKING("N.A");
+        CIVIL("001", "土木工程"),
+        HYDRO("002", "水電工程"),
+        DOOR("014", "門窗鎖具"),
+        AIR_COND("005", "冷氣設備"),
+        OTHER("006", "其他"),
+        WASH_AND_DRY("N.A", "洗烘衣機"),
+        VENDING("N.A", "販賣機"),
+        DRINKING("N.A", "飲水機");
 
         private final String id;
-        Type(String id) {
+        private final String name;
+        Type(String id, String name) {
             this.id = id;
+            this.name = name;
         }
     }
 
@@ -71,19 +73,7 @@ public class Repair {
         return menuMapping.getOrDefault(id, null);
     }
 
-    public String getLineMessage(@NotNull RepairModel repairModel) {
-        StringBuilder builder = new StringBuilder();
-        Student reporter = repairModel.getReporter();
-        builder.append("\n學號：").append(reporter.getStudentId());
-        builder.append("\n姓名：").append(reporter.getName());
-        builder.append("\n電話：").append(reporter.getPhoneNumber());
-        builder.append("\n報修區域：").append(repairModel.location);
-        builder.append("\n報修物品：").append(repairModel.item);
-        builder.append("\n報修原因：").append(repairModel.description);
-        builder.append("\n可配合時間：").append(repairModel.repairTime);
-        return builder.toString();
-    }
-
+    @Deprecated
     public String getLineMessage(@NotNull Student reporter, String location, String description) {
         return "\n學號：" + reporter.getStudentId() +
                 "\n姓名：" + reporter.getName() +

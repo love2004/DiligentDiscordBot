@@ -58,4 +58,12 @@ public class ChannelIdSet {
     String leader;
     @Value("${channel.return-by-firm}")
     String returnByFirm;
+    @Value("${channel.repairment.normal}")
+    String normalRepairment;
+    @Value("${channel.repairment.vending}")
+    String vendingRepairment;
+    @Value("${channel.repairment.machine}")
+    String machineRepairment;
+    @Value("${channel.repairment.water}")
+    String waterDispenserRepairment;
 }

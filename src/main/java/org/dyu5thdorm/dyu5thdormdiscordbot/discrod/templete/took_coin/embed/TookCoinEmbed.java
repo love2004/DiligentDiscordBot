@@ -44,8 +44,9 @@ public class TookCoinEmbed {
         switch (syntaxWrong) {
             case MONEY -> {
                 embedBuilder.setTitle("金錢格式錯誤。");
-                embedBuilder.addField("正確格式", "**[1~99]**", false);
-                embedBuilder.addField("正確範例", "20", true);
+                embedBuilder.addField("正確格式", "**[1~2000]**", false);
+                embedBuilder.addField("正確範例", "500", true);
+                embedBuilder.addField("正確範例", "100", true);
                 embedBuilder.addField("正確範例", "50", true);
             }
             case DATE -> {

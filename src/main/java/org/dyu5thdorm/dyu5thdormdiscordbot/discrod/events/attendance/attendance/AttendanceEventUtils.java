@@ -4,10 +4,14 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
 import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.embeds.AttendanceEmbedBuilder;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.floor_area.FloorArea;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,6 +27,7 @@ public class AttendanceEventUtils {
     AttendanceEmbedBuilder attendanceEmbedBuilder;
     final
     AttendanceHandler attendanceHandler;
+    final ChannelOperation channelOperation;
     @Value("${attendance.start.time.hour}")
     Integer startTimeHour;
     @Value("${attendance.start.time.min}")
@@ -75,31 +80,38 @@ public class AttendanceEventUtils {
         }
     }
 
-    public <T> void showNextRoom(T event, Set<LivingRecord> next) {
+    public <T> void showNextRoom(T event, Set<LivingRecord> next, String cadreDiscordId) {
         if (!(event instanceof ButtonInteractionEvent || event instanceof ModalInteractionEvent)) return;
-        if (event instanceof ButtonInteractionEvent buttonEvent) {
-            if (next == null) {
-                buttonEvent.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
-                return;
-            }
-            if (next.isEmpty()) {
-                buttonEvent.getHook().sendMessageEmbeds(attendanceEmbedBuilder.complete().build()).setEphemeral(true).queue();
-                return;
-            }
 
-        } else {
-            ModalInteractionEvent modalEvent = (ModalInteractionEvent) event;
-            if (next == null) {
-                modalEvent.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
-                return;
-            }
-            if (next.isEmpty()) {
-                modalEvent.getHook().sendMessageEmbeds(attendanceEmbedBuilder.complete().build()).setEphemeral(true).queue();
-                return;
-            }
+        IReplyCallback callbackEvent = (IReplyCallback) event;
+        if (next == null) {
+            callbackEvent.getHook().sendMessage("錯誤，請聯絡開發人員。").setEphemeral(true).queue();
+            return;
         }
 
-        sendAttendanceEmbed(event, next);
+        // has next not complete room
+        if (!next.isEmpty()) {
+            sendAttendanceEmbed(event, next);
+            return;
+        }
+
+        Optional<FloorArea> optional = attendanceHandler.getFloorByCadreId(cadreDiscordId);
+
+        optional.ifPresent(floorArea -> {
+            String floorChannelId = channelOperation.getFloorChannelMap().get(floorArea.getFloor());
+            TextChannel floorChanel = callbackEvent.getJDA().getTextChannelById(floorChannelId);
+
+            if (floorChanel != null) {
+                floorChanel.sendMessage(String.format(
+                    """
+                    %d%s點名完畢，點名時不在房間的住宿生，請記得補點名/請假。
+                    """, floorArea.getFloor(), floorArea.getAreaId()
+                    )
+                ).queue();
+            }
+        });
+
+        callbackEvent.getHook().sendMessageEmbeds(attendanceEmbedBuilder.complete().build()).setEphemeral(true).queue();
     }
 
     public void sendStartTime(ButtonInteractionEvent event) {

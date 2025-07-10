@@ -48,7 +48,7 @@ public class AttendanceOutModalEvent extends ListenerAdapter {
         );
 
         Set<LivingRecord> next = attendanceHandler.getNotComplete(event.getUser().getId());
-        attendanceEventUtils.showNextRoom(event, next);
+        attendanceEventUtils.showNextRoom(event, next, event.getUser().getId());
     }
 
     Set<Character> getBedIdSet(@NotNull String bed) {

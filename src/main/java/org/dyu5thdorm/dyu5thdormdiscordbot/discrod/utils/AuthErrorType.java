@@ -25,8 +25,8 @@ public enum AuthErrorType {
             > Your account has already been verified as a dormitory resident. Please do not try again.
             """),
     Not_Student("""
-            您所輸入的資料不正確。
-            > Wrong Wrong Wrong
+            查無此人。
+            > Have no this student
             """),
     Linked_By_Other("""
             您所輸入的住宿生身份已被他人所綁定。

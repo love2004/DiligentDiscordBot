@@ -16,6 +16,7 @@ public class ChannelOperation {
     @Getter
     final
     ChannelIdSet channelIdSet;
+    @Getter
     Map<Integer, String > floorChannelMap;
 
     @PostConstruct

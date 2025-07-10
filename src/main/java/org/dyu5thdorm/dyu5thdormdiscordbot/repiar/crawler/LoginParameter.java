@@ -16,10 +16,9 @@ public class LoginParameter {
     Integer loginType;
 
     public String getRequestBody() {
-        return "txt_userid=" + this.userId +
-                "&" +
-                "pwd_pwd=" + this.password +
-                "&" +
-                "hdn_flag=" + this.loginType;
+        return String.format(
+                "txt_userid=%s&pwd_pwd=%s&hdn_flag=%s"
+                ,this.userId,this.password,this.loginType
+        );
     }
 }

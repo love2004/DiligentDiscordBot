@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.DiscordAPI;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin.TookCoinDiscordUtils;
 import org.dyu5thdorm.dyu5thdormdiscordbot.took_coin.TookCoinHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,6 +29,7 @@ public class AutoDumpTookCoin {
     final DiscordAPI discordAPI;
     final ChannelIdSet channelIdSet;
     final TookCoinHandler tookCoinHandler;
+    final TookCoinDiscordUtils tookCoinDiscordUtils;
 
     @Value("${path-vending}")
     String vendingPath;
@@ -68,6 +70,10 @@ public class AutoDumpTookCoin {
         List<FileUpload> fileUploads = this.getFileUpload();
 
         LocalDateTime now = LocalDateTime.now();
+
+        // remove all messages
+        channel.getIterableHistory().forEach(message -> message.delete().queue());
+
         if (fileUploads.isEmpty()) {
             channel.sendMessage(
                     String.format(
@@ -83,6 +89,7 @@ public class AutoDumpTookCoin {
                             """, DateTimeFormatter.ofPattern(dateFormat).format(now)
                     )
             ).setFiles(fileUploads).queue();
+            tookCoinDiscordUtils.sendReturnDateButton(channel);
         }
     }
 

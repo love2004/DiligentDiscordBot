@@ -94,6 +94,12 @@ public class AttendanceHandler {
         return Optional.empty();
     }
 
+    public Optional<FloorArea> getFloorByCadreId(String discordId) {
+        Optional<FloorAreaCadre> floorAreaCadre = this.getFloorAreaCadreByDiscordId(discordId);
+
+        return floorAreaCadre.map(FloorAreaCadre::getFloorArea);
+    }
+
     public Set<LivingRecord> getRoomStart(String discordId) {
         Optional<ErrorType> errorType = check(discordId);
         if (errorType.isPresent())

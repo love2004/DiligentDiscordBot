@@ -10,13 +10,20 @@
     </parent>
     <groupId>org.dyu5thdorm</groupId>
     <artifactId>Dyu5thDormDiscordBot</artifactId>
-    <version>1.12.1</version>
+    <version>1.12.2</version>
     <name>Dyu5thDormDiscordBot</name>
     <description>Dyu5thDormDiscordBot</description>
     <properties>
         <java.version>17</java.version>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20250517</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -40,7 +47,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.0.0-beta.20</version>
+            <version>5.6.1</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>

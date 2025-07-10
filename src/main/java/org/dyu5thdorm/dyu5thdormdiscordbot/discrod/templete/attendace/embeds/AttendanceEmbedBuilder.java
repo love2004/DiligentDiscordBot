@@ -119,7 +119,7 @@ public class AttendanceEmbedBuilder {
                         **床號：%s
                         學號：%s
                         姓名：%s**
-                              
+                        
                         """,
                         livingRecord.getBed().getBedId(),
                         livingRecord.getStudent().getStudentId(),

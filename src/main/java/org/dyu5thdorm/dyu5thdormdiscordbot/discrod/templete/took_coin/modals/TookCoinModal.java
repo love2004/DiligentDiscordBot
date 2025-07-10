@@ -32,8 +32,8 @@ public class TookCoinModal {
         TextInput.Builder description = TextInput.create(modalIdSet.getSecondTextInput(), "故障情況說明", TextInputStyle.PARAGRAPH)
                 .setRequiredRange(0, 50);
         TextInput coin = TextInput.create(modalIdSet.getThirdTextInput(), "卡幣金額", TextInputStyle.SHORT)
-                .setPlaceholder("請輸入卡幣金額。例如：87")
-                .setRequiredRange(1, 2)
+                .setPlaceholder("請輸入卡幣金額。例如：50")
+                .setRequiredRange(1, 4)
                 .build();
         time = TextInput.create(modalIdSet.getFourthTextInput(), "發生時間 格式：[月+日 時+分] \n(自動帶入三分鐘前的時間)", TextInputStyle.PARAGRAPH)
                 .setPlaceholder("請輸入發生時間。\n格式(24小時制)：[月+日 時+分]\n例如：0807 2030")

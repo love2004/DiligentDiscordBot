@@ -18,8 +18,6 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.Took
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.menu.TookCoinMenu;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.modals.TookCoinModal;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.Maintenance;
-import org.dyu5thdorm.dyu5thdormdiscordbot.line.LineNotify;
-import org.dyu5thdorm.dyu5thdormdiscordbot.line.RepairTokenSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.Student;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
@@ -53,8 +51,6 @@ public class TookCoinEvent extends ListenerAdapter {
     DiscordLinkService discordLinkService;
     final
     TookCoinEmbed tookCoinEmbed;
-    final
-    LineNotify lineNotify;
     final
     Maintenance maintenance;
 
@@ -152,7 +148,7 @@ public class TookCoinEvent extends ListenerAdapter {
         }
 
         if (!maintenance.isMaintenanceStatus()) {
-            sendLineNotify(type, args, discordLink.get().getStudent());
+            sendNotification(type, args, discordLink.get().getStudent());
         }
 
         event.getHook().sendMessage(
@@ -160,7 +156,7 @@ public class TookCoinEvent extends ListenerAdapter {
                         # 登記成功！
                         退費時間為各學期每個禮拜四 **依通知後領取**。
                         退費時間若有變動都會在 <#%s> 說明。
-                                        
+
                         > **依照此步驟查看登記紀錄：**
                         > <#%s> -> 吃錢登記 -> 登記記錄查詢、簽收
                         """, channelIdSet.getAnnouncement(), channelIdSet.getTookCoin()
@@ -198,11 +194,8 @@ public class TookCoinEvent extends ListenerAdapter {
     }
 
     @SneakyThrows
-    void sendLineNotify(TookCoinHandler.MachineType type, List<String> args, Student student) {
-        RepairTokenSet.RepairType repairType = getTypeByTookCoinType(type);
-        if (repairType == null) {
-            return;
-        }
+    // TODO: send to discord
+    void sendNotification(TookCoinHandler.MachineType type, List<String> args, Student student) {
         String sb = "\n有新的一筆吃錢登記如下：\n" +
                 "\n樓層區域：" + args.get(0) +
                 "\n機器：" + tookCoinEmbed.getMachineName(type.name()) +
@@ -212,20 +205,6 @@ public class TookCoinEvent extends ListenerAdapter {
                 tookCoinEmbed.getDateTimeFormatter()) +
                 "\n回報者學號：" + student.getStudentId() +
                 "\n回報者姓名：" + student.getName();
-        lineNotify.sendMessage(sb, repairType);
-    }
-
-    RepairTokenSet.RepairType getTypeByTookCoinType(@NotNull TookCoinHandler.MachineType tookCoinType) {
-        switch (tookCoinType) {
-            case WASH_MACHINE, DRYER -> {
-                return RepairTokenSet.RepairType.WASH_AND_DRY_MACHINE;
-            }
-            case VENDING -> {
-                return RepairTokenSet.RepairType.VENDING;
-            }
-        }
-
-        return null;
     }
 
     TookCoinHandler.MachineType getTypeByMenuId(String id) {

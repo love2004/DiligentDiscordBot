@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.interactions.modals.ModalMapping;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.EmbedGenerator;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ImageUtils;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.DiscordLink;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.DiscordLinkService;
@@ -33,6 +35,7 @@ public class SearchByStudentId extends ListenerAdapter {
     DiscordLinkService discordLinkService;
     final
     EmbedGenerator embedGenerator;
+    final ImageUtils imageUtils;
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -53,6 +56,7 @@ public class SearchByStudentId extends ListenerAdapter {
         ).queue();
     }
 
+    @SneakyThrows
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
         String eventModalId = event.getModalId();
@@ -90,6 +94,8 @@ public class SearchByStudentId extends ListenerAdapter {
             );
             event.getHook().sendMessageEmbeds(
                     embedGenerator.infoFromStudentId(livingRecord, discordLink).build()
+            ).addFiles(
+                    imageUtils.getStudentImage(livingRecord.getStudent().getStudentId())
             ).setEphemeral(true).queue();
         }
 

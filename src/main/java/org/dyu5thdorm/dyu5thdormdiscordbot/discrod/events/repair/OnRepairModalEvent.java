@@ -2,11 +2,16 @@ package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.repair;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.modals.ModalMapping;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.RepairmentUtils;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.Repair;
+import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.RepairModel;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.impl.NormalRepairHandler;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.impl.RepairHandler;
 import org.dyu5thdorm.dyu5thdormdiscordbot.repiar.impl.SpecialRepairHandler;
@@ -24,6 +29,7 @@ public class OnRepairModalEvent extends ListenerAdapter {
     final
     ModalIdSet modalIdSet;
     Map<String, RepairHandler> ids;
+    Map<Repair.Type, String> channels;
     final
     NormalRepairHandler normalRepairHandler;
     final
@@ -32,6 +38,8 @@ public class OnRepairModalEvent extends ListenerAdapter {
     Repair repair;
     final
     DiscordLinkService discordLinkService;
+    final ChannelIdSet channelIdSet;
+    final RepairmentUtils repairmentUtils;
 
     @PostConstruct
     void initIds() {
@@ -45,8 +53,20 @@ public class OnRepairModalEvent extends ListenerAdapter {
                 modalIdSet.getRepairVending(), specialRepairHandler,
                 modalIdSet.getRepairDrinking(), specialRepairHandler
         );
+        channels = Map.of(
+                Repair.Type.AIR_COND, channelIdSet.getNormalRepairment(),
+                Repair.Type.CIVIL, channelIdSet.getNormalRepairment(),
+                Repair.Type.DOOR, channelIdSet.getNormalRepairment(),
+                Repair.Type.HYDRO, channelIdSet.getNormalRepairment(),
+                Repair.Type.OTHER, channelIdSet.getNormalRepairment(),
+                // === up normal 校內, below outside 廠商 ===
+                Repair.Type.DRINKING, channelIdSet.getWaterDispenserRepairment(), // water dispenser
+                Repair.Type.VENDING, channelIdSet.getVendingRepairment(), // vending
+                Repair.Type.WASH_AND_DRY, channelIdSet.getMachineRepairment() // wash machine and dryer
+        );
     }
 
+    @SneakyThrows
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
         String eventModalId = event.getModalId();
@@ -61,16 +81,30 @@ public class OnRepairModalEvent extends ListenerAdapter {
             return;
         }
 
-        boolean handle = ids.get(eventModalId).handle(
+        RepairModel model = ids.get(eventModalId).handle(
                 repair.getTypeByModalId(eventModalId),
                 discordLink.get().getStudent(),
                 args
         );
 
-        if (!handle) {
+        if (model == null) {
             event.getHook().sendMessage("報修失敗！請聯絡開發者！").setEphemeral(true).queue();
             return;
         }
+
+        TextChannel repairmentChannel = event.getJDA().getTextChannelById(
+                channels.get(
+                        model.getType()
+                )
+        );
+
+        if (repairmentChannel == null) {
+            throw new RuntimeException("repairment channel not found");
+        }
+
+        repairmentChannel.sendMessageEmbeds(
+                repairmentUtils.notificationEmbed(model)
+        ).queue();
 
         event.getHook().sendMessage("""
                 # 報修成功！

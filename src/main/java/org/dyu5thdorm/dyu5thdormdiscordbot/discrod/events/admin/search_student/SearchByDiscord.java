@@ -1,6 +1,7 @@
 package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.search_student;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -10,6 +11,7 @@ import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.MenuIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.EmbedGenerator;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ImageUtils;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +32,7 @@ public class SearchByDiscord extends ListenerAdapter {
     LivingRecordService livingRecordService;
     final
     EmbedGenerator embedGenerator;
+    final ImageUtils imageUtils;
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
@@ -46,6 +49,7 @@ public class SearchByDiscord extends ListenerAdapter {
         ).setEphemeral(true).queue();
     }
 
+    @SneakyThrows
     @Override
     public void onEntitySelectInteraction(@NotNull EntitySelectInteractionEvent event) {
         String eventMenuId = event.getSelectMenu().getId();
@@ -70,6 +74,8 @@ public class SearchByDiscord extends ListenerAdapter {
                     String.format("<@%s>", userId)
             ).addEmbeds(
                     embedBuilder.build()
+            ).addFiles(
+                    imageUtils.getStudentImage(livingRecord.get().getStudent().getStudentId())
             ).setEphemeral(true).queue();
         }
     }

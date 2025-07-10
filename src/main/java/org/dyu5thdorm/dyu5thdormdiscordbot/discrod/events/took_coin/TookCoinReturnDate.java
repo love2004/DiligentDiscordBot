@@ -1,4 +1,4 @@
-package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.admin.development;
+package org.dyu5thdorm.dyu5thdormdiscordbot.discrod.events.took_coin;
 
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -7,8 +7,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ModalIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.took_coin.embed.TookCoinEmbed;
@@ -46,6 +44,7 @@ public class TookCoinReturnDate extends ListenerAdapter {
     RoleOperation roleOperation;
     final
     TookCoinEmbed tookCoinEmbed;
+    final TookCoinDiscordUtils tookCoinDiscordUtils;
     @Value("${regexp.date_year_month_day}")
     String dateYearMonthDayRegexp;
 
@@ -80,11 +79,9 @@ public class TookCoinReturnDate extends ListenerAdapter {
                 message -> message.delete().complete()
         );
 
-        event.getChannel().sendMessageComponents(
-                ActionRow.of(
-                        Button.danger(buttonIdSet.getTookCoinReturn(), "廠商退幣日期登記")
-                )
-        ).queue();
+        tookCoinDiscordUtils.sendReturnDateButton(
+                event.getChannel()
+        );
     }
 
 

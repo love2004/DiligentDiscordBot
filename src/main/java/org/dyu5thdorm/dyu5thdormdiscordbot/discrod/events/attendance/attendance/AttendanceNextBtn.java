@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.dyu5thdorm.dyu5thdormdiscordbot.attendance.AttendanceHandler;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
-import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.templete.attendace.embeds.AttendanceEmbedBuilder;
 import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.living_record.LivingRecord;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -19,9 +18,6 @@ public class AttendanceNextBtn extends ListenerAdapter {
     ButtonIdSet buttonIdSet;
     final
     AttendanceHandler attendanceHandler;
-    final
-    AttendanceEmbedBuilder attendanceEmbedBuilder;
-
     final
     AttendanceEventUtils attendanceEventUtils;
 

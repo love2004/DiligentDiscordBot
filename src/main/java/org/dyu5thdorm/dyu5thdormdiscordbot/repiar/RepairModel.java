@@ -7,11 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+
 @Data
-@AllArgsConstructor
-@EqualsAndHashCode
 @Builder
-public class RepairModel {
+public class RepairModel  {
     @NotNull
     Repair.Type type;
     @NotNull
@@ -33,11 +32,12 @@ public class RepairModel {
     String repairTime;
 
     public String getRequestBody() throws UnsupportedEncodingException {
-        return "htmldw1_action=" + "Update" +
-                "&" +
-                "htmldw1_context=" + getRepairEncoding() +
-                "&" +
-                "htmldw1_extradata=" + "F0860";
+        return String.format(
+                """
+                htmldw1_action=Update&htmldw1_context=%s&htmldw1_extradata=F0860
+                """,
+                getRepairEncoding()
+        );
     }
 
     private String getRepairEncoding() throws UnsupportedEncodingException {
@@ -48,11 +48,11 @@ public class RepairModel {
                 "F0860",
                 this.type.getId(),
                 this.building.getId(),
-                this.location,
+                this.getLocation(),
                 this.item,
                 this.unit.getId(),
                 this.amount,
-                this.description + (this.repairTime != null ? ", \n可配合維修時間：" + this.repairTime : ""),
+                this.getDescription() + (this.repairTime != null ? ", \n可配合維修時間：" + this.repairTime : ""),
                 this.reporter.getPhoneNumber(),
                 this.reportUnit.getId()
         );
@@ -70,7 +70,7 @@ public class RepairModel {
 
     @Getter
     public enum Unit {
-        Normal("06");
+        Normal("06"), None("--");
         private final String id;
         Unit(String id) {
             this.id = id;

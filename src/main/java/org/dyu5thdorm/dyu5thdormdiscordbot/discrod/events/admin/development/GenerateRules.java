@@ -10,10 +10,12 @@ import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ButtonIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.ChannelIdSet;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.ChannelOperation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@PropertySource("classpath:api.properties")
 public class GenerateRules extends ListenerAdapter {
     final
     ButtonIdSet buttonIdSet;
