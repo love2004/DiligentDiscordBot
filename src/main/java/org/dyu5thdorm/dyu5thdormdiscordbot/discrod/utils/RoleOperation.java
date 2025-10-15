@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.Role;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.RoleIdSet;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -18,14 +20,7 @@ public class RoleOperation {
 
     @PostConstruct
     void initRole() {
-        floorRoleIdMap = Map.of(
-                1, roleIdSet.getFloorOne(),
-                2, roleIdSet.getFloorTwo(),
-                3, roleIdSet.getFloorThree(),
-                4, roleIdSet.getFloorFour(),
-                5, roleIdSet.getFloorFive(),
-                6, roleIdSet.getFloorSix()
-        );
+        refreshFloorRoleMap();
     }
 
     public int getFloorByBedId(String bedId) {
@@ -45,6 +40,22 @@ public class RoleOperation {
 
     public String getRoleIdByFloor(int floor) {
         return this.floorRoleIdMap.getOrDefault(floor, null);
+    }
+
+    public void refreshFloorRoleMap() {
+        Map<Integer, String> map = new HashMap<>();
+        putIfPresent(map, 1, roleIdSet.getFloorOne());
+        putIfPresent(map, 2, roleIdSet.getFloorTwo());
+        putIfPresent(map, 3, roleIdSet.getFloorThree());
+        putIfPresent(map, 4, roleIdSet.getFloorFour());
+        putIfPresent(map, 5, roleIdSet.getFloorFive());
+        putIfPresent(map, 6, roleIdSet.getFloorSix());
+        floorRoleIdMap = Collections.unmodifiableMap(map);
+    }
+
+    private void putIfPresent(Map<Integer, String> target, int floor, String roleId) {
+        if (roleId == null || roleId.isBlank()) return;
+        target.put(floor, roleId);
     }
 
     public void removeAllRoles(Guild guild, Member member) {

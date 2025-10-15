@@ -62,6 +62,13 @@ public class DevelopmentOperationEvent extends ListenerAdapter {
         ).queue();
 
         textChannel.sendMessage(
+                "伺服器管理"
+        ).addActionRow(
+                Button.primary(buttonIdSet.getGenerateDevChannels(), "自動建頻道"),
+                Button.secondary(buttonIdSet.getGenerateDevRoles(), "自動建身分組")
+        ).queue();
+
+        textChannel.sendMessage(
                 "身份組"
         ).addActionRow(
                 Button.primary(buttonIdSet.getFloorRoleCorrection(), "校正樓層身分組")

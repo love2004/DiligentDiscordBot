@@ -53,6 +53,10 @@ public class ButtonIdSet {
     String generateReqCadre;
     @Value("${component.button.generate-request-vote}")
     String generateVote;
+    @Value("${component.button.generate-dev-channels}")
+    String generateDevChannels;
+    @Value("${component.button.generate-dev-roles}")
+    String generateDevRoles;
     @Value("${component.button.took-coin}")
     String tookCoin;
     @Value("${component.button.floor-role-correction}")
