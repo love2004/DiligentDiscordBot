@@ -68,17 +68,35 @@ public class GenerateDevRoles extends ListenerAdapter {
         }
 
         StringBuilder builder = new StringBuilder("已自動建立/更新以下身分組：\n");
-        for (CreatedRoleInfo info : report.createdRoles()) {
-            builder.append("  - ")
-                    .append(info.role().getName())
-                    .append(" (`")
-                    .append(info.role().getId())
-                    .append("`)")
-                    .append(" ← ")
-                    .append(info.propertyKey())
-                    .append("\n");
+        var propertyBacked = report.createdRoles().stream()
+                .filter(info -> !info.propertyKey().startsWith("role.national."))
+                .toList();
+        var nationalityBacked = report.createdRoles().stream()
+                .filter(info -> info.propertyKey().startsWith("role.national."))
+                .toList();
+
+        propertyBacked.forEach(info -> builder.append("  - ")
+                .append(info.role().getName())
+                .append(" (`")
+                .append(info.role().getId())
+                .append("`)")
+                .append(" ← ")
+                .append(info.propertyKey())
+                .append("\n"));
+
+        nationalityBacked.forEach(info -> builder.append("  - ")
+                .append(info.role().getName())
+                .append(" (`")
+                .append(info.role().getId())
+                .append("`)")
+                .append(" ← ")
+                .append(info.propertyKey())
+                .append(" (已寫入資料庫)")
+                .append("\n"));
+
+        if (!propertyBacked.isEmpty()) {
+            builder.append("\n請將上述非國籍身分組 ID 貼回 discord-dev.properties。");
         }
-        builder.append("\n請將上述 ID 貼回 discord-dev.properties。");
 
         event.getHook().sendMessage(builder.toString())
                 .setEphemeral(true)

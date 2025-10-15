@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.RoleIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.NationalityRoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -16,11 +17,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RoleOperation {
     final RoleIdSet roleIdSet;
+    final NationalityRoleService nationalityRoleService;
     Map<Integer, String> floorRoleIdMap;
+    Map<String, String> nationalityRoleMap;
 
     @PostConstruct
     void initRole() {
         refreshFloorRoleMap();
+        refreshNationalityRoleMap();
     }
 
     public int getFloorByBedId(String bedId) {
@@ -56,6 +60,39 @@ public class RoleOperation {
     private void putIfPresent(Map<Integer, String> target, int floor, String roleId) {
         if (roleId == null || roleId.isBlank()) return;
         target.put(floor, roleId);
+    }
+
+    public void refreshNationalityRoleMap() {
+        nationalityRoleMap = Collections.unmodifiableMap(
+                new HashMap<>(nationalityRoleService.getAllMappings())
+        );
+    }
+
+    public void addRoleByCitizenship(Guild guild, Member member, String citizenship) {
+        if (citizenship == null || citizenship.isBlank()) return;
+        if (nationalityRoleMap == null || nationalityRoleMap.isEmpty()) return;
+        String roleId = nationalityRoleMap.get(citizenship);
+        if (roleId == null || roleId.isBlank()) return;
+        Role role = guild.getRoleById(roleId);
+        if (role == null) return;
+        guild.addRoleToMember(member, role).queue();
+    }
+
+    public String getRoleIdByCitizenship(String citizenship) {
+        if (citizenship == null || citizenship.isBlank()) return null;
+        return getNationalityRoleMap().get(citizenship);
+    }
+
+    public Map<String, String> getNationalityRoleMap() {
+        return nationalityRoleMap == null ? Collections.emptyMap() : nationalityRoleMap;
+    }
+
+    public void removeAllNationalityRoles(Guild guild, Member member) {
+        if (member == null || guild == null) return;
+        if (getNationalityRoleMap().isEmpty()) return;
+        member.getRoles().stream()
+                .filter(role -> getNationalityRoleMap().containsValue(role.getId()))
+                .forEach(role -> guild.removeRoleFromMember(member, role).queue());
     }
 
     public void removeAllRoles(Guild guild, Member member) {

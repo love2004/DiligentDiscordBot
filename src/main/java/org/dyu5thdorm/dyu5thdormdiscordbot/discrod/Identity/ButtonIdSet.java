@@ -57,10 +57,14 @@ public class ButtonIdSet {
     String generateDevChannels;
     @Value("${component.button.generate-dev-roles}")
     String generateDevRoles;
+    @Value("${component.button.refresh-admin-operations}")
+    String refreshAdminOperations;
     @Value("${component.button.took-coin}")
     String tookCoin;
     @Value("${component.button.floor-role-correction}")
     String floorRoleCorrection;
+    @Value("${component.button.nationality-role-correction}")
+    String nationalityRoleCorrection;
     @Value("${component.button.took-coin-get-back}")
     String tookCoinGetBack;
     @Value("${component.button.took-coin-get-back-confirm}")

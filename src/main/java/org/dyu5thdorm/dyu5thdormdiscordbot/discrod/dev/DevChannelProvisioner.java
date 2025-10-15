@@ -27,6 +27,7 @@ import java.util.Map;
 public class DevChannelProvisioner {
     private final ChannelIdSet channelIdSet;
     private final ChannelOperation channelOperation;
+    private final DevPropertyUpdater propertyUpdater;
 
     private static final List<ChannelDefinition> CHANNELS = List.of(
             // Administration
@@ -95,6 +96,7 @@ public class DevChannelProvisioner {
                 continue;
             }
             channelIdSet.overrideChannelId(definition.propertyKey(), channel.getId());
+            propertyUpdater.updateIfBlank(definition.propertyKey(), channel.getId());
         }
 
         if (!createdChannels.isEmpty() || !createdCategories.isEmpty()) {
