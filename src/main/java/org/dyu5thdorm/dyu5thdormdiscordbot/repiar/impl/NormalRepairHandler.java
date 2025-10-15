@@ -37,8 +37,8 @@ public class NormalRepairHandler implements RepairHandler {
                 .reportUnit(RepairModel.ReportUnit.Normal)
                 .building(RepairModel.Building.Diligent)
                 .build();
-//        repairCrawler.repair(model);
 
+        repairCrawler.repair(model);
         return model;
     }
 }
