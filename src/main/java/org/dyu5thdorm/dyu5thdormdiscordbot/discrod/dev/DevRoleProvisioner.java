@@ -6,10 +6,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.requests.restaction.RoleAction;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.Identity.RoleIdSet;
+import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.admin.NationalityRoleManager;
 import org.dyu5thdorm.dyu5thdormdiscordbot.discrod.utils.RoleOperation;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.models.nationality_role.NationalityRole;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.LivingRecordService;
-import org.dyu5thdorm.dyu5thdormdiscordbot.spring.services.NationalityRoleService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +22,8 @@ import java.util.List;
 public class DevRoleProvisioner {
     private final RoleIdSet roleIdSet;
     private final RoleOperation roleOperation;
-    private final LivingRecordService livingRecordService;
-    private final NationalityRoleService nationalityRoleService;
     private final DevPropertyUpdater propertyUpdater;
+    private final NationalityRoleManager nationalityRoleManager;
 
     private static final List<RoleDefinition> ROLES = List.of(
             new RoleDefinition("role.manager", "Dorm Manager", Color.decode("#1abc9c"), true),
@@ -64,8 +61,9 @@ public class DevRoleProvisioner {
             roleOperation.refreshFloorRoleMap();
         }
 
-            createdRoles.addAll(provisionNationalityRoles(guild, warnings));
-        roleOperation.refreshNationalityRoleMap();
+        var nationalityResult = nationalityRoleManager.provision(guild, new DevNationalityCallbacks());
+        nationalityResult.createdRoles().forEach(info -> createdRoles.add(new CreatedRoleInfo(info.propertyKey(), info.role())));
+        warnings.addAll(nationalityResult.warnings());
 
         if (!createdRoles.isEmpty()) {
             createdRoles.forEach(info -> log.info(
@@ -124,32 +122,6 @@ public class DevRoleProvisioner {
         return null;
     }
 
-    private Role resolveRole(Guild guild,
-                             String configuredId,
-                             String propertyKey,
-                             String defaultName,
-                             List<String> warnings) {
-        String trimmed = safeTrim(configuredId);
-        if (trimmed != null) {
-            Role byId = guild.getRoleById(trimmed);
-            if (byId != null) {
-                return byId;
-            }
-            warnings.add("Configured role id %s for key '%s' is missing on guild '%s'."
-                    .formatted(trimmed, propertyKey, guild.getName()));
-        }
-
-        List<Role> byName = guild.getRolesByName(defaultName, true);
-        if (!byName.isEmpty()) {
-            if (byName.size() > 1) {
-                warnings.add("Multiple roles named '%s' found. Using the first one (%s)."
-                        .formatted(defaultName, byName.get(0).getId()));
-            }
-            return byName.get(0);
-        }
-        return null;
-    }
-
     private Role createRole(Guild guild, RoleDefinition definition) {
         RoleAction action = guild.createRole()
                 .setName(definition.defaultName())
@@ -160,35 +132,6 @@ public class DevRoleProvisioner {
         Role role = action.complete();
         log.debug("[DevRoleProvisioner] Created role '{}' (id={})", role.getName(), role.getId());
         return role;
-    }
-
-    private List<CreatedRoleInfo> provisionNationalityRoles(Guild guild, List<String> warnings) {
-        List<CreatedRoleInfo> created = new ArrayList<>();
-        livingRecordService.findDistinctCitizenshipsForCurrentTerm().forEach(citizenship -> {
-            String propertyKey = "role.national." + citizenship;
-            String storedRoleId = nationalityRoleService.findByCitizenship(citizenship)
-                    .map(NationalityRole::getRoleId)
-                    .orElse(null);
-
-            Role role = resolveRole(guild, storedRoleId, propertyKey,
-                    "Nationality - " + citizenship, warnings);
-
-            if (role == null) {
-                role = createNationalityRole(guild, citizenship);
-                if (role != null) {
-                    created.add(new CreatedRoleInfo(propertyKey, role));
-                }
-            }
-
-            if (role != null) {
-                nationalityRoleService.saveOrUpdate(citizenship, role.getId());
-            }
-
-            if (role != null && !propertyKey.startsWith("role.national.")) {
-                propertyUpdater.updateIfBlank(propertyKey, role.getId());
-            }
-        });
-        return created;
     }
 
     private String safeTrim(String value) {
@@ -206,6 +149,19 @@ public class DevRoleProvisioner {
                 .complete();
         log.debug("[DevRoleProvisioner] Created nationality role '{}' (id={})", role.getName(), role.getId());
         return role;
+    }
+
+    private final class DevNationalityCallbacks implements NationalityRoleManager.Callbacks {
+        @Override
+        public Role createRole(Guild guild, String propertyKey, String roleName, List<String> warnings) {
+            String citizenship = propertyKey.substring(propertyKey.lastIndexOf('.') + 1);
+            return createNationalityRole(guild, citizenship);
+        }
+
+        @Override
+        public void afterRoleResolved(String propertyKey, Role role) {
+            propertyUpdater.updateIfBlank(propertyKey, role.getId());
+        }
     }
 
     public record ProvisionReport(List<CreatedRoleInfo> createdRoles,
